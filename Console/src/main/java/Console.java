@@ -12,9 +12,7 @@ public class Console {
 
         while (!inRange) {
             parsedInt = readInt(msg);
-            if (parsedInt >= min && parsedInt <= max) {
-                inRange = true;
-            }
+            inRange = parsedInt >= min && parsedInt <= max;
         }
 
         return parsedInt;
@@ -25,13 +23,13 @@ public class Console {
         int parsedInt = Integer.MIN_VALUE;
         boolean validInput = false;
 
-        while(!validInput) {
+        while (!validInput) {
             print(msg);
             String userInput = input.nextLine();
             try {
                 parsedInt = Integer.parseInt(userInput);
                 validInput = true;
-            } catch(NumberFormatException ex) {
+            } catch (NumberFormatException ex) {
 
             }
         }
@@ -44,9 +42,7 @@ public class Console {
 
         while (!inRange) {
             parsedDouble = readDouble(msg);
-            if (parsedDouble >= min && parsedDouble <= max) {
-                inRange = true;
-            }
+            inRange = parsedDouble >= min && parsedDouble <= max;
         }
 
         return parsedDouble;
