@@ -6,7 +6,8 @@ public class Application {
     public static void main(String[] args) {
         char[] board = {'.','.','.','.','.','.','.','.','.'};
         boolean player1Turn = true;
-        boolean twoPlayers = false;
+        boolean player1Human = false;
+        boolean player2Human = false;
         boolean gameOver = false;
         printBoard(board);
 
@@ -17,9 +18,23 @@ public class Application {
         int draws = 0;
 
         // Ask for number of players
-        int numPlayers = Console.readInt("Enter the number of human players (1-2)", 1, 2);
+        int numPlayers = Console.readInt("Enter the number of human players (0-2)", 0, 2);
         if (numPlayers == 2) {
-            twoPlayers = true;
+            player1Human = true;
+            player2Human = true;
+        } else if (numPlayers == 1) {
+            int playerChoice = Console.readInt("Are you player 1 (X) or player 2 (O)?", 1, 2);
+            if (playerChoice == 1) {
+                player1Human = true;
+                player2Human = false;
+            } else {
+                player1Human = false;
+                player2Human = true;
+            }
+
+        } else {
+            player1Human = false;
+            player2Human = false;
         }
 
         // Game loop
@@ -29,17 +44,27 @@ public class Application {
             while (!gameOver) {
                 if (player1Turn) {
                     System.out.println("Player 1's move!");
-                    board[playerMove(board) - 1] = 'x';
+
+                    if (player1Human) {
+                        board[playerMove(board) - 1] = 'x';
+                    } else {
+                        if (moveCount == 0 || (moveCount == 1 && board[4] == '.')) {
+                            board[4] = 'x';
+                        } else {
+                            board[smartComputerMove(board, 'o')] = 'x';
+                        }
+                    }
                 } else {
                     System.out.println("Player 2's move!");
-                    if (!twoPlayers) {
+
+                    if (player2Human) {
+                        board[playerMove(board) - 1] = 'o';
+                    } else {
                         if (moveCount == 0 || (moveCount == 1 && board[4] == '.')) {
                             board[4] = 'o';
                         } else {
                             board[smartComputerMove(board, 'x')] = 'o';
                         }
-                    } else {
-                        board[playerMove(board) - 1] = 'o';
                     }
                 }
                 moveCount++;
