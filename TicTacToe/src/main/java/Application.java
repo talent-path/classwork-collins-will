@@ -1,4 +1,5 @@
-import org.w3c.dom.ls.LSOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Application {
 
@@ -32,7 +33,11 @@ public class Application {
                 } else {
                     System.out.println("Player 2's move!");
                     if (!twoPlayers) {
-                        board[computerMove(board)] = 'o';
+                        if (moveCount == 0 || (moveCount == 1 && board[4] == '.')) {
+                            board[4] = 'o';
+                        } else {
+                            board[smartComputerMove(board, 'x')] = 'o';
+                        }
                     } else {
                         board[playerMove(board) - 1] = 'o';
                     }
@@ -89,10 +94,244 @@ public class Application {
         return compMove;
     }
 
-    public static int smartComputerMove(char[] board) {
+    public static int smartComputerMove(char[] board, char opponent) {
+        ArrayList<Integer> goodMoves = new ArrayList<Integer>();
+        ArrayList<Integer> defensiveMoves = new ArrayList<Integer>();
 
+        // upper left
+        if (board[0] == '.') {
+            // row
+            if (board[1] == board[2] && board[1] != '.') {
+                if (board[1] == opponent) {
+                    defensiveMoves.add(0);
+                } else {
+                    goodMoves.add(0);
+                }
+            }
+            // column
+            if (board[3] == board[6] && board[3] != '.') {
+                if (board[3] == opponent) {
+                    defensiveMoves.add(0);
+                } else {
+                    goodMoves.add(0);
+                }
+            }
+            // diagonal
+            if (board[4] == board[8] && board[4] != '.') {
+                if (board[4] == opponent) {
+                    defensiveMoves.add(0);
+                } else {
+                    goodMoves.add(0);
+                }
+            }
+        }
 
-        return 0;
+        // upper middle
+        if (board[1] == '.') {
+            // row
+            if (board[0] == board[2] && board[0] != '.') {
+                if (board[0] == opponent) {
+                    defensiveMoves.add(1);
+                } else {
+                    goodMoves.add(1);
+                }
+            }
+            // column
+            if (board[4] == board[7] && board[4] != '.') {
+                if (board[4] == opponent) {
+                    defensiveMoves.add(1);
+                } else {
+                    goodMoves.add(1);
+                }
+            }
+        }
+
+        // upper right
+        if (board[2] == '.') {
+            // row
+            if (board[1] == board[0] && board[1] != '.') {
+                if (board[1] == opponent) {
+                    defensiveMoves.add(2);
+                } else {
+                    goodMoves.add(2);
+                }
+            }
+            // column
+            if (board[5] == board[8] && board[5] != '.') {
+                if (board[5] == opponent) {
+                    defensiveMoves.add(2);
+                } else {
+                    goodMoves.add(2);
+                }
+            }
+            // diagonal
+            if (board[4] == board[6] && board[4] != '.') {
+                if (board[4] == opponent) {
+                    defensiveMoves.add(2);
+                } else {
+                    goodMoves.add(2);
+                }
+            }
+        }
+
+        // middle left
+        if (board[3] == '.') {
+            // row
+            if (board[4] == board[5] && board[4] != '.') {
+                if (board[4] == opponent) {
+                    defensiveMoves.add(3);
+                } else {
+                    goodMoves.add(3);
+                }
+            }
+            // column
+            if (board[0] == board[6] && board[0] != '.') {
+                if (board[0] == opponent) {
+                    defensiveMoves.add(3);
+                } else {
+                    goodMoves.add(3);
+                }
+            }
+        }
+
+        // center
+        if (board[4] == '.') {
+            // row
+            if (board[3] == board[5] && board[3] != '.') {
+                if (board[3] == opponent) {
+                    defensiveMoves.add(4);
+                } else {
+                    goodMoves.add(4);
+                }
+            }
+            // column
+            if (board[1] == board[7] && board[1] != '.') {
+                if (board[1] == opponent) {
+                    defensiveMoves.add(4);
+                } else {
+                    goodMoves.add(4);
+                }
+            }
+            // diagonals
+            if (board[0] == board[8] && board[0] != '.') {
+                if (board[0] == opponent) {
+                    defensiveMoves.add(4);
+                } else {
+                    goodMoves.add(4);
+                }
+            }
+            if (board[2] == board[6] && board[2] != '.') {
+                if (board[2] == opponent) {
+                    defensiveMoves.add(4);
+                } else {
+                    goodMoves.add(4);
+                }
+            }
+        }
+
+        // middle right
+        if (board[5] == '.') {
+            // row
+            if (board[4] == board[3] && board[4] != '.') {
+                if (board[4] == opponent) {
+                    defensiveMoves.add(5);
+                } else {
+                    goodMoves.add(5);
+                }
+            }
+            // column
+            if (board[2] == board[8] && board[2] != '.') {
+                if (board[2] == opponent) {
+                    defensiveMoves.add(5);
+                } else {
+                    goodMoves.add(5);
+                }
+            }
+        }
+
+        // lower left
+        if (board[6] == '.') {
+            // row
+            if (board[7] == board[8] && board[7] != '.') {
+                if (board[7] == opponent) {
+                    defensiveMoves.add(6);
+                } else {
+                    goodMoves.add(6);
+                }
+            }
+            // column
+            if (board[0] == board[3] && board[0] != '.') {
+                if (board[0] == opponent) {
+                    defensiveMoves.add(6);
+                } else {
+                    goodMoves.add(6);
+                }
+            }
+            // diagonal
+            if (board[4] == board[2] && board[4] != '.') {
+                if (board[4] == opponent) {
+                    defensiveMoves.add(6);
+                } else {
+                    goodMoves.add(6);
+                }
+            }
+        }
+
+        // lower center
+        if (board[7] == '.') {
+            // row
+            if (board[6] == board[8] && board[6] != '.') {
+                if (board[6] == opponent) {
+                    defensiveMoves.add(7);
+                } else {
+                    goodMoves.add(7);
+                }
+            }
+            // column
+            if (board[4] == board[1] && board[4] != '.') {
+                if (board[4] == opponent) {
+                    defensiveMoves.add(7);
+                } else {
+                    goodMoves.add(7);
+                }
+            }
+        }
+
+        // lower right
+        if (board[8] == '.') {
+            // row
+            if (board[7] == board[6] && board[7] != '.') {
+                if (board[7] == opponent) {
+                    defensiveMoves.add(8);
+                } else {
+                    goodMoves.add(8);
+                }
+            }
+            // column
+            if (board[2] == board[5] && board[2] != '.') {
+                if (board[2] == opponent) {
+                    defensiveMoves.add(8);
+                } else {
+                    goodMoves.add(8);
+                }
+            }
+            // diagonal
+            if (board[4] == board[0] && board[4] != '.') {
+                if (board[4] == opponent) {
+                    defensiveMoves.add(8);
+                } else {
+                    goodMoves.add(8);
+                }
+            }
+        }
+
+        if (goodMoves.size() > 0) {
+            return goodMoves.get(Rng.randInt(0, goodMoves.size() - 1));
+        } else if (defensiveMoves.size() > 0) {
+            return defensiveMoves.get(Rng.randInt(0, defensiveMoves.size() - 1));
+        } else {
+            return computerMove(board);
+        }
     }
 
     public static void printBoard(char[] board) {
