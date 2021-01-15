@@ -51,8 +51,8 @@ public class Application {
                     if (player1Human) {
                         board[playerMove(board) - 1] = 'x';
                     } else {
-                        if (moveCount == 0 || (moveCount == 1 && board[4] == '.')) {
-                            board[4] = 'x';
+                        if (moveCount == 0 || (moveCount == 1 && boardSize % 2 != 0 && board[(boardSize / 2) * boardSize + boardSize] == '.')) {
+                            board[(boardSize / 2) * boardSize + (boardSize / 2)] = 'x';
                         } else {
                             if (boardSize == 3) {
                                 board[smartComputerMove(board, 'o')] = 'x';
@@ -67,8 +67,8 @@ public class Application {
                     if (player2Human) {
                         board[playerMove(board) - 1] = 'o';
                     } else {
-                        if (moveCount == 0 || (moveCount == 1 && board[4] == '.')) {
-                            board[4] = 'o';
+                        if (moveCount == 0 || (moveCount == 1 && boardSize % 2 != 0 && board[(boardSize / 2) * boardSize + boardSize] == '.')) {
+                            board[(boardSize / 2) * boardSize + (boardSize / 2)] = 'o';
                         } else {
                             if (boardSize == 3) {
                                 board[smartComputerMove(board, 'x')] = 'o';
@@ -466,7 +466,7 @@ public class Application {
                 columnMatching = false;
             }
 
-            while (columnMatching && currentColumnIndex <= columnIndices.length) {
+            while (columnMatching && currentColumnIndex < columnIndices.length) {
                 if (board[columnIndices[currentColumnIndex]] != beginningColumnPiece) {
                     columnMatching = false;
                 }
