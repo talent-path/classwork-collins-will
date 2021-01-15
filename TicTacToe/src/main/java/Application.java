@@ -4,12 +4,11 @@ import java.util.List;
 public class Application {
 
     public static void main(String[] args) {
-        char[] board = {'.','.','.','.','.','.','.','.','.'};
+        char[] board;
         boolean player1Turn = true;
         boolean player1Human = false;
         boolean player2Human = false;
         boolean gameOver = false;
-        printBoard(board);
 
         // Ask for number of games
         int numGames = Console.readInt("Welcome! Select how many games you would like to play (1-10)", 1, 10);
@@ -37,6 +36,10 @@ public class Application {
             player2Human = false;
         }
 
+        // Ask for board size
+        int boardSize = Console.readInt("How big do you want the board? (3x3 - 7x7)", 3, 7);
+        board = clearBoard(boardSize);
+
         // Game loop
         for (int i = 0; i < numGames; i++) {
             int moveCount = 0;
@@ -51,7 +54,11 @@ public class Application {
                         if (moveCount == 0 || (moveCount == 1 && board[4] == '.')) {
                             board[4] = 'x';
                         } else {
-                            board[smartComputerMove(board, 'o')] = 'x';
+                            if (boardSize == 3) {
+                                board[smartComputerMove(board, 'o')] = 'x';
+                            } else {
+                                board[computerMove(board)] = 'x';
+                            }
                         }
                     }
                 } else {
@@ -63,12 +70,16 @@ public class Application {
                         if (moveCount == 0 || (moveCount == 1 && board[4] == '.')) {
                             board[4] = 'o';
                         } else {
-                            board[smartComputerMove(board, 'x')] = 'o';
+                            if (boardSize == 3) {
+                                board[smartComputerMove(board, 'x')] = 'o';
+                            } else {
+                                board[computerMove(board)] = 'o';
+                            }
                         }
                     }
                 }
                 moveCount++;
-                gameOver = (checkWinner(board) || moveCount == 9);
+                gameOver = (checkWinner(board) || moveCount == (boardSize * boardSize));
                     player1Turn = !player1Turn;
                 printBoard(board);
             }
@@ -87,7 +98,7 @@ public class Application {
             }
             printScore(player1Wins, player2Wins, draws);
             gameOver = false;
-            board = clearBoard();
+            board = clearBoard(boardSize);
         }
     }
 
@@ -96,7 +107,7 @@ public class Application {
         int playerMove = -1;
 
         while (!validMove) {
-            playerMove = Console.readInt("Please enter your move (1-9): ", 1, 9);
+            playerMove = Console.readInt("Please enter your move (1-" + board.length + "): ", 1, board.length);
             if (board[playerMove - 1] == '.') {
                 validMove = true;
             }
@@ -110,7 +121,7 @@ public class Application {
         int compMove = -1;
 
         while (!validMove) {
-            compMove = Rng.randInt(0,8);
+            compMove = Rng.randInt(0,board.length - 1);
             if (board[compMove] == '.') {
                 validMove = true;
             }
@@ -119,6 +130,7 @@ public class Application {
         return compMove;
     }
 
+    // only works for 3x3
     public static int smartComputerMove(char[] board, char opponent) {
         ArrayList<Integer> goodMoves = new ArrayList<Integer>();
         ArrayList<Integer> defensiveMoves = new ArrayList<Integer>();
@@ -369,37 +381,139 @@ public class Application {
 
         System.out.println();*/
 
-        for (int i = 0; i < 3; i++) {
-            System.out.println("-------------");
-            for (int j = 0; j < 3; j++) {
-                System.out.print("| " + board[3 * i + j] + " ");
+        // Get proper board width
+        String horizontalLine = "";
+        int width = (int) Math.sqrt(board.length);
+        for (int i = 0; i < width; i++) {
+            horizontalLine += "----";
+        }
+        horizontalLine += "-";
+
+        for (int i = 0; i < width; i++) {
+            System.out.println(horizontalLine);
+            for (int j = 0; j < width; j++) {
+                System.out.print("| " + board[width * i + j] + " ");
             }
             System.out.println("|");
         }
-        System.out.println("-------------");
+        System.out.println(horizontalLine);
     }
 
     public static boolean checkWinner(char[] board) {
+        int width = (int) Math.sqrt(board.length);
 
         // check rows
-        for (int i = 0; i < 9; i+=3) {
-            if (board[i] == board[i+1] && board[i] == board[i+2] && board[i] != '.') {
+        for (int i = 0; i < board.length; i+=width) {
+            // get indexes to check
+            int[] rowIndices = new int[width];
+            int rowCurrent = i;
+            for (int j = 0; j < width; j++) {
+                rowIndices[j] = rowCurrent;
+                rowCurrent++;
+            }
+
+            // check if all are equal
+            boolean rowMatching = true;
+            char beginningRowPiece = board[rowIndices[0]];
+            int currentRowIndex = 1;
+
+            if (beginningRowPiece == '.') {
+                rowMatching = false;
+            }
+
+            while (rowMatching && currentRowIndex < rowIndices.length) {
+                if (board[rowIndices[currentRowIndex]] != beginningRowPiece) {
+                    rowMatching = false;
+                }
+                currentRowIndex++;
+            }
+
+            if (rowMatching) {
                 return true;
             }
         }
 
         // check columns
-        for (int i = 0; i < 3; i++) {
-            if (board[i] == board[i+3] && board[i] == board[i+6] && board[i] != '.') {
+        for (int i = 0; i < width; i++) {
+            // get indexes to check
+            int[] columnIndices = new int[width];
+            int columnCurrent = i;
+            for (int j = 0; j < width; j++) {
+                columnIndices[j] = columnCurrent;
+                columnCurrent += width;
+            }
+
+            // check if all are equal
+            boolean columnMatching = true;
+            char beginningColumnPiece = board[columnIndices[0]];
+            int currentColumnIndex = 1;
+
+            if (beginningColumnPiece == '.') {
+                columnMatching = false;
+            }
+
+            while (columnMatching && currentColumnIndex <= columnIndices.length) {
+                if (board[columnIndices[currentColumnIndex]] != beginningColumnPiece) {
+                    columnMatching = false;
+                }
+                currentColumnIndex++;
+            }
+
+            if (columnMatching) {
                 return true;
             }
         }
-        // check diagonals
-        if (board[0] == board[4] && board[0] == board[8] && board[0] != '.') {
+        // check diagonal (upper left to lower right)
+        int[] diag1Indices = new int[width];
+        int diag1Current = 0;
+        for (int j = 0; j < width; j++) {
+            diag1Indices[j] = diag1Current;
+            diag1Current += (width + 1);
+        }
+
+        boolean diag1Matching = true;
+        char beginningDiag1Piece = board[diag1Indices[0]];
+        int currentDiag1Index = 1;
+
+        if (beginningDiag1Piece == '.') {
+            diag1Matching = false;
+        }
+
+        while (diag1Matching && currentDiag1Index < diag1Indices.length) {
+            if (board[diag1Indices[currentDiag1Index]] != beginningDiag1Piece) {
+                diag1Matching = false;
+            }
+            currentDiag1Index++;
+        }
+
+        if (diag1Matching) {
             return true;
         }
 
-        if (board[2] == board[4] && board[2] == board[6] && board[2] != '.') {
+        // check diagonal (upper right to lower left)
+        int[] diag2Indices = new int[width];
+        int diag2Current = width - 1;
+        for (int j = 0; j < width; j++) {
+            diag2Indices[j] = diag2Current;
+            diag2Current += (width - 1);
+        }
+
+        boolean diag2Matching = true;
+        char beginningdiag2Piece = board[diag2Indices[0]];
+        int currentdiag2Index = 1;
+
+        if (beginningdiag2Piece == '.') {
+            diag2Matching = false;
+        }
+
+        while (diag2Matching && currentdiag2Index < diag2Indices.length) {
+            if (board[diag2Indices[currentdiag2Index]] != beginningdiag2Piece) {
+                diag2Matching = false;
+            }
+            currentdiag2Index++;
+        }
+
+        if (diag2Matching) {
             return true;
         }
 
@@ -413,8 +527,13 @@ public class Application {
         System.out.println("Draws: " + draws);
     }
 
-    public static char[] clearBoard() {
-        char[] newBoard = {'.','.','.','.','.','.','.','.','.'};
+    public static char[] clearBoard(int size) {
+        char[] newBoard = new char[size * size];
+
+        for (int i = 0; i < newBoard.length; i++) {
+            newBoard[i] = '.';
+        }
+
         return newBoard;
     }
 }
