@@ -403,6 +403,18 @@ public class Application {
         int width = (int) Math.sqrt(board.length);
 
         // check rows
+        boolean winningRows = winningRows(board, width);
+
+        // check columns
+        boolean winningColumns = winningColumns(board, width);
+
+        // check diagonals
+        boolean winningDiagonals = winningDiagonals(board, width);
+
+        return winningRows || winningColumns || winningDiagonals;
+    }
+
+    public static boolean winningRows(char[] board, int width) {
         for (int i = 0; i < board.length; i+=width) {
             // get indexes to check
             int[] rowIndices = new int[width];
@@ -432,8 +444,10 @@ public class Application {
                 return true;
             }
         }
+        return false;
+    }
 
-        // check columns
+    public static boolean winningColumns(char[] board, int width) {
         for (int i = 0; i < width; i++) {
             // get indexes to check
             int[] columnIndices = new int[width];
@@ -463,7 +477,11 @@ public class Application {
                 return true;
             }
         }
-        // check diagonal (upper left to lower right)
+        return false;
+    }
+
+    public static boolean winningDiagonals(char[] board, int width) {
+        // upper left to lower right
         int[] diag1Indices = new int[width];
         int diag1Current = 0;
         for (int j = 0; j < width; j++) {
@@ -490,7 +508,7 @@ public class Application {
             return true;
         }
 
-        // check diagonal (upper right to lower left)
+        // upper right to lower left
         int[] diag2Indices = new int[width];
         int diag2Current = width - 1;
         for (int j = 0; j < width; j++) {
@@ -516,7 +534,6 @@ public class Application {
         if (diag2Matching) {
             return true;
         }
-
         return false;
     }
 
