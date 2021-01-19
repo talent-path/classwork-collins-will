@@ -8,7 +8,7 @@ public class Application {
         System.out.println(middleOfThree(3,1,2));
         System.out.println(middleOfThree(3,2,1));
 
-        fizzBuzz();*/
+        fizzBuzz();*//*
 
         System.out.println(canBalance(new int[]{1,2,3,4,4,3,2,1}));
         System.out.println(canBalance(new int[]{2,5,8,5}));
@@ -18,7 +18,19 @@ public class Application {
 
         System.out.println(noTriples(new int[]{5,5,5}));
         System.out.println(noTriples(new int[]{1,2,2,3}));
-        System.out.println(noTriples(new int[]{5,2,5,4,4,3}));
+        System.out.println(noTriples(new int[]{5,2,5,4,4,3}));*/
+
+        int[] sum = addBigNum(new int[]{7,8,9}, new int[]{5,5,5});
+        for (int i = 0; i < sum.length; i++) {
+            System.out.println(sum[i]);
+        }
+        // {2,4,5,1}
+
+        int[] prod = multiplyBigNum(new int[]{7,8,9}, new int[]{5,5,5});
+        for (int i = 0; i < prod.length; i++) {
+            System.out.println(prod[i]);
+        }
+        // {5,8,7,7,4,5}
     }
 
     public static int middleOfThree(int a, int b, int c) {
@@ -100,5 +112,60 @@ public class Application {
             }
         }
         return true;
+    }
+
+    // Warmup 1/19/21
+
+    // give two arrays of size 100 each representing a 100 digit number
+    //      (each element of the input array will have a value between 0 and 9)
+    // return the 101-element "sum" of these two numbers
+    //      (in the output array, the digits should also be between 0 and 9)
+    // The digit at index 0 is the one's place, index 1 is the 10's, etc.
+    public static int[] addBigNum(int[] left, int[] right) {
+        int[] output = new int[left.length + 1];
+        int carry = 0;
+
+        for (int i = 0; i < left.length; i++) {
+            int digitSum = left[i] + right[i] + carry;
+            carry = digitSum / 10;
+            output[i] = digitSum % 10;
+        }
+
+        output[left.length] = carry;
+        return output;
+    }
+
+    public static int[] multiplyBigNum(int[] left, int[] right) {
+        // determine number of digits (size of output array)
+        int[] output = new int[left.length + right.length];
+        int count = 0;
+
+        for (int i = 0; i < left.length; i++) {
+            int[] tempArr = new int[left.length + right.length];
+            int carry = 0;
+
+            for (int j = 0; j < right.length; j++) {
+                int digitProd = left[i] * right[j] + carry;
+                carry = digitProd / 10;
+                tempArr[j + count] = digitProd % 10;
+            }
+            tempArr[right.length + count] = carry;
+            int[] tempSum = addBigNum(output, tempArr);
+            // take only significant digits
+            boolean sigFig = false;
+            for (int j = tempSum.length - 1; j >= 0; j--) {
+                if (tempSum[j] != 0 || (tempSum[j] == 0 && sigFig)) {
+                    sigFig = true;
+                    output[j] = tempSum[j];
+                }
+            }
+            count++;
+        }
+
+        return output;
+    }
+
+    public static int[] addSmallNum(int[] left, int[] right) {
+        throw new UnsupportedOperationException();
     }
 }
