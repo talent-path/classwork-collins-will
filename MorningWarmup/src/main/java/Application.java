@@ -37,6 +37,7 @@ public class Application {
         System.out.println(maxMirror(new int[] {1,2,3,8,9,3,2,1})); // 3
         System.out.println(maxMirror(new int[] {1,2,1,4})); // 3
         System.out.println(maxMirror(new int[] {7,1,2,9,7,2,1})); // 2
+        System.out.println(maxMirror(new int[] {1,2,3,2,1}));
     }
 
     public static int middleOfThree(int a, int b, int c) {
