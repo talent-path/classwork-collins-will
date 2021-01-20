@@ -84,7 +84,7 @@ public class Application {
                 printBoard(board);
             }
 
-            if (moveCount != 9) {
+            if (moveCount != board.length) {
                 if (!player1Turn) {
                     System.out.println("X wins!");
                     player1Wins++;

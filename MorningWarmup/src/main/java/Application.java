@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Application {
 
     public static void main(String[] args) {
@@ -8,7 +10,7 @@ public class Application {
         System.out.println(middleOfThree(3,1,2));
         System.out.println(middleOfThree(3,2,1));
 
-        fizzBuzz();*//*
+        fizzBuzz();
 
         System.out.println(canBalance(new int[]{1,2,3,4,4,3,2,1}));
         System.out.println(canBalance(new int[]{2,5,8,5}));
@@ -18,7 +20,7 @@ public class Application {
 
         System.out.println(noTriples(new int[]{5,5,5}));
         System.out.println(noTriples(new int[]{1,2,2,3}));
-        System.out.println(noTriples(new int[]{5,2,5,4,4,3}));*/
+        System.out.println(noTriples(new int[]{5,2,5,4,4,3}));*//*
 
         int[] sum = addBigNum(new int[]{7,8,9}, new int[]{5,5,5});
         for (int i = 0; i < sum.length; i++) {
@@ -30,7 +32,11 @@ public class Application {
         for (int i = 0; i < prod.length; i++) {
             System.out.println(prod[i]);
         }
-        // {5,8,7,7,4,5}
+        // {5,8,7,7,4,5}*/
+
+        System.out.println(maxMirror(new int[] {1,2,3,8,9,3,2,1})); // 3
+        System.out.println(maxMirror(new int[] {1,2,1,4})); // 3
+        System.out.println(maxMirror(new int[] {7,1,2,9,7,2,1})); // 2
     }
 
     public static int middleOfThree(int a, int b, int c) {
@@ -167,5 +173,36 @@ public class Application {
 
     public static int[] addSmallNum(int[] left, int[] right) {
         throw new UnsupportedOperationException();
+    }
+
+    // Warmup 1/20/21
+
+    public static int maxMirror(int[] arr) {
+        if (arr.length == 0) {
+            return 0;
+        }
+        int output = 1;
+
+        // length of subarray
+        for (int i = 2; i <= arr.length; i++) {
+            // starting index of first subarray
+            for (int j = 0; j + i <= arr.length && i > output; j++) {
+                // starting index of second subarray
+                for (int k = i % 2 == 0 ? j+1 : j; k + i <= arr.length && i > output; k++) {
+                    boolean matching = true;
+
+                    for (int l = 0; l < i; l++) {
+                        if (arr[j+l] != arr[k+i-1-l]) {
+                            matching = false;
+                        }
+                    }
+
+                    if (matching && i > output) {
+                        output = i;
+                    }
+                }
+            }
+        }
+        return output;
     }
 }
