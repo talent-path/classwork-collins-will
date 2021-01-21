@@ -1,4 +1,5 @@
-import java.util.Arrays;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Application {
 
@@ -20,7 +21,7 @@ public class Application {
 
         System.out.println(noTriples(new int[]{5,5,5}));
         System.out.println(noTriples(new int[]{1,2,2,3}));
-        System.out.println(noTriples(new int[]{5,2,5,4,4,3}));*//*
+        System.out.println(noTriples(new int[]{5,2,5,4,4,3}));
 
         int[] sum = addBigNum(new int[]{7,8,9}, new int[]{5,5,5});
         for (int i = 0; i < sum.length; i++) {
@@ -32,12 +33,19 @@ public class Application {
         for (int i = 0; i < prod.length; i++) {
             System.out.println(prod[i]);
         }
-        // {5,8,7,7,4,5}*/
+        // {5,8,7,7,4,5}
 
         System.out.println(maxMirror(new int[] {1,2,3,8,9,3,2,1})); // 3
         System.out.println(maxMirror(new int[] {1,2,1,4})); // 3
         System.out.println(maxMirror(new int[] {7,1,2,9,7,2,1})); // 2
-        System.out.println(maxMirror(new int[] {1,2,3,2,1}));
+        System.out.println(maxMirror(new int[] {1,2,3,2,1}));*/
+
+        String[] allNames = {"Bob","Bobby","Robert","Roberto","Alice","Alicia"};
+        Map<String, List<String>> groupedNames = groupByFirstTwoLetters(allNames);
+        System.out.println(groupedNames.toString());
+
+        groupedNames = groupByFirstNLetters(allNames, 4);
+        System.out.println(groupedNames.toString());
     }
 
     public static int middleOfThree(int a, int b, int c) {
@@ -205,5 +213,25 @@ public class Application {
             }
         }
         return output;
+    }
+
+    // Warmup 1/21/21
+
+    public static Map<String, List<String>> groupByFirstTwoLetters(String[] toGroup) {
+        return groupByFirstNLetters(toGroup, 2);
+    }
+
+    public static Map<String, List<String>> groupByFirstNLetters(String[] toGroup, int numLetters) {
+        Map<String, List<String>> outMap = new HashMap<>();
+
+        for (String str : toGroup) {
+            String firstN = numLetters > str.length() ? str.toUpperCase() : str.substring(0, numLetters).toUpperCase();
+            if (!outMap.keySet().contains(firstN)) {
+                outMap.put(firstN, new ArrayList<>());
+            }
+            outMap.get(firstN).add(str);
+        }
+
+        return outMap;
     }
 }
