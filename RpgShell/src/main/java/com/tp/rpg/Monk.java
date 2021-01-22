@@ -4,9 +4,9 @@ import com.tp.rpg.armors.Shirt;
 import com.tp.rpg.weapons.Fist;
 
 // always parries
-public class Gambler extends NonPlayerCharacter {
+public class Monk extends NonPlayerCharacter {
 
-    public Gambler() {
+    public Monk() {
         super(30, new Shirt(), new Fist(), "Gambler", new String[] {"Parry"});
     }
 }

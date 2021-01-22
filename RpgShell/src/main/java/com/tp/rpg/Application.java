@@ -2,6 +2,8 @@ package com.tp.rpg;
 import com.tp.rpg.armors.*;
 import com.tp.rpg.weapons.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
@@ -9,18 +11,51 @@ public class Application {
 
         PlayerCharacter pc = setUpPlayer();
         int battlesWon = 0;
+        int weaponUpgrades = 0;
+        int armorUpgrades = 0;
+        int healthUpgrades = 0;
+
+        Weapon[] weaponList = {new Dagger(), new Battleaxe()};
+        Armor[] armorList = {new LeatherArmor(), new PlateArmor()};
 
         while( pc.isAlive() ){
             // list of all enemy types
             // as the player wins more battles, more enemies will be unlocked
-            NonPlayerCharacter[] bestiary = {new Pacifist(), new Goblin(), new Gambler(), new Warrior()};
+            NonPlayerCharacter[] bestiary = {new Pacifist(), new Goblin(), new Monk(), new Warrior()};
             NonPlayerCharacter enemy = setUpEnemy(bestiary, battlesWon);
 
             if(battle( pc, enemy )) {
                 battlesWon++;
+
+                // Level up
+                boolean choiceMade = false;
+
+                while (!choiceMade) {
+                    int choice = Console.readInt("Choose to upgrade weapon (1), armor (2), or health (3): ", 1, 3);
+                    switch (choice) {
+                        case 1:
+                            if (weaponUpgrades < weaponList.length) {
+                                choiceMade = true;
+                                pc.weapon = weaponList[weaponUpgrades];
+                                weaponUpgrades++;
+                            } else {
+                                System.out.println("Max weapon tier already reached");
+                            }
+                        case 2:
+                            if (armorUpgrades < armorList.length) {
+                                choiceMade = true;
+                                pc.armor = armorList[armorUpgrades];
+                                armorUpgrades++;
+                            } else {
+                                System.out.println("Max armor tier already reached");
+                            }
+                        case 3:
+                            choiceMade = true;
+                            healthUpgrades++;
+                            pc.hp = 20 + 10 * healthUpgrades;
+                    }
+                }
             }
-
-
         }
 
         gameOverScreen(battlesWon);
@@ -38,8 +73,8 @@ public class Application {
 
     //create some NPC object (with armor & weapons?)
     private static NonPlayerCharacter setUpEnemy(NonPlayerCharacter[] enemyList, int wins) {
-        int enemyChoice = Rng.randInt(0, wins);
-        return enemyList[enemyChoice % enemyList.length];
+        int enemyChoice = wins >= enemyList.length ? Rng.randInt(0, enemyList.length - 1) : wins;
+        return enemyList[enemyChoice];
     }
 
     //a and b battle until one is dead

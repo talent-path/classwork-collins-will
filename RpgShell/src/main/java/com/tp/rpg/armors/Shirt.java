@@ -4,10 +4,7 @@ import com.tp.rpg.Rng;
 
 public class Shirt implements Armor  {
     // When choosing defend, 1 more damage will be reduced
-    int bonusWhileDefending;
-    public Shirt() {
-        this.bonusWhileDefending = Armor.bonusWhileDefending + 1;
-    }
+    int bonusWhileDefending = 1;
 
     @Override
     // reduces 0-1 damage
