@@ -1,6 +1,9 @@
 //we're defining a "class" to represent different playing cards
 //each "instance" of this class will be an object of the PlayingCard type
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Card {
 
     //field variables
@@ -70,7 +73,17 @@ public class Card {
         this.cardValue = cardValue;
     }
 
+    public static List<Card> generateDeck() {
+        List<Card> deck = new ArrayList<>();
 
+        for (int i = 0; i < Card.suits.length; i++) {
+            for (int j = 0; j < Card.values.length; j++) {
+                deck.add(new Card(Card.values[j], Card.suits[i]));
+            }
+        }
+
+        return deck;
+    }
 
 
 }

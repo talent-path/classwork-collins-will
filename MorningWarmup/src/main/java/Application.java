@@ -38,14 +38,16 @@ public class Application {
         System.out.println(maxMirror(new int[] {1,2,3,8,9,3,2,1})); // 3
         System.out.println(maxMirror(new int[] {1,2,1,4})); // 3
         System.out.println(maxMirror(new int[] {7,1,2,9,7,2,1})); // 2
-        System.out.println(maxMirror(new int[] {1,2,3,2,1}));*/
+        System.out.println(maxMirror(new int[] {1,2,3,2,1}));
 
         String[] allNames = {"Bob","Bobby","Robert","Roberto","Alice","Alicia"};
         Map<String, List<String>> groupedNames = groupByFirstTwoLetters(allNames);
         System.out.println(groupedNames.toString());
 
         groupedNames = groupByFirstNLetters(allNames, 4);
-        System.out.println(groupedNames.toString());
+        System.out.println(groupedNames.toString());*/
+
+        findLongestCollatzInRange(1000000);
     }
 
     public static int middleOfThree(int a, int b, int c) {
@@ -233,5 +235,34 @@ public class Application {
         }
 
         return outMap;
+    }
+
+    // Warmup 1/22/21
+    // Project Euler Problem 14
+
+    public static long collatzChainLength(long start) {
+        // base case
+        if (start == 1) {
+            return 1;
+        } else if (start % 2 == 0) {
+            return 1 + collatzChainLength(start / 2);
+        } else {
+            return 1 + collatzChainLength(3 * start + 1);
+        }
+    }
+
+    public static void findLongestCollatzInRange(long exclusiveMax) {
+        long longestLength = 0;
+        long longestStart = 0;
+        for (long i = 1; i < exclusiveMax; i++) {
+            long length = collatzChainLength(i);
+            if (length > longestLength) {
+                longestLength = length;
+                longestStart = i;
+            }
+        }
+
+        System.out.println("Longest Collatz chain under " + exclusiveMax +  " starts at "
+                + longestStart + " with a length of " + longestLength);
     }
 }

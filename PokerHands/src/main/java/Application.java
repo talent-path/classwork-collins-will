@@ -1,9 +1,30 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Application {
     public static void main(String[] args) {
+
+        List<Card> deck = Card.generateDeck();
+
+        Card[] communityCards = new Card[5];
+        Card[] player1HoleCards = new Card[2];
+        Card[] player2HoleCards = new Card[2];
+
+        List<Card> totalPlayer1Cards;
+        List<Card> totalPlayer2Cards;
+
+        for (int i = 0; i < 5; i++) {
+            communityCards[i] = deck.remove(Rng.nextInt(0,deck.size() - 1));
+        }
+
+        for (int i = 0; i < 2; i++) {
+            player1HoleCards[i] = deck.remove(Rng.nextInt(0,deck.size() - 1));
+        }
+
+        for (int i = 0; i < 2; i++) {
+            player2HoleCards[i] = deck.remove(Rng.nextInt(0,deck.size() - 1));
+        }
+
+
 
         //define a variable of the TYPE Suit
         //Suit cardSuit = Suit.DIAMONDS;
@@ -38,6 +59,7 @@ public class Application {
         //                   straight flush vs 4 of a kind
         //                   2D  3D 4D 5D  6D  7S  7D  7C  7H  8S
         //int[] bothHands = { 1, 5, 9, 13, 17, 20, 21, 22, 23, 24  };
+
         int [] bothHands = {28, 44, 40, 36, 32, 29,45,41,37,33};
         Card[] hand1Cards = new Card[5];
         Card[] hand2Cards = new Card[5];
