@@ -14,7 +14,7 @@ public class Application {
 
         System.out.println(largestPalindromeProduct());
 
-        System.out.println(smallestMultiple(10));
+        System.out.println(smallestMultiple(20));
     }
 
     // Problem 1
@@ -107,6 +107,73 @@ public class Application {
                         out = prod;
                     }
                 }
+            }
+        }
+
+        return out;
+    }
+
+    // Problem 5
+
+    public static List<Integer> generatePrimes(int max) {
+        List<Integer> out = new ArrayList<>();
+        out.add(2);
+
+        for (int i = 3; i <= max; i+=2) {
+            int j = 0;
+            boolean isPrime = true;
+
+            while (out.get(j) * out.get(j) <= i) {
+                if (i % out.get(j) == 0) {
+                    isPrime = false;
+                }
+                j++;
+            }
+
+            if (isPrime) {
+                out.add(i);
+            }
+        }
+
+        return out;
+    }
+
+    public static int smallestMultiple(int max) {
+        int out = 1;
+        List<Integer> primes = generatePrimes(max);
+        Map<Integer, List<Integer>> factorCounts = new HashMap<>();
+
+        for (int i = 2; i <= max; i++) {
+            int num = i;
+            List<Integer> count = new ArrayList<>();
+
+            while (num > 1) {
+                for (int prime : primes) {
+                    if (num % prime == 0) {
+                        count.add(prime);
+                        num /= prime;
+                    }
+                }
+            }
+
+            factorCounts.put(i, count);
+        }
+
+        for (int prime : primes) {
+            boolean keepGoing = true;
+            while (keepGoing) {
+                boolean primeUsed = false;
+
+                for (int key : factorCounts.keySet()) {
+                    if (factorCounts.get(key).contains(prime)) {
+                        factorCounts.get(key).remove((Object) prime);
+                        primeUsed = true;
+                    }
+                }
+                if (primeUsed) {
+                    out *= prime;
+                }
+                keepGoing = primeUsed;
             }
         }
 
