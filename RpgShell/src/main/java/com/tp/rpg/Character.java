@@ -56,7 +56,7 @@ public abstract class Character implements Chooser {
     }
 
     public void takeDamage( int damage ){
-        int actualDamage = damage > 0 ? damage : 0;
+        int actualDamage = damage < 0 ? 0 : damage;
         this.hp -= damage;
     }
 

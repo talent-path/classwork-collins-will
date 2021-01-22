@@ -41,6 +41,7 @@ public class Application {
                             } else {
                                 System.out.println("Max weapon tier already reached");
                             }
+                            break;
                         case 2:
                             if (armorUpgrades < armorList.length) {
                                 choiceMade = true;
@@ -49,10 +50,12 @@ public class Application {
                             } else {
                                 System.out.println("Max armor tier already reached");
                             }
+                            break;
                         case 3:
                             choiceMade = true;
                             healthUpgrades++;
                             pc.hp = 20 + 10 * healthUpgrades;
+                            break;
                     }
                 }
             }

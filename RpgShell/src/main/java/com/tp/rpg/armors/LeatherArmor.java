@@ -4,7 +4,7 @@ import com.tp.rpg.Rng;
 
 public class LeatherArmor implements Armor {
 
-    int bonusWhileDefending = 3;
+    int bonusWhileDefending = 2;
 
     @Override
     public int reduceDamage(int startingDamage) {
