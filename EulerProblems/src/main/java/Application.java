@@ -15,6 +15,8 @@ public class Application {
         System.out.println(largestPalindromeProduct());
 
         System.out.println(smallestMultiple(20));
+
+        System.out.println(sumSquareDiff(100));
     }
 
     // Problem 1
@@ -178,5 +180,25 @@ public class Application {
         }
 
         return out;
+    }
+
+    // Problem 6
+
+    public static int sumSquareDiff(int max) {
+        int sumOfSquares = 0;
+
+        for (int i = 1; i <= max; i++) {
+            sumOfSquares += (i * i);
+        }
+
+        int squareOfSums = 0;
+
+        for (int i = 1; i <= max; i++) {
+            squareOfSums += i;
+        }
+
+        squareOfSums *= squareOfSums;
+
+        return squareOfSums - sumOfSquares;
     }
 }
