@@ -19,12 +19,15 @@ public abstract class Character implements Chooser {
     //TODO: add fields for armor(s) and weapon(s)
 
     int hp;
+    int maxHP;
+    int potions = 1;
     Armor armor;
     Weapon weapon;
     String name;
 
     public Character(int hp, Armor armor, Weapon weapon, String name) {
         this.hp = hp;
+        this.maxHP = hp;
         this.armor = armor;
         this.weapon = weapon;
         this.name = name;
@@ -62,6 +65,21 @@ public abstract class Character implements Chooser {
 
     public boolean isAlive(){
         return this.hp > 0;
+    }
+
+    public void usePotion() {
+        if (this.potions > 0) {
+            int oldHp = this.hp;
+            potions--;
+            // potions heal 2d6 damage
+            this.hp += Rng.randInt(1,6) + Rng.randInt(1,6);
+            if (this.hp > this.maxHP) {
+                this.hp = this.maxHP;
+            }
+            System.out.println("You healed " + (this.hp - oldHp) + " HP");
+        } else {
+            System.out.println("Out of potions");
+        }
     }
 
 }

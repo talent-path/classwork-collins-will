@@ -17,6 +17,8 @@ public class Application {
         System.out.println(smallestMultiple(20));
 
         System.out.println(sumSquareDiff(100));
+
+        System.out.println(nthPrime(10001));
     }
 
     // Problem 1
@@ -200,5 +202,46 @@ public class Application {
         squareOfSums *= squareOfSums;
 
         return squareOfSums - sumOfSquares;
+    }
+
+    // Problem 7
+
+    public static boolean isPrime(int num) {
+        if (num <= 1) {
+            return false;
+        }
+        if (num <= 3) {
+            return true;
+        }
+
+        if (num % 2 == 0 || num % 3 == 0) {
+            return false;
+        }
+
+        for (int i = 5; i * i < num; i += 6) {
+            if (num % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static int nthPrime(int n) {
+        if (n == 1) {
+            return 2;
+        }
+        int primeCount = 1;
+        int currentPrime = 2;
+
+        for (int i = 3; i < Integer.MAX_VALUE; i++) {
+            if (isPrime(i)) {
+                primeCount++;
+                currentPrime = i;
+            }
+            if (primeCount == n) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

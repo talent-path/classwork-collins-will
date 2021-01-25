@@ -6,6 +6,6 @@ import com.tp.rpg.weapons.Dagger;
 public class Goblin extends NonPlayerCharacter {
 
     public Goblin() {
-        super(20, new Shirt(), new Dagger(),"Goblin", new String[] {"Attack"});
+        super(15, new Shirt(), new Dagger(),"Goblin", new String[] {"Attack"});
     }
 }

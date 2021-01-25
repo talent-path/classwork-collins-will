@@ -93,6 +93,7 @@ public class Application {
 
             System.out.println("Player choice: " + aChoice);
             System.out.println("Enemy choice: " + bChoice);
+            System.out.println();
 
             int oldAHP = a.hp;
             int oldBHP = b.hp;
@@ -121,11 +122,17 @@ public class Application {
                     b.attack(a, 0);
                 }
             }
+
+            if (aChoice == "Potion") {
+                a.usePotion();
+            }
+
             if (!aChoice.equals("Attack") && !bChoice.equals("Attack")) {
                 System.out.println("Both fighters are circling, looking for an opening...");
             }
-
-            System.out.println(a.name + " takes " + (oldAHP - a.hp) + " damage");
+            if (oldAHP - a.hp >= 0) {
+                System.out.println(a.name + " takes " + (oldAHP - a.hp) + " damage");
+            }
             System.out.println(b.name + " takes " + (oldBHP - b.hp) + " damage");
 
             //TODO: display HP status?
