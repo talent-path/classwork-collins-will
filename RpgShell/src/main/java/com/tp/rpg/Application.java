@@ -8,15 +8,11 @@ import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args) {
-
-        PlayerCharacter pc = setUpPlayer();
-        int battlesWon = 0;
-        int weaponUpgrades = 0;
-        int armorUpgrades = 0;
-        int healthUpgrades = 0;
-
         Weapon[] weaponList = {new Dagger(), new Battleaxe()};
         Armor[] armorList = {new LeatherArmor(), new PlateArmor()};
+
+        PlayerCharacter pc = setUpPlayer(weaponList, armorList);
+        int battlesWon = 0;
 
         while( pc.isAlive() ){
             // list of all enemy types
@@ -28,36 +24,7 @@ public class Application {
                 battlesWon++;
 
                 // Level up
-                boolean choiceMade = false;
-
-                while (!choiceMade) {
-                    int choice = Console.readInt("Choose to upgrade weapon (1), armor (2), or health (3): ", 1, 3);
-                    switch (choice) {
-                        case 1:
-                            if (weaponUpgrades < weaponList.length) {
-                                choiceMade = true;
-                                pc.weapon = weaponList[weaponUpgrades];
-                                weaponUpgrades++;
-                            } else {
-                                System.out.println("Max weapon tier already reached");
-                            }
-                            break;
-                        case 2:
-                            if (armorUpgrades < armorList.length) {
-                                choiceMade = true;
-                                pc.armor = armorList[armorUpgrades];
-                                armorUpgrades++;
-                            } else {
-                                System.out.println("Max armor tier already reached");
-                            }
-                            break;
-                        case 3:
-                            choiceMade = true;
-                            healthUpgrades++;
-                            pc.hp = 20 + 10 * healthUpgrades;
-                            break;
-                    }
-                }
+                pc.levelUp(weaponList, armorList);
             }
         }
 
@@ -66,12 +33,17 @@ public class Application {
     }
 
     //walk the user through setting up their character
-    private static PlayerCharacter setUpPlayer() {
+    private static PlayerCharacter setUpPlayer(Weapon[] weaponList, Armor[] armorList) {
         System.out.println("Welcome to the arena!");
         Scanner scan = new Scanner(System.in);
         System.out.print("Please enter your name: ");
         String playerName = scan.nextLine();
-        return new PlayerCharacter(20, new Shirt(), new Fist(), playerName);
+
+        PlayerCharacter player = new PlayerCharacter(20, new Shirt(), new Fist(), playerName);
+
+        player.levelUp(weaponList, armorList);
+
+        return player;
     }
 
     //create some NPC object (with armor & weapons?)

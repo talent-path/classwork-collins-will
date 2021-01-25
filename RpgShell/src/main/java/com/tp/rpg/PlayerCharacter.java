@@ -6,6 +6,9 @@ import com.tp.rpg.weapons.*;
 public class PlayerCharacter extends Character {
 
     int potions = 1;
+    int weaponUpgrades = 0;
+    int armorUpgrades = 0;
+    int healthUpgrades = 0;
 
     public PlayerCharacter(int hp, Armor armor, Weapon weapon, String name) {
         super(hp, armor, weapon, name);
@@ -32,6 +35,40 @@ public class PlayerCharacter extends Character {
                 return "Potion";
             default:
                 return "ERROR";
+        }
+    }
+
+    public void levelUp(Weapon[] weaponList, Armor[] armorList) {
+        boolean choiceMade = false;
+
+        while (!choiceMade) {
+            int choice = Console.readInt("Choose to upgrade weapon (1), armor (2), or health (3): ", 1, 3);
+            switch (choice) {
+                case 1:
+                    if (this.weaponUpgrades < weaponList.length) {
+                        choiceMade = true;
+                        this.weapon = weaponList[this.weaponUpgrades];
+                        this.weaponUpgrades++;
+                    } else {
+                        System.out.println("Max weapon tier already reached");
+                    }
+                    break;
+                case 2:
+                    if (this.armorUpgrades < armorList.length) {
+                        choiceMade = true;
+                        this.armor = armorList[this.armorUpgrades];
+                        this.armorUpgrades++;
+                    } else {
+                        System.out.println("Max armor tier already reached");
+                    }
+                    break;
+                case 3:
+                    choiceMade = true;
+                    this.healthUpgrades++;
+                    this.maxHP = 20 + 10 * this.healthUpgrades;
+                    this.hp = this.maxHP;
+                    break;
+            }
         }
     }
 }
