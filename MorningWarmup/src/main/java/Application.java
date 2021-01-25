@@ -47,7 +47,11 @@ public class Application {
         groupedNames = groupByFirstNLetters(allNames, 4);
         System.out.println(groupedNames.toString());*/
 
-        findLongestCollatzInRange(1000000);
+        // findLongestCollatzInRange(1000000);
+
+        System.out.println(digitReverse(123));
+        System.out.println(digitReverse(2001));
+        System.out.println(digitReverse(2000));
     }
 
     public static int middleOfThree(int a, int b, int c) {
@@ -264,5 +268,35 @@ public class Application {
 
         System.out.println("Longest Collatz chain under " + exclusiveMax +  " starts at "
                 + longestStart + " with a length of " + longestLength);
+    }
+
+    // Warmup 1/25/21
+
+    // 123   ->  321
+    // 2001  ->  1002
+    // 2000  ->  2
+    public static int digitReverse(int toFlip) {
+        int flip = toFlip;
+        int out = 0;
+
+        // check number of digits
+        int numDigits = 1;
+        boolean more = true;
+
+        while (more) {
+            if (Math.floor(toFlip / Math.pow(10, numDigits)) >= 1) {
+                numDigits++;
+            } else {
+                more = false;
+            }
+        }
+
+        // use modulo math to get digits out
+        for (int i = 0; i < numDigits; i++) {
+            int currentDigit = (int) Math.floor(flip / Math.pow(10, numDigits - 1 - i));
+            out += currentDigit * Math.pow(10, i);
+            flip -= currentDigit * Math.pow(10, numDigits - 1 - i);
+        }
+        return out;
     }
 }
