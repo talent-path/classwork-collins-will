@@ -7,6 +7,6 @@ import com.tp.rpg.weapons.Fist;
 public class Monk extends NonPlayerCharacter {
 
     public Monk() {
-        super(20, new Shirt(), new Fist(), "Gambler", new String[] {"Parry"});
+        super(20, new Shirt(), new Fist(), "Monk", new String[] {"Parry"});
     }
 }
