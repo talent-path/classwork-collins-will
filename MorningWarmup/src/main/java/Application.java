@@ -45,13 +45,17 @@ public class Application {
         System.out.println(groupedNames.toString());
 
         groupedNames = groupByFirstNLetters(allNames, 4);
-        System.out.println(groupedNames.toString());*/
+        System.out.println(groupedNames.toString());
 
-        // findLongestCollatzInRange(1000000);
+        findLongestCollatzInRange(1000000);
 
         System.out.println(digitReverse(123));
         System.out.println(digitReverse(2001));
-        System.out.println(digitReverse(2000));
+        System.out.println(digitReverse(2000));*/
+
+        System.out.println(isPerfect(6));
+        System.out.println(isPerfect(28));
+        System.out.println(isPerfect(8));
     }
 
     public static int middleOfThree(int a, int b, int c) {
@@ -298,5 +302,28 @@ public class Application {
             flip -= currentDigit * Math.pow(10, numDigits - 1 - i);
         }
         return out;
+    }
+
+    // Warmup 1/26/21
+
+    // a perfect number is one where the sum of ALL factors
+    // adds up to 2x the number
+    // 6: 1 + 2 + 3 + 6 = 12
+    // 28: 1 + 2 + 4 + 7 + 14 + 28 = 56
+    public static boolean isPerfect(int num) {
+        int factorSum = 0;
+        factorSum += 1 + num;
+
+        for (int i = 2; i * i < num; i++) {
+            if (num % i == 0) {
+                factorSum += i;
+
+                if (num / i != i) {
+                    factorSum += (num / i);
+                }
+            }
+        }
+
+        return factorSum / num == 2;
     }
 }
