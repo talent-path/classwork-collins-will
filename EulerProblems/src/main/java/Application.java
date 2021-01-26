@@ -206,23 +206,14 @@ public class Application {
 
     // Problem 7
 
-    public static boolean isPrime(int num) {
-        if (num <= 1) {
-            return false;
-        }
-        if (num <= 3) {
-            return true;
-        }
+    public static boolean isPrime(int n) {
 
-        if (num % 2 == 0 || num % 3 == 0) {
-            return false;
-        }
-
-        for (int i = 5; i * i < num; i += 6) {
-            if (num % i == 0) {
+        for (int i = 2; i * i <= n; i++) {
+            if (n % i == 0) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -230,18 +221,17 @@ public class Application {
         if (n == 1) {
             return 2;
         }
-        int primeCount = 1;
-        int currentPrime = 2;
 
-        for (int i = 3; i < Integer.MAX_VALUE; i++) {
-            if (isPrime(i)) {
-                primeCount++;
-                currentPrime = i;
-            }
-            if (primeCount == n) {
-                return i;
+        int curr = 3;
+        int count = 2;
+
+        while (count < n) {
+            curr += 2;
+            if (isPrime(curr)) {
+                count++;
             }
         }
-        return -1;
+
+        return curr;
     }
 }
