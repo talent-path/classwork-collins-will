@@ -51,11 +51,14 @@ public class Application {
 
         System.out.println(digitReverse(123));
         System.out.println(digitReverse(2001));
-        System.out.println(digitReverse(2000));*/
+        System.out.println(digitReverse(2000));
 
         System.out.println(isPerfect(6));
         System.out.println(isPerfect(28));
-        System.out.println(isPerfect(8));
+        System.out.println(isPerfect(8));*/
+
+        char[][] board = {{'5','3','.','.','7','.','.','.','.'},{'6','.','.','1','9','5','.','.','.'},{'.','9','8','.','.','.','.','6','.'},{'8','.','.','.','6','.','.','.','3'},{'4','.','.','8','.','3','.','.','1'},{'7','.','.','.','2','.','.','.','6'},{'.','6','.','.','.','.','2','8','.'},{'.','.','.','4','1','9','.','.','5'},{'.','.','.','.','8','.','.','7','9'}};
+        System.out.println(isValidSudoku(board));
     }
 
     public static int middleOfThree(int a, int b, int c) {
@@ -325,5 +328,65 @@ public class Application {
         }
 
         return factorSum / num == 2;
+    }
+
+    // Warmup 1/27/21
+
+    public static boolean isValidSudoku(char[][] board) {
+        List<Character> checkedChars = new ArrayList<>();
+
+        // check rows
+        for (int i = 0; i < 9; i++) {
+
+            for (int j = 0; j < 9; j++) {
+
+                if (checkedChars.contains(board[i][j])) {
+                    return false;
+                }
+
+                if (board[i][j] != '.') {
+                    checkedChars.add(board[i][j]);
+                }
+            }
+            checkedChars.clear();
+        }
+
+        // check columns
+        for (int j = 0; j < 9; j++) {
+
+            for (int i = 0; i < 9; i++) {
+
+                if (checkedChars.contains(board[i][j])) {
+                    return false;
+                }
+
+                if (board[i][j] != '.') {
+                    checkedChars.add(board[i][j]);
+                }
+            }
+            checkedChars.clear();
+        }
+
+        // check boxes
+        for (int i = 0; i < 9; i+=3) {
+            for (int j = 0; j < 9; j+=3) {
+
+                for (int i2 = i; i2 < i + 3; i2++) {
+                    for (int j2 = j; j2 < j + 3; j2++) {
+
+                        if (checkedChars.contains(board[i2][j2])) {
+                            return false;
+                        }
+
+                        if (board[i2][j2] != '.') {
+                            checkedChars.add(board[i2][j2]);
+                        }
+                    }
+                }
+                checkedChars.clear();
+            }
+        }
+
+        return true;
     }
 }

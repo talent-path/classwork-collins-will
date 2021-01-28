@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //handles the logic for the game
 @Component
 public class HangmanService {
@@ -14,21 +17,45 @@ public class HangmanService {
     @Autowired
     HangmanDao dao;
 
+    String[] possibleWords = {}
+
+    public HangmanViewModel startGame() {
+        // 1. pick a word
+        // 2. Insert game into dao
+        // 3. Get back the ID from the dao
+        // 4. Return a viewmodel from that game
+
+
+    }
+
+    public List<HangmanViewModel> getAllGames() {
+        List<HangmanGame> allGames = dao.getAllGames();
+        List<HangmanViewModel> converted = new ArrayList<>();
+
+        for (HangmanGame game : allGames) {
+            converted.add(convertModel(game));
+        }
+
+        return converted;
+    }
+
     public HangmanViewModel getGameById(Integer gameId) {
         HangmanGame game = dao.getGameById( gameId );
         return convertModel( game );
     }
 
+    public HangmanViewModel makeGuess(Integer gameId, String guess) throws NullGuessException, InvalidGuessException, InvalidGameIdException {
 
-    public HangmanViewModel makeGuess(Integer gameId, String guess) {
+        if (guess == null) {
+            throw new NullGuessException("Tried to make guess on game ID " + gameId + " with a null guess.");
+        }
+
         if( guess.length() != 1){
-            //TODO: make and throw a custom exception here
-            return null;
+            throw new InvalidGuessException("A guess of " + guess + " is too long.");
         }
 
         if( gameId == null ){
-            //TODO: make and throw a custom exception here
-            return null;
+            throw new InvalidGameIdException("Missing game id");
         }
 
         HangmanGame game = dao.getGameById(gameId);
@@ -36,7 +63,7 @@ public class HangmanService {
         //we'll assume here that the dao gives us back a null
         //if there's no matching game
         if( game == null) {
-            return null;
+            throw new InvalidGameIdException("Could not find game with id " + gameId);
         }
 
         if (game.getWrongGuesses() >= 5) {
@@ -76,6 +103,8 @@ public class HangmanService {
                 return null;
             }
         }
+
+        dao.updateGame(game);
 
         return convertModel(game);
 

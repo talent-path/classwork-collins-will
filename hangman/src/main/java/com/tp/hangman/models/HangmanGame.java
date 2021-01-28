@@ -27,6 +27,18 @@ public class HangmanGame {
         this.guessedLetters = guessedLetters;
     }
 
+    // copy constructor
+    public HangmanGame(HangmanGame that) {
+        this.gameId = that.gameId;
+        this.hiddenWord = that.hiddenWord;
+        this.guessedLetters = new ArrayList<>();
+
+        for (Character toCopy : that.guessedLetters) {
+            this.guessedLetters.add(toCopy);
+        }
+
+        this.wrongGuesses = that.wrongGuesses;
+    }
 
     public Integer getGameId() {
         return gameId;
