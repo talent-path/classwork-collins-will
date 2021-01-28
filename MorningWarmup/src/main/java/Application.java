@@ -58,7 +58,14 @@ public class Application {
         System.out.println(isPerfect(8));*/
 
         char[][] board = {{'5','3','.','.','7','.','.','.','.'},{'6','.','.','1','9','5','.','.','.'},{'.','9','8','.','.','.','.','6','.'},{'8','.','.','.','6','.','.','.','3'},{'4','.','.','8','.','3','.','.','1'},{'7','.','.','.','2','.','.','.','6'},{'.','6','.','.','.','.','2','8','.'},{'.','.','.','4','1','9','.','.','5'},{'.','.','.','.','8','.','.','7','9'}};
-        System.out.println(isValidSudoku(board));
+        solveSudoku(board);
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 
     public static int middleOfThree(int a, int b, int c) {
@@ -389,4 +396,83 @@ public class Application {
 
         return true;
     }
+
+    public static boolean isValidSudoku(char[][] board, int row, int col) {
+        List<Character> checkedChars = new ArrayList<>();
+
+        for (int j = 0; j < 9; j++) {
+            if (checkedChars.contains(board[row][j])) {
+                return false;
+            }
+            if (board[row][j] != '.') {
+                checkedChars.add(board[row][j]);
+            }
+        }
+        checkedChars.clear();
+
+        for (int i = 0; i < 9; i++) {
+            if (checkedChars.contains(board[i][col])) {
+                return false;
+            }
+            if (board[i][col] != '.') {
+                checkedChars.add(board[i][col]);
+            }
+        }
+        checkedChars.clear();
+
+        int boxRow = (row / 3) * 3;
+        int boxCol = (col / 3) * 3;
+
+        for (int i = boxRow; i < boxRow + 3; i++) {
+            for (int j = boxCol; j < boxCol + 3; j++) {
+                if (checkedChars.contains(board[i][j])) {
+                    return false;
+                }
+                if (board[i][j] != '.') {
+                    checkedChars.add(board[i][j]);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static void solveSudoku(char[][] board) {
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == '.') {
+                    for (int k = 1; k <= 9; k++) {
+                        char current = (char) (k + 48);
+                        board[i][j] = current;
+
+                        if (isValidSudoku(board, i, j)) {
+                            if (isFullSudoku(board)) {
+                                return;
+                            } else {
+                                solveSudoku(board);
+                                if (isFullSudoku(board)) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    board[i][j] = '.';
+                    return;
+                }
+            }
+        }
+    }
+
+    public static boolean isFullSudoku(char[][] board) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == '.') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
+
