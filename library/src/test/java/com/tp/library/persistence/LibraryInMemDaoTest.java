@@ -120,4 +120,49 @@ class LibraryInMemDaoTest {
 
         }
     }
+
+    @Test
+    public void testGetAllBooksGoldenPath() {
+        List<Book> copy = toTest.getAllBooks();
+
+        assertEquals(1, copy.size());
+        assertEquals("Ender's Game", copy.get(0).getTitle());
+    }
+
+    @Test
+    public void testGetBookByIdGoldenPath() {
+        Book book = toTest.getBookById(1);
+
+        assertEquals("Ender's Game", book.getTitle());
+        assertEquals("Orson Scott Card", book.getAuthors().get(0));
+        assertEquals(1985, book.getYear());
+    }
+
+    @Test
+    public void testGetBookByIdInvalidId() {
+        Book book = toTest.getBookById(-1);
+
+        assertEquals(null, book);
+    }
+
+    @Test
+    public void testDeleteBookGoldenPath() {
+        try {
+            toTest.deleteBook(1);
+            assertEquals(0, toTest.getAllBooks().size());
+        } catch (InvalidIdException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testDeleteBookInvalidId() {
+        try {
+            toTest.deleteBook(1);
+            toTest.deleteBook(1);
+            fail();
+        } catch (InvalidIdException ex) {
+            
+        }
+    }
 }
