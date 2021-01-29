@@ -64,7 +64,14 @@ class LibraryInMemDaoTest {
         } catch (InvalidAuthorsException | InvalidYearException ex) {
             fail();
         } catch (InvalidTitleException ex) {
+            try {
+                int id = toTest.addBook("", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2002);
+                fail();
+            } catch (InvalidAuthorsException | InvalidYearException ex2) {
+                fail();
+            } catch (InvalidTitleException ex2) {
 
+            }
         }
     }
 
@@ -107,9 +114,22 @@ class LibraryInMemDaoTest {
         }
     }
 
-    @Test public void testAddBookNullYear() {
+    @Test
+    public void testAddBookNullYear() {
         try {
             int id = toTest.addBook("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), null);
+            fail();
+        } catch (InvalidTitleException | InvalidAuthorsException ex) {
+            fail();
+        } catch (InvalidYearException ex) {
+
+        }
+    }
+
+    @Test
+    public void testAddBookFutureYear() {
+        try {
+            int id = toTest.addBook("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2077);
             fail();
         } catch (InvalidTitleException | InvalidAuthorsException ex) {
             fail();

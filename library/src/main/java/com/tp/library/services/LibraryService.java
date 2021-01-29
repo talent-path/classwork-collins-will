@@ -18,18 +18,22 @@ public class LibraryService {
     LibraryDao dao;
 
     public Book addBook(String title, List<String> authors, Integer year) throws InvalidTitleException, InvalidAuthorsException, InvalidYearException {
-        if (title == "") {
+        if (title == null || title == "") {
             throw new InvalidTitleException("Books must have a title.");
         }
 
-        if (authors.size() == 0) {
+        if (authors == null || authors.size() == 0) {
             throw new InvalidAuthorsException("Books must have at least one author.");
         }
 
         for (String author : authors) {
-            if (author == "") {
+            if (author == null || author == "") {
                 throw new InvalidAuthorsException("Authors must have a name.");
             }
+        }
+
+        if (year == null) {
+            throw new InvalidYearException("Years cannot be null.");
         }
 
         if (year > java.time.YearMonth.now().getYear()) {
@@ -50,6 +54,10 @@ public class LibraryService {
     }
 
     public void deleteBook(Integer id) throws InvalidIdException {
+        if (id < 1) {
+            throw new InvalidIdException("Id must be at least 1.");
+        }
+
         dao.deleteBook(id);
     }
 
