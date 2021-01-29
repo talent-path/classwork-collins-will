@@ -86,4 +86,64 @@ public class LibraryService {
                 throw new InvalidCriteriaException("Can only search books by title, author, or year.");
         }
     }
+
+    public Book editBookTitle(Integer id, String newTitle) throws InvalidTitleException, InvalidIdException {
+        if (newTitle == null || newTitle == "") {
+            throw new InvalidTitleException("Title cannot be empty.");
+        }
+
+        Book toEdit = getBookById(id);
+
+        if (toEdit == null) {
+            throw new InvalidIdException("Book with id " + id + " cannot be found.");
+        }
+
+        toEdit.setTitle(newTitle);
+
+        dao.updateBook(toEdit);
+
+        return dao.getBookById(id);
+    }
+
+    public Book editBookAuthors(Integer id, List<String> newAuthors) throws InvalidAuthorsException, InvalidIdException {
+        if (newAuthors == null || newAuthors.size() == 0) {
+            throw new InvalidAuthorsException("All books must have at least one author.");
+        }
+
+        for (String author : newAuthors) {
+            if (author == null || author == "") {
+                throw new InvalidAuthorsException("All authors must have a name.");
+            }
+        }
+
+        Book toEdit = getBookById(id);
+
+        if (toEdit == null) {
+            throw new InvalidIdException("Book with id " + id + " cannot be found.");
+        }
+
+        toEdit.setAuthors(newAuthors);
+
+        dao.updateBook(toEdit);
+
+        return dao.getBookById(id);
+    }
+
+    public Book editBookYear(Integer id, Integer newYear) throws InvalidYearException, InvalidIdException {
+        if (newYear > java.time.YearMonth.now().getYear()) {
+            throw new InvalidYearException("Books cannot be from the future.");
+        }
+
+        Book toEdit = getBookById(id);
+
+        if (toEdit == null) {
+            throw new InvalidIdException("Book with id " + id + " cannot be found.");
+        }
+
+        toEdit.setYear(newYear);
+
+        dao.updateBook(toEdit);
+
+        return dao.getBookById(id);
+    }
 }

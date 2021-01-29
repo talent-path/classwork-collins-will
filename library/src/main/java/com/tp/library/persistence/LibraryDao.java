@@ -20,4 +20,6 @@ public interface LibraryDao {
     List<Book> getBooksByAuthor(String authorToFind) throws InvalidQueryException;
 
     List<Book> getBooksByYear(int yearToFind) throws InvalidQueryException;
+
+    void updateBook(Book book);
 }

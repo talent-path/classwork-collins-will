@@ -150,4 +150,13 @@ public class LibraryInMemDao implements LibraryDao{
 
         return toReturn;
     }
+
+    @Override
+    public void updateBook(Book book) {
+        for (int i = 0; i < allBooks.size(); i++) {
+            if (allBooks.get(i).getId().equals(book.getId())) {
+                allBooks.set(i, new Book(book));
+            }
+        }
+    }
 }

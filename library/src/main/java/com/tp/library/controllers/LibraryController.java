@@ -74,4 +74,43 @@ public class LibraryController {
         return ResponseEntity.ok(toReturn);
     }
 
+    @PutMapping("/edit/title/{id}")
+    public ResponseEntity editBookTitle(@PathVariable Integer id, @RequestBody ChangeRequest request) {
+        Book toReturn = null;
+
+        try {
+            toReturn = service.editBookTitle(id, request.getNewTitle());
+        } catch (InvalidTitleException | InvalidIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @PutMapping("/edit/author/{id}")
+    public ResponseEntity editBookAuthors(@PathVariable Integer id, @RequestBody ChangeRequest authors) {
+        Book toReturn = null;
+
+        try {
+            toReturn = service.editBookAuthors(id, authors.getNewAuthors());
+        } catch (InvalidAuthorsException | InvalidIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @PutMapping("/edit/year/{id}")
+    public ResponseEntity editBookYear(@PathVariable Integer id, @RequestBody ChangeRequest request) {
+        Book toReturn = null;
+
+        try {
+            toReturn = service.editBookYear(id, request.getNewYear());
+        } catch (InvalidYearException | InvalidIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+
+        return ResponseEntity.ok(toReturn);
+    }
+
 }
