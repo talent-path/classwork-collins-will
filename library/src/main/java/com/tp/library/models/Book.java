@@ -1,5 +1,6 @@
 package com.tp.library.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Book {
@@ -14,6 +15,16 @@ public class Book {
         this.authors = authors;
         this.year = year;
         this.id = id;
+    }
+
+    public Book(Book that) {
+        this.title = that.title;
+        this.authors = new ArrayList<>();
+        for (String author : that.getAuthors()) {
+            this.authors.add(author);
+        }
+        this.year = that.year;
+        this.id = that.id;
     }
 
     public String getTitle() {

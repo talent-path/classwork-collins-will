@@ -1,6 +1,9 @@
 package com.tp.library.persistence;
 
 import com.tp.library.controllers.BookRequest;
+import com.tp.library.exceptions.InvalidAuthorsException;
+import com.tp.library.exceptions.InvalidTitleException;
+import com.tp.library.exceptions.InvalidYearException;
 import com.tp.library.models.Book;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +15,23 @@ public class LibraryInMemDao implements LibraryDao{
 
     private List<Book> allBooks = new ArrayList<>();
 
-    public int addBook(BookRequest request) throws InvalidTitleException {
+    @Override
+    public int addBook(String title, List<String> authors, Integer year) throws InvalidTitleException, InvalidAuthorsException, InvalidYearException {
 
-        if (request.getTitle() == null) {
+        if (title == null) {
             throw new InvalidTitleException("Title cannot be null.");
+        }
+
+        if (authors == null) {
+            throw new InvalidAuthorsException("Author list cannot be null.");
+        }
+
+        if (authors.size() == 0) {
+            throw new InvalidAuthorsException("All books must have at least one author.");
+        }
+
+        if (year == null) {
+            throw new InvalidYearException("Publication year cannot be null.");
         }
 
         int newId = 0;
@@ -27,7 +43,35 @@ public class LibraryInMemDao implements LibraryDao{
 
         newId++;
 
-        allBooks.add(new Book(request.getTitle(), request.getAuthors(), request.getYear(), newId));
+        Book toAdd = new Book(title, authors, year, newId);
+
+        allBooks.add(toAdd);
         return newId;
     }
+
+    @Override
+    public List<Book> getAllBooks() {
+        List<Book> copyList = new ArrayList<>();
+
+        for (Book toCopy : allBooks) {
+            copyList.add(new Book(toCopy));
+        }
+
+        return copyList;
+    }
+
+    @Override
+    public Book getBookById(Integer id) {
+        Book toReturn = null;
+
+        for (Book toCheck : allBooks) {
+            if (toCheck.getId().equals(id)) {
+                toReturn = new Book(toCheck);
+                break;
+            }
+        }
+
+        return toReturn;
+    }
+
 }
