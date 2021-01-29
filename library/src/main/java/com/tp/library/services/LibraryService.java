@@ -2,6 +2,7 @@ package com.tp.library.services;
 
 import com.tp.library.controllers.BookRequest;
 import com.tp.library.exceptions.InvalidAuthorsException;
+import com.tp.library.exceptions.InvalidIdException;
 import com.tp.library.exceptions.InvalidTitleException;
 import com.tp.library.exceptions.InvalidYearException;
 import com.tp.library.models.Book;
@@ -29,5 +30,9 @@ public class LibraryService {
 
     public Book getBookById(Integer id) {
         return dao.getBookById(id);
+    }
+
+    public void deleteBook(Integer id) throws InvalidIdException {
+        dao.deleteBook(id);
     }
 }

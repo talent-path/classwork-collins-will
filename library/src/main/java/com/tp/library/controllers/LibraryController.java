@@ -1,6 +1,7 @@
 package com.tp.library.controllers;
 
 import com.tp.library.exceptions.InvalidAuthorsException;
+import com.tp.library.exceptions.InvalidIdException;
 import com.tp.library.exceptions.InvalidTitleException;
 import com.tp.library.exceptions.InvalidYearException;
 import com.tp.library.models.Book;
@@ -49,4 +50,13 @@ public class LibraryController {
         }
     }
 
+    @DeleteMapping("/delete/{id}")
+    public String deleteBook(@PathVariable Integer id) {
+        try {
+            service.deleteBook(id);
+            return "Book " + id + " successfully deleted.";
+        } catch (InvalidIdException ex) {
+            return ex.getMessage();
+        }
+    }
 }
