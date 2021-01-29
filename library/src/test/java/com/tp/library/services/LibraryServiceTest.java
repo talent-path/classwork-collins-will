@@ -271,4 +271,143 @@ class LibraryServiceTest {
         }
     }
 
+    @Test
+    public void testEditBookTitleGoldenPath() {
+        try {
+            Book book = toTest.editBookTitle(1, "Success");
+
+            assertEquals("Success", book.getTitle());
+            assertEquals("Success", toTest.getBookById(1).getTitle());
+        } catch (InvalidTitleException | InvalidIdException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testEditBookTitleNullTitle() {
+        try {
+            Book book = toTest.editBookTitle(1, null);
+            fail();
+        } catch (InvalidIdException ex) {
+            fail();
+        } catch (InvalidTitleException ex) {
+            try {
+                Book book = toTest.editBookTitle(1, "");
+                fail();
+            } catch (InvalidIdException ex2) {
+                fail();
+            } catch (InvalidTitleException ex2) {
+
+            }
+        }
+    }
+
+    @Test
+    public void testEditBookTitleInvalidId() {
+        try {
+            Book book = toTest.editBookTitle(-1, "Success");
+            fail();
+        } catch (InvalidTitleException ex) {
+            fail();
+        } catch (InvalidIdException ex) {
+
+        }
+    }
+
+    @Test
+    public void testEditBookAuthorsGoldenPath() {
+        try {
+            Book book = toTest.editBookAuthors(1, Arrays.asList("Success"));
+
+            assertEquals("Success", book.getAuthors().get(0));
+            assertEquals("Success", toTest.getBookById(1).getAuthors().get(0));
+        } catch (InvalidAuthorsException | InvalidIdException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testEditBookAuthorsNullAuthorList() {
+        try {
+            Book book = toTest.editBookAuthors(1, null);
+            fail();
+        } catch (InvalidIdException ex) {
+            fail();
+        } catch (InvalidAuthorsException ex) {
+            try {
+                Book book = toTest.editBookAuthors(1, Arrays.asList());
+            } catch (InvalidIdException ex2) {
+                fail();
+            } catch (InvalidAuthorsException ex2) {
+
+            }
+        }
+    }
+
+    @Test
+    public void testEditBookAuthorListWithNullAuthors() {
+        try {
+            Book book = toTest.editBookAuthors(1, Arrays.asList("Failure", null));
+            fail();
+        } catch (InvalidIdException ex) {
+            fail();
+        } catch (InvalidAuthorsException ex) {
+            try {
+                Book book = toTest.editBookAuthors(1, Arrays.asList(""));
+            } catch (InvalidIdException ex2) {
+                fail();
+            } catch (InvalidAuthorsException ex2) {
+
+            }
+        }
+    }
+
+    @Test
+    public void testEditBookAuthorsInvalidId() {
+        try {
+            Book book = toTest.editBookAuthors(-1, Arrays.asList("Success"));
+            fail();
+        } catch (InvalidAuthorsException ex) {
+            fail();
+        } catch (InvalidIdException ex) {
+
+        }
+    }
+
+    @Test
+    public void testEditBookYearGoldenPath() {
+        try {
+            Book book = toTest.editBookYear(1, 2000);
+
+            assertEquals(2000, book.getYear());
+            assertEquals(2000, toTest.getBookById(1).getYear());
+        } catch (InvalidYearException | InvalidIdException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testEditBookYearFutureYear() {
+        try {
+            Book book = toTest.editBookYear(1, 3000);
+            fail();
+        } catch (InvalidIdException ex) {
+            fail();
+        } catch (InvalidYearException ex) {
+
+        }
+    }
+
+    @Test
+    public void testEditBookYearInvalidId() {
+        try {
+            Book book = toTest.editBookYear(-1, 2000);
+            fail();
+        } catch (InvalidYearException ex) {
+            fail();
+        } catch (InvalidIdException ex) {
+
+        }
+    }
+
 }
