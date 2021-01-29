@@ -1,9 +1,6 @@
 package com.tp.library.controllers;
 
-import com.tp.library.exceptions.InvalidAuthorsException;
-import com.tp.library.exceptions.InvalidIdException;
-import com.tp.library.exceptions.InvalidTitleException;
-import com.tp.library.exceptions.InvalidYearException;
+import com.tp.library.exceptions.*;
 import com.tp.library.models.Book;
 import com.tp.library.services.LibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,8 +20,6 @@ public class LibraryController {
     @PostMapping("/add")
     public ResponseEntity addBook(@RequestBody BookRequest request) {
         Book toReturn = null;
-
-        System.out.println(request.getAuthors().getClass());
 
         try {
             toReturn = service.addBook(request.getTitle(), request.getAuthors(), request.getYear());
@@ -59,4 +55,23 @@ public class LibraryController {
             return ex.getMessage();
         }
     }
+
+    @PostMapping("/find")
+    public ResponseEntity getBooksByCriteria(@RequestBody CriteriaRequest request) {
+        List<Book> toReturn = new ArrayList<>();
+
+        try {
+            toReturn = service.getBooksByCriteria(request.getCriteria(), request.getSearchData());
+
+        } catch (InvalidQueryException | InvalidCriteriaException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+
+        if (toReturn.size() == 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No books found with that criteria.");
+        }
+
+        return ResponseEntity.ok(toReturn);
+    }
+
 }

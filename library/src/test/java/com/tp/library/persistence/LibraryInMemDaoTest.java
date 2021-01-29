@@ -1,10 +1,7 @@
 package com.tp.library.persistence;
 
 import com.tp.library.controllers.BookRequest;
-import com.tp.library.exceptions.InvalidAuthorsException;
-import com.tp.library.exceptions.InvalidIdException;
-import com.tp.library.exceptions.InvalidTitleException;
-import com.tp.library.exceptions.InvalidYearException;
+import com.tp.library.exceptions.*;
 import com.tp.library.models.Book;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -162,7 +159,95 @@ class LibraryInMemDaoTest {
             toTest.deleteBook(1);
             fail();
         } catch (InvalidIdException ex) {
-            
+
+        }
+    }
+
+    @Test
+    public void testGetBooksByTitleGoldenPath() {
+        try {
+            toTest.addBook("The End of History and the Last Man", Arrays.asList("Francis Fukuyama"), 1992);
+            toTest.addBook("TEST", Arrays.asList("TEST"), 1992);
+
+            List<Book> endBooks = toTest.getBooksByTitle("end");
+            assertEquals(2, endBooks.size());
+
+            endBooks = toTest.getBooksByTitle("zebra");
+            assertEquals(0, endBooks.size());
+        } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException | InvalidQueryException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testGetBooksByTitleNullTitle() {
+        try {
+            List<Book> endBooks = toTest.getBooksByTitle(null);
+            fail();
+        } catch (InvalidQueryException ex) {
+            try {
+                List<Book> endBooks = toTest.getBooksByTitle("");
+                fail();
+            } catch (InvalidQueryException ex2) {
+
+            }
+        }
+    }
+
+    @Test
+    public void testGetBooksByAuthorGoldenPath() {
+        try {
+            toTest.addBook("Speaker for the Dead", Arrays.asList("Orson Scott Card"), 1986);
+            toTest.addBook("TEST", Arrays.asList("TEST"), 1992);
+
+            List<Book> endBooks = toTest.getBooksByAuthor("Card");
+            assertEquals(2, endBooks.size());
+
+            endBooks = toTest.getBooksByAuthor("zebra");
+            assertEquals(0, endBooks.size());
+        } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException | InvalidQueryException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testGetBooksByAuthorNullAuthor() {
+        try {
+            List<Book> endBooks = toTest.getBooksByAuthor(null);
+            fail();
+        } catch (InvalidQueryException ex) {
+            try {
+                List<Book> endBooks = toTest.getBooksByAuthor("");
+                fail();
+            } catch (InvalidQueryException ex2) {
+
+            }
+        }
+    }
+
+    @Test
+    public void testGetBooksByYearGoldenPath() {
+        try {
+            toTest.addBook("Speaker for the Dead", Arrays.asList("Orson Scott Card"), 1985);
+            toTest.addBook("TEST", Arrays.asList("TEST"), 1992);
+
+            List<Book> endBooks = toTest.getBooksByYear(1985);
+            assertEquals(2, endBooks.size());
+
+            endBooks = toTest.getBooksByYear(0);
+            assertEquals(0, endBooks.size());
+        } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException | InvalidQueryException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testGetBooksByYearFutureYear() {
+        try {
+            List<Book> endBooks = toTest.getBooksByYear(2077);
+            fail();
+        } catch (InvalidQueryException ex) {
+
         }
     }
 }
