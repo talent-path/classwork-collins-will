@@ -3,6 +3,7 @@ package com.tp.library.controllers;
 import com.tp.library.exceptions.*;
 import com.tp.library.models.Book;
 import com.tp.library.services.LibraryService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +75,19 @@ public class LibraryController {
 
         if (toReturn.size() == 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No books found with that criteria.");
+        }
+
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity editBook(@PathVariable Integer id, @RequestBody Book editedBook) {
+        Book toReturn = null;
+
+        try {
+            toReturn = service.editBook(id, editedBook);
+        } catch (InvalidQueryException | InvalidIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
 
         return ResponseEntity.ok(toReturn);

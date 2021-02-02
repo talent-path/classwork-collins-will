@@ -6,6 +6,7 @@ import com.tp.library.persistence.LibraryDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -126,6 +127,75 @@ public class LibraryService {
                 }
             default:
                 throw new InvalidCriteriaException("Can only search books by title, author, or year.");
+        }
+    }
+
+    public Book editBook(Integer id, Book editedBookInfo) throws InvalidQueryException, InvalidIdException {
+        if (editedBookInfo == null) {
+            throw new InvalidQueryException("All new book data cannot be null.");
+        }
+
+        Book toEdit = getBookById(id);
+
+        if (toEdit == null) {
+            throw new InvalidQueryException("Book with id " + id + " cannot be found.");
+        }
+
+        boolean changesMade = false;
+
+        // changing title
+        if (editedBookInfo.getTitle() != null && editedBookInfo.getTitle() != "") {
+            boolean titleAllSpaces = true;
+            for (int i = 0; i < editedBookInfo.getTitle().length(); i++) {
+                if (editedBookInfo.getTitle().charAt(i) != ' ') {
+                    titleAllSpaces = false;
+                    break;
+                }
+            }
+
+            if (!titleAllSpaces) {
+                toEdit.setTitle(editedBookInfo.getTitle());
+                changesMade = true;
+            }
+        }
+
+        // changing authors
+        if (editedBookInfo.getAuthors() != null && editedBookInfo.getAuthors().size() != 0) {
+            List<String> editedAuthors = new ArrayList<>();
+
+            for (String author : editedBookInfo.getAuthors()) {
+                if (author != null && author != "") {
+                    boolean authorAllSpaces = true;
+                    for (int i = 0; i < author.length(); i++) {
+                        if (author.charAt(i) != ' ') {
+                            authorAllSpaces = false;
+                            break;
+                        }
+                    }
+
+                    if (!authorAllSpaces) {
+                        editedAuthors.add(author);
+                    }
+                }
+            }
+
+            if (editedAuthors.size() > 0) {
+                toEdit.setAuthors(editedAuthors);
+                changesMade = true;
+            }
+        }
+
+        // changing year
+        if (editedBookInfo.getYear() != null && editedBookInfo.getYear() <= java.time.YearMonth.now().getYear()) {
+            toEdit.setYear(editedBookInfo.getYear());
+            changesMade = true;
+        }
+
+        if (!changesMade) {
+            throw new InvalidQueryException("No valid data provided.");
+        } else {
+            dao.updateBook(toEdit);
+            return dao.getBookById(id);
         }
     }
 

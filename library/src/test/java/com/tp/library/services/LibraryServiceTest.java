@@ -254,38 +254,6 @@ class LibraryServiceTest {
     public void testGetBooksByCriteriaFutureYear() {
         assertThrows(InvalidQueryException.class, () -> toTest.getBooksByCriteria("year", "2077"));
     }
-    @Test
-    public void testGetBooksByTitleGoldenPath() {
-        try {
-            toTest.addBook(new Book("The End of History and the Last Man", Arrays.asList("Francis Fukuyama"), 1992));
-            toTest.addBook(new Book("TEST", Arrays.asList("TEST"), 1992));
-
-            List<Book> endBooks = toTest.getBooksByCriteria("title","end");
-            assertEquals(2, endBooks.size());
-
-            Book validation = endBooks.get(0);
-            assertEquals("Ender's Game", validation.getTitle());
-            assertEquals("Orson Scott Card", validation.getAuthors().get(0));
-            assertEquals(1985, validation.getYear());
-            assertEquals(1, validation.getId());
-
-            Book validation2 = endBooks.get(1);
-            assertEquals("The End of History and the Last Man", validation2.getTitle());
-            assertEquals("Francis Fukuyama", validation2.getAuthors().get(0));
-            assertEquals(1992, validation2.getYear());
-            assertEquals(2, validation2.getId());
-
-            endBooks = toTest.getBooksByCriteria("title","zebra");
-            assertEquals(0, endBooks.size());
-        } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException | InvalidQueryException | InvalidIdException | InvalidCriteriaException ex) {
-            fail();
-        }
-    }
-
-    @Test
-    public void testGetBooksByTitleNullTitle() {
-        assertThrows(InvalidQueryException.class, () -> toTest.getBooksByCriteria("title",null));
-    }
 
     @Test
     public void testEditBookTitleInvalidId() {
