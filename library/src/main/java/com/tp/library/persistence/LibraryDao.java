@@ -1,17 +1,16 @@
 package com.tp.library.persistence;
 
-import com.tp.library.controllers.BookRequest;
 import com.tp.library.exceptions.*;
 import com.tp.library.models.Book;
 
 import java.util.List;
 
 public interface LibraryDao {
-    int addBook(String title, List<String> authors, Integer year) throws InvalidTitleException, InvalidAuthorsException, InvalidYearException;
+    int addBook(Book book) throws InvalidTitleException, InvalidAuthorsException, InvalidYearException;
 
     List<Book> getAllBooks();
 
-    Book getBookById(Integer id);
+    Book getBookById(Integer id) throws InvalidIdException;
 
     void deleteBook(Integer id) throws InvalidIdException;
 
@@ -19,7 +18,7 @@ public interface LibraryDao {
 
     List<Book> getBooksByAuthor(String authorToFind) throws InvalidQueryException;
 
-    List<Book> getBooksByYear(int yearToFind) throws InvalidQueryException;
+    List<Book> getBooksByYear(Integer yearToFind) throws InvalidQueryException;
 
     void updateBook(Book book);
 }

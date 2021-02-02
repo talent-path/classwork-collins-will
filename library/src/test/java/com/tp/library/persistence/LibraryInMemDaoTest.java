@@ -1,6 +1,5 @@
 package com.tp.library.persistence;
 
-import com.tp.library.controllers.BookRequest;
 import com.tp.library.exceptions.*;
 import com.tp.library.models.Book;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,115 +27,71 @@ class LibraryInMemDaoTest {
             toTest.deleteBook(toRemove.getId());
         }
 
-        toTest.addBook("Ender's Game", Arrays.asList("Orson Scott Card"), 1985);
+        Book firstBook = new Book("Ender's Game", Arrays.asList("Orson Scott Card"), 1985);
+        toTest.addBook(firstBook);
     }
 
     @Test
     public void testAddBookGoldenPath() {
         try {
-            int id = toTest.addBook("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2002);
+            Book testBook = new Book("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2002);
+            int id = toTest.addBook(testBook);
 
             assertEquals(2, id);
 
-            int nextId = toTest.addBook("IT", Arrays.asList("Stephen King"), 1986);
+            Book validation = toTest.getBookById(2);
+            assertEquals("The Bearenstein Bears", validation.getTitle());
+
+            List<String> validationAuthors = validation.getAuthors();
+            assertEquals(2, validationAuthors.size());
+            assertEquals("Stan Bearenstein", validationAuthors.get(0));
+            assertEquals("Jan Bearenstein", validationAuthors.get(1));
+
+            assertEquals(2002, validation.getYear());
+
+            assertEquals(2, validation.getId());
+
+            Book testBook2 = new Book ("IT", Arrays.asList("Stephen King", "King Stephen"), 1986);
+            int nextId = toTest.addBook(testBook2);
 
             assertEquals(3, nextId);
 
-            Book validation = toTest.getBookById(3);
-            assertEquals("IT", validation.getTitle());
+            Book validation2 = toTest.getBookById(3);
+            assertEquals("IT", validation2.getTitle());
 
-            List<String> validationAuthors = validation.getAuthors();
-            assertEquals(1, validationAuthors.size());
-            assertEquals("Stephen King", validationAuthors.get(0));
+            List<String> validationAuthors2 = validation2.getAuthors();
+            assertEquals(2, validationAuthors2.size());
+            assertEquals("Stephen King", validationAuthors2.get(0));
+            assertEquals("King Stephen", validationAuthors2.get(1));
 
-            assertEquals(1986, validation.getYear());
+            assertEquals(1986, validation2.getYear());
 
-            assertEquals(3, validation.getId());
-        } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException ex) {
+            assertEquals(3, validation2.getId());
+        } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException | InvalidIdException ex) {
             fail();
         }
     }
 
     @Test
     public void testAddBookNullTitle() {
-        try {
-            int id = toTest.addBook(null, Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2002);
-            fail();
-        } catch (InvalidAuthorsException | InvalidYearException ex) {
-            fail();
-        } catch (InvalidTitleException ex) {
-            try {
-                int id = toTest.addBook("", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2002);
-                fail();
-            } catch (InvalidAuthorsException | InvalidYearException ex2) {
-                fail();
-            } catch (InvalidTitleException ex2) {
-
-            }
-        }
+        assertThrows(InvalidTitleException.class, () -> toTest.addBook(new Book (null, Arrays.asList("Test"), 2000)));
     }
 
     // authors = null
     @Test
     public void testAddBookNullAuthors() {
-        try {
-            int id = toTest.addBook("The Bearenstein Bears", null, 2002);
-            fail();
-        } catch (InvalidTitleException | InvalidYearException ex) {
-            fail();
-        } catch (InvalidAuthorsException ex) {
-
-        }
-    }
-
-    // authors = []
-    @Test
-    public void testAddBookNoAuthors() {
-        try {
-            int id = toTest.addBook("The Bearenstein Bears", Arrays.asList(), 2002);
-            fail();
-        } catch (InvalidTitleException | InvalidYearException ex) {
-            fail();
-        } catch (InvalidAuthorsException ex) {
-
-        }
+        assertThrows(InvalidAuthorsException.class, () -> toTest.addBook(new Book ("Test", null, 2000)));
     }
 
     // authors = [name1, null, name2]
     @Test
     public void testAddBookAuthorListWithNullAuthors() {
-        try {
-            int id = toTest.addBook("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", null, "Jan Bearenstein"), 2002);
-            fail();
-        } catch (InvalidTitleException | InvalidYearException ex) {
-            fail();
-        } catch (InvalidAuthorsException ex) {
-
-        }
+        assertThrows(InvalidAuthorsException.class, () -> toTest.addBook(new Book ("Test", Arrays.asList("Test", null), 2000)));
     }
 
     @Test
     public void testAddBookNullYear() {
-        try {
-            int id = toTest.addBook("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), null);
-            fail();
-        } catch (InvalidTitleException | InvalidAuthorsException ex) {
-            fail();
-        } catch (InvalidYearException ex) {
-
-        }
-    }
-
-    @Test
-    public void testAddBookFutureYear() {
-        try {
-            int id = toTest.addBook("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2077);
-            fail();
-        } catch (InvalidTitleException | InvalidAuthorsException ex) {
-            fail();
-        } catch (InvalidYearException ex) {
-
-        }
+        assertThrows(InvalidAuthorsException.class, () -> toTest.addBook(new Book ("Test", Arrays.asList("Test"), null)));
     }
 
     @Test
@@ -144,32 +100,57 @@ class LibraryInMemDaoTest {
 
         assertEquals(1, copy.size());
         assertEquals("Ender's Game", copy.get(0).getTitle());
+        assertEquals(1, copy.get(0).getAuthors().size());
+        assertEquals("Orson Scott Card", copy.get(0).getAuthors().get(0));
+        assertEquals(1985, copy.get(0).getYear());
+        assertEquals(1, copy.get(0).getId());
     }
 
     @Test
     public void testGetBookByIdGoldenPath() {
-        Book book = toTest.getBookById(1);
+        try {
+            Book book = toTest.getBookById(1);
 
-        assertEquals("Ender's Game", book.getTitle());
-        assertEquals("Orson Scott Card", book.getAuthors().get(0));
-        assertEquals(1985, book.getYear());
+            assertEquals("Ender's Game", book.getTitle());
+            assertEquals(1, book.getAuthors().size());
+            assertEquals("Orson Scott Card", book.getAuthors().get(0));
+            assertEquals(1985, book.getYear());
+            assertEquals(1, book.getId());
+        } catch (InvalidIdException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testGetBookByIdNullId() {
+        assertThrows(InvalidIdException.class, () -> toTest.getBookById(null));
     }
 
     @Test
     public void testGetBookByIdInvalidId() {
-        Book book = toTest.getBookById(-1);
+        try {
+            Book book = toTest.getBookById(-1);
 
-        assertEquals(null, book);
+            assertEquals(null, book);
+        } catch (InvalidIdException ex) {
+            fail();
+        }
     }
 
     @Test
     public void testDeleteBookGoldenPath() {
         try {
+            assertNotEquals(null, toTest.getBookById(1));
             toTest.deleteBook(1);
-            assertEquals(0, toTest.getAllBooks().size());
+            assertEquals(null, toTest.getBookById(1));
         } catch (InvalidIdException ex) {
             fail();
         }
+    }
+
+    @Test
+    public void testDeleteBookNullId() {
+        assertThrows(InvalidIdException.class, () -> toTest.deleteBook(null));
     }
 
     @Test
@@ -186,11 +167,23 @@ class LibraryInMemDaoTest {
     @Test
     public void testGetBooksByTitleGoldenPath() {
         try {
-            toTest.addBook("The End of History and the Last Man", Arrays.asList("Francis Fukuyama"), 1992);
-            toTest.addBook("TEST", Arrays.asList("TEST"), 1992);
+            toTest.addBook(new Book("The End of History and the Last Man", Arrays.asList("Francis Fukuyama"), 1992));
+            toTest.addBook(new Book("TEST", Arrays.asList("TEST"), 1992));
 
             List<Book> endBooks = toTest.getBooksByTitle("end");
             assertEquals(2, endBooks.size());
+
+            Book validation = endBooks.get(0);
+            assertEquals("Ender's Game", validation.getTitle());
+            assertEquals("Orson Scott Card", validation.getAuthors().get(0));
+            assertEquals(1985, validation.getYear());
+            assertEquals(1, validation.getId());
+
+            Book validation2 = endBooks.get(1);
+            assertEquals("The End of History and the Last Man", validation2.getTitle());
+            assertEquals("Francis Fukuyama", validation2.getAuthors().get(0));
+            assertEquals(1992, validation2.getYear());
+            assertEquals(2, validation2.getId());
 
             endBooks = toTest.getBooksByTitle("zebra");
             assertEquals(0, endBooks.size());
@@ -201,27 +194,29 @@ class LibraryInMemDaoTest {
 
     @Test
     public void testGetBooksByTitleNullTitle() {
-        try {
-            List<Book> endBooks = toTest.getBooksByTitle(null);
-            fail();
-        } catch (InvalidQueryException ex) {
-            try {
-                List<Book> endBooks = toTest.getBooksByTitle("");
-                fail();
-            } catch (InvalidQueryException ex2) {
-
-            }
-        }
+        assertThrows(InvalidQueryException.class, () -> toTest.getBooksByTitle(null));
     }
 
     @Test
     public void testGetBooksByAuthorGoldenPath() {
         try {
-            toTest.addBook("Speaker for the Dead", Arrays.asList("Orson Scott Card"), 1986);
-            toTest.addBook("TEST", Arrays.asList("TEST"), 1992);
+            toTest.addBook(new Book("Speaker for the Dead", Arrays.asList("Orson Scott Card"), 1986));
+            toTest.addBook(new Book("TEST", Arrays.asList("TEST"), 1992));
 
             List<Book> endBooks = toTest.getBooksByAuthor("Card");
             assertEquals(2, endBooks.size());
+
+            Book validation = endBooks.get(0);
+            assertEquals("Ender's Game", validation.getTitle());
+            assertEquals("Orson Scott Card", validation.getAuthors().get(0));
+            assertEquals(1985, validation.getYear());
+            assertEquals(1, validation.getId());
+
+            Book validation2 = endBooks.get(1);
+            assertEquals("Speaker for the Dead", validation2.getTitle());
+            assertEquals("Orson Scott Card", validation2.getAuthors().get(0));
+            assertEquals(1986, validation2.getYear());
+            assertEquals(2, validation2.getId());
 
             endBooks = toTest.getBooksByAuthor("zebra");
             assertEquals(0, endBooks.size());
@@ -232,29 +227,31 @@ class LibraryInMemDaoTest {
 
     @Test
     public void testGetBooksByAuthorNullAuthor() {
-        try {
-            List<Book> endBooks = toTest.getBooksByAuthor(null);
-            fail();
-        } catch (InvalidQueryException ex) {
-            try {
-                List<Book> endBooks = toTest.getBooksByAuthor("");
-                fail();
-            } catch (InvalidQueryException ex2) {
-
-            }
-        }
+        assertThrows(InvalidQueryException.class, () -> toTest.getBooksByAuthor(null));
     }
 
     @Test
     public void testGetBooksByYearGoldenPath() {
         try {
-            toTest.addBook("Speaker for the Dead", Arrays.asList("Orson Scott Card"), 1985);
-            toTest.addBook("TEST", Arrays.asList("TEST"), 1992);
+            toTest.addBook(new Book("Speaker for the Dead", Arrays.asList("Orson Scott Card"), 1986));
+            toTest.addBook(new Book("TEST", Arrays.asList("TEST"), 1985));
 
             List<Book> endBooks = toTest.getBooksByYear(1985);
             assertEquals(2, endBooks.size());
 
-            endBooks = toTest.getBooksByYear(0);
+            Book validation = endBooks.get(0);
+            assertEquals("Ender's Game", validation.getTitle());
+            assertEquals("Orson Scott Card", validation.getAuthors().get(0));
+            assertEquals(1985, validation.getYear());
+            assertEquals(1, validation.getId());
+
+            Book validation2 = endBooks.get(1);
+            assertEquals("TEST", validation2.getTitle());
+            assertEquals("TEST", validation2.getAuthors().get(0));
+            assertEquals(1985, validation2.getYear());
+            assertEquals(2, validation2.getId());
+
+            endBooks = toTest.getBooksByYear(1000);
             assertEquals(0, endBooks.size());
         } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException | InvalidQueryException ex) {
             fail();
@@ -262,12 +259,7 @@ class LibraryInMemDaoTest {
     }
 
     @Test
-    public void testGetBooksByYearFutureYear() {
-        try {
-            List<Book> endBooks = toTest.getBooksByYear(2077);
-            fail();
-        } catch (InvalidQueryException ex) {
-
-        }
+    public void testGetBooksByYearNullYear() {
+        assertThrows(InvalidQueryException.class, () -> toTest.getBooksByYear(null));
     }
 }

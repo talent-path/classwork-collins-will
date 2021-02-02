@@ -18,12 +18,12 @@ public class LibraryController {
     LibraryService service;
 
     @PostMapping("/add")
-    public ResponseEntity addBook(@RequestBody BookRequest request) {
+    public ResponseEntity addBook(@RequestBody Book book) {
         Book toReturn = null;
 
         try {
-            toReturn = service.addBook(request.getTitle(), request.getAuthors(), request.getYear());
-        } catch (InvalidTitleException | InvalidAuthorsException | InvalidYearException ex) {
+            toReturn = service.addBook(book);
+        } catch (InvalidTitleException | InvalidAuthorsException | InvalidYearException | InvalidIdException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
 
@@ -37,12 +37,17 @@ public class LibraryController {
 
     @GetMapping("/book/{id}")
     public ResponseEntity getBookById(@PathVariable Integer id) {
-        Book toReturn = service.getBookById(id);
+        Book toReturn = null;
 
-        if (toReturn == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No book with id " + id + " found.");
-        } else {
-            return ResponseEntity.ok(toReturn);
+        try {
+            toReturn = service.getBookById(id);
+            if (toReturn == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No book with id " + id + " found.");
+            } else {
+                return ResponseEntity.ok(toReturn);
+            }
+        } catch (InvalidIdException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
 

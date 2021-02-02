@@ -10,11 +10,10 @@ public class Book {
     Integer year;
     Integer id;
 
-    public Book(String title, List<String> authors, Integer year, Integer id) {
+    public Book(String title, List<String> authors, Integer year) {
         this.title = title;
         this.authors = authors;
         this.year = year;
-        this.id = id;
     }
 
     public Book(Book that) {

@@ -1,15 +1,12 @@
 package com.tp.library.services;
 
-import com.tp.library.controllers.BookRequest;
 import com.tp.library.exceptions.*;
 import com.tp.library.models.Book;
 import com.tp.library.persistence.LibraryDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.time.YearMonth;
 
 @Component
 public class LibraryService {
@@ -17,30 +14,30 @@ public class LibraryService {
     @Autowired
     LibraryDao dao;
 
-    public Book addBook(String title, List<String> authors, Integer year) throws InvalidTitleException, InvalidAuthorsException, InvalidYearException {
-        if (title == null || title == "") {
+    public Book addBook(Book book) throws InvalidTitleException, InvalidAuthorsException, InvalidYearException, InvalidIdException {
+        if (book.getTitle() == null || book.getTitle() == "") {
             throw new InvalidTitleException("Books must have a title.");
         }
 
-        if (authors == null || authors.size() == 0) {
+        if (book.getAuthors() == null || book.getAuthors().size() == 0) {
             throw new InvalidAuthorsException("Books must have at least one author.");
         }
 
-        for (String author : authors) {
+        for (String author : book.getAuthors()) {
             if (author == null || author == "") {
                 throw new InvalidAuthorsException("Authors must have a name.");
             }
         }
 
-        if (year == null) {
+        if (book.getYear() == null) {
             throw new InvalidYearException("Years cannot be null.");
         }
 
-        if (year > java.time.YearMonth.now().getYear()) {
+        if (book.getYear() > java.time.YearMonth.now().getYear()) {
             throw new InvalidYearException("Books cannot be from the future.");
         }
 
-        int newId = dao.addBook(title, authors, year);
+        int newId = dao.addBook(book);
 
         return dao.getBookById(newId);
     }
@@ -49,7 +46,7 @@ public class LibraryService {
         return dao.getAllBooks();
     }
 
-    public Book getBookById(Integer id) {
+    public Book getBookById(Integer id) throws InvalidIdException {
         return dao.getBookById(id);
     }
 
@@ -77,7 +74,7 @@ public class LibraryService {
                 return dao.getBooksByAuthor(searchData);
             case "year":
                 try {
-                    int searchYear = Integer.parseInt(searchData);
+                    Integer searchYear = Integer.parseInt(searchData);
                     return dao.getBooksByYear(searchYear);
                 } catch (NumberFormatException ex) {
                     throw new InvalidQueryException("Year queries must be an integer.");
@@ -88,8 +85,8 @@ public class LibraryService {
     }
 
     public Book editBookTitle(Integer id, String newTitle) throws InvalidTitleException, InvalidIdException {
-        if (newTitle == null || newTitle == "") {
-            throw new InvalidTitleException("Title cannot be empty.");
+        if (newTitle == null) {
+            throw new InvalidTitleException("Title cannot be null.");
         }
 
         Book toEdit = getBookById(id);

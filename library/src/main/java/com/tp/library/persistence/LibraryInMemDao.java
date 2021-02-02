@@ -1,13 +1,11 @@
 package com.tp.library.persistence;
 
-import com.tp.library.controllers.BookRequest;
 import com.tp.library.exceptions.*;
 import com.tp.library.models.Book;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 public class LibraryInMemDao implements LibraryDao{
@@ -15,42 +13,42 @@ public class LibraryInMemDao implements LibraryDao{
     private List<Book> allBooks = new ArrayList<>();
 
     @Override
-    public int addBook(String title, List<String> authors, Integer year) throws InvalidTitleException, InvalidAuthorsException, InvalidYearException {
+    public int addBook(Book book) throws InvalidTitleException, InvalidAuthorsException, InvalidYearException {
 
-        if (title == null) {
+        if (book.getTitle() == null) {
             throw new InvalidTitleException("Title cannot be null.");
         }
 
-        if (authors == null) {
+        if (book.getAuthors() == null) {
             throw new InvalidAuthorsException("Author list cannot be null.");
         }
 
-        if (authors.size() == 0) {
+        if (book.getAuthors().size() == 0) {
             throw new InvalidAuthorsException("All books must have at least one author.");
         }
 
-        for (String author : authors) {
+        for (String author : book.getAuthors()) {
             if (author == null) {
                 throw new InvalidAuthorsException("Authors cannot be null.");
             }
         }
 
-        if (year == null) {
+        if (book.getYear() == null) {
             throw new InvalidYearException("Publication year cannot be null.");
         }
 
         int newId = 0;
-        for (Book book : allBooks) {
-            if (book.getId() > newId) {
-                newId = book.getId();
+        for (Book toCheck : allBooks) {
+            if (toCheck.getId() > newId) {
+                newId = toCheck.getId();
             }
         }
 
         newId++;
 
-        Book toAdd = new Book(title, authors, year, newId);
+        book.setId(newId);
 
-        allBooks.add(toAdd);
+        allBooks.add(book);
         return newId;
     }
 
@@ -66,7 +64,11 @@ public class LibraryInMemDao implements LibraryDao{
     }
 
     @Override
-    public Book getBookById(Integer id) {
+    public Book getBookById(Integer id) throws InvalidIdException {
+        if (id == null) {
+            throw new InvalidIdException("Book id cannot be null.");
+        }
+
         Book toReturn = null;
 
         for (Book toCheck : allBooks) {
@@ -81,6 +83,10 @@ public class LibraryInMemDao implements LibraryDao{
 
     @Override
     public void deleteBook(Integer id) throws InvalidIdException {
+        if (id == null) {
+            throw new InvalidIdException("Id cannot be null.");
+        }
+
         int removeIndex = -1;
 
         for (int i = 0; i < allBooks.size(); i++) {
@@ -135,7 +141,7 @@ public class LibraryInMemDao implements LibraryDao{
     }
 
     @Override
-    public List<Book> getBooksByYear(int yearToFind) throws InvalidQueryException{
+    public List<Book> getBooksByYear(Integer yearToFind) throws InvalidQueryException{
         if (yearToFind > java.time.YearMonth.now().getYear()) {
             throw new InvalidQueryException("Query cannot be in the future.");
         }
