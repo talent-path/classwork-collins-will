@@ -105,8 +105,8 @@ public class LibraryInMemDao implements LibraryDao{
 
     @Override
     public List<Book> getBooksByTitle(String titleToFind) throws InvalidQueryException {
-        if (titleToFind == null || titleToFind == "") {
-            throw new InvalidQueryException("Query cannot be empty.");
+        if (titleToFind == null) {
+            throw new InvalidQueryException("Query cannot be null.");
         }
 
         List<Book> toReturn = new ArrayList<>();

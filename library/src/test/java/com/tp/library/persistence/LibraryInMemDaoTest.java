@@ -155,13 +155,7 @@ class LibraryInMemDaoTest {
 
     @Test
     public void testDeleteBookInvalidId() {
-        try {
-            toTest.deleteBook(1);
-            toTest.deleteBook(1);
-            fail();
-        } catch (InvalidIdException ex) {
-
-        }
+        assertThrows(InvalidIdException.class, () -> toTest.deleteBook(-1));
     }
 
     @Test

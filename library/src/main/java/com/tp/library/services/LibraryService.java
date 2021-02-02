@@ -19,6 +19,18 @@ public class LibraryService {
             throw new InvalidTitleException("Books must have a title.");
         }
 
+        boolean titleAllSpaces = true;
+        for (int i = 0; i < book.getTitle().length(); i++) {
+            if (book.getTitle().charAt(i) != ' ') {
+                titleAllSpaces = false;
+                break;
+            }
+        }
+
+        if (titleAllSpaces) {
+            throw new InvalidTitleException("Titles cannot be blank.");
+        }
+
         if (book.getAuthors() == null || book.getAuthors().size() == 0) {
             throw new InvalidAuthorsException("Books must have at least one author.");
         }
@@ -26,6 +38,16 @@ public class LibraryService {
         for (String author : book.getAuthors()) {
             if (author == null || author == "") {
                 throw new InvalidAuthorsException("Authors must have a name.");
+            }
+            boolean authorAllSpaces = true;
+            for (int i = 0; i < author.length(); i++) {
+                if (author.charAt(i) != ' ') {
+                    authorAllSpaces = false;
+                    break;
+                }
+            }
+            if (authorAllSpaces) {
+                throw new InvalidAuthorsException("Authors cannot be blank.");
             }
         }
 
@@ -47,10 +69,18 @@ public class LibraryService {
     }
 
     public Book getBookById(Integer id) throws InvalidIdException {
-        return dao.getBookById(id);
+        Book toReturn = dao.getBookById(id);
+        if (toReturn == null) {
+            throw new InvalidIdException("No books with id " + id + "found.");
+        }
+        return toReturn;
     }
 
     public void deleteBook(Integer id) throws InvalidIdException {
+        if (id == null) {
+            throw new InvalidIdException("Id cannot be null.");
+        }
+
         if (id < 1) {
             throw new InvalidIdException("Id must be at least 1.");
         }
@@ -67,6 +97,18 @@ public class LibraryService {
             throw new InvalidQueryException("Search data cannot be empty.");
         }
 
+        boolean dataAllSpaces = true;
+        for (int i = 0; i < searchData.length(); i++) {
+            if (searchData.charAt(i) != ' ') {
+                dataAllSpaces = false;
+                break;
+            }
+        }
+
+        if (dataAllSpaces) {
+            throw new InvalidQueryException("Search data cannot be blank.");
+        }
+
         switch(criteria.toLowerCase()) {
             case "title":
                 return dao.getBooksByTitle(searchData);
@@ -75,6 +117,9 @@ public class LibraryService {
             case "year":
                 try {
                     Integer searchYear = Integer.parseInt(searchData);
+                    if (searchYear > java.time.YearMonth.now().getYear()) {
+                        throw new InvalidQueryException("Cannot search for books from the future.");
+                    }
                     return dao.getBooksByYear(searchYear);
                 } catch (NumberFormatException ex) {
                     throw new InvalidQueryException("Year queries must be an integer.");
