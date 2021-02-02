@@ -1,3 +1,4 @@
+/*
 package com.tp.library.services;
 
 import com.tp.library.exceptions.*;
@@ -27,7 +28,7 @@ class LibraryServiceTest {
                 toTest.dao.deleteBook(toRemove.getId());
             }
 
-            toTest.addBook("Ender's Game", Arrays.asList("Orson Scott Card"), 1985);
+            toTest.addBook(new Book("Ender's Game", Arrays.asList("Orson Scott Card"), 1985));
         } catch (InvalidIdException | InvalidTitleException | InvalidAuthorsException | InvalidYearException ex) {
             fail();
         }
@@ -36,25 +37,40 @@ class LibraryServiceTest {
     @Test
     public void testAddBookGoldenPath() {
         try {
-            int id = toTest.addBook("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2002).getId();
+            Book testBook = new Book("The Bearenstein Bears", Arrays.asList("Stan Bearenstein", "Jan Bearenstein"), 2002);
+            Book newBook = toTest.addBook(testBook);
 
             assertEquals(2, id);
 
-            int nextId = toTest.addBook("IT", Arrays.asList("Stephen King"), 1986).getId();
+            Book validation = toTest.getBookById(2);
+            assertEquals("The Bearenstein Bears", validation.getTitle());
+
+            List<String> validationAuthors = validation.getAuthors();
+            assertEquals(2, validationAuthors.size());
+            assertEquals("Stan Bearenstein", validationAuthors.get(0));
+            assertEquals("Jan Bearenstein", validationAuthors.get(1));
+
+            assertEquals(2002, validation.getYear());
+
+            assertEquals(2, validation.getId());
+
+            Book testBook2 = new Book ("IT", Arrays.asList("Stephen King", "King Stephen"), 1986);
+            Book newBook2 = toTest.addBook(testBook2);
 
             assertEquals(3, nextId);
 
-            Book validation = toTest.getBookById(3);
-            assertEquals("IT", validation.getTitle());
+            Book validation2 = toTest.getBookById(3);
+            assertEquals("IT", validation2.getTitle());
 
-            List<String> validationAuthors = validation.getAuthors();
-            assertEquals(1, validationAuthors.size());
-            assertEquals("Stephen King", validationAuthors.get(0));
+            List<String> validationAuthors2 = validation2.getAuthors();
+            assertEquals(2, validationAuthors2.size());
+            assertEquals("Stephen King", validationAuthors2.get(0));
+            assertEquals("King Stephen", validationAuthors2.get(1));
 
-            assertEquals(1986, validation.getYear());
+            assertEquals(1986, validation2.getYear());
 
-            assertEquals(3, validation.getId());
-        } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException ex) {
+            assertEquals(3, validation2.getId());
+        } catch (InvalidAuthorsException | InvalidTitleException | InvalidYearException | InvalidIdException ex) {
             fail();
         }
     }
@@ -410,4 +426,4 @@ class LibraryServiceTest {
         }
     }
 
-}
+}*/

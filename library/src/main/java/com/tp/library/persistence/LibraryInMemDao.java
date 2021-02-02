@@ -122,7 +122,7 @@ public class LibraryInMemDao implements LibraryDao{
 
     @Override
     public List<Book> getBooksByAuthor(String authorToFind) throws InvalidQueryException {
-        if (authorToFind == null || authorToFind == "") {
+        if (authorToFind == null) {
             throw new InvalidQueryException("Query cannot be null.");
         }
 
@@ -142,14 +142,14 @@ public class LibraryInMemDao implements LibraryDao{
 
     @Override
     public List<Book> getBooksByYear(Integer yearToFind) throws InvalidQueryException{
-        if (yearToFind > java.time.YearMonth.now().getYear()) {
-            throw new InvalidQueryException("Query cannot be in the future.");
+        if (yearToFind == null) {
+            throw new InvalidQueryException("Year cannot be null.");
         }
 
         List<Book> toReturn = new ArrayList<>();
 
         for (Book book : allBooks) {
-            if (book.getYear() == yearToFind) {
+            if (book.getYear().equals(yearToFind)) {
                 toReturn.add(new Book(book));
             }
         }

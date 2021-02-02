@@ -91,7 +91,7 @@ class LibraryInMemDaoTest {
 
     @Test
     public void testAddBookNullYear() {
-        assertThrows(InvalidAuthorsException.class, () -> toTest.addBook(new Book ("Test", Arrays.asList("Test"), null)));
+        assertThrows(InvalidYearException.class, () -> toTest.addBook(new Book ("Test", Arrays.asList("Test"), null)));
     }
 
     @Test
@@ -249,7 +249,7 @@ class LibraryInMemDaoTest {
             assertEquals("TEST", validation2.getTitle());
             assertEquals("TEST", validation2.getAuthors().get(0));
             assertEquals(1985, validation2.getYear());
-            assertEquals(2, validation2.getId());
+            assertEquals(3, validation2.getId());
 
             endBooks = toTest.getBooksByYear(1000);
             assertEquals(0, endBooks.size());
