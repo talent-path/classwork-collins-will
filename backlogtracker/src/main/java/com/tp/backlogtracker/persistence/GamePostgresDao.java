@@ -1,5 +1,6 @@
 package com.tp.backlogtracker.persistence;
 
+import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +24,7 @@ public class GamePostgresDao implements GameDao {
     }
 
     @Override
-    public List<Game> getGamesByUserID(int userID) {
+    public List<Game> getGamesByUserID(int userID) throws NoGamesFoundException {
         List<Game> allUserGames = template.query(
                 "select ga.\"gameID\", ga.\"name\" as \"gameName\", ge.\"name\" as \"genreName\", u.\"name\" as \"userName\", extract(epoch from ug.\"playTime\")/3600 as \"hoursPlayed\", ug.\"completed\"\n" +
                         "from \"Games\" as ga\n" +
@@ -34,6 +35,9 @@ public class GamePostgresDao implements GameDao {
                         "where ug.\"userID\" = ?;",
                 new GameMapper(),
                 userID);
+        if (allUserGames.size() == 0) {
+            throw new NoGamesFoundException("No games found owned by user ID " + userID);
+        }
         return allUserGames;
     }
 
