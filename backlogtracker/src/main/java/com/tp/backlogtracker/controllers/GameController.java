@@ -20,6 +20,11 @@ public class GameController {
         return service.getAllGames();
     }
 
+    @GetMapping("/games/{userID}")
+    public List<Game> getGamesByUserID(@PathVariable Integer userID) {
+        return service.getGamesByUserID(userID);
+    }
+
     @PostMapping("/add")
     public ResponseEntity addGame(@RequestBody Game game) {
         Game toReturn = null;

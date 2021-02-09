@@ -20,4 +20,8 @@ public class BacklogService {
     public List<Game> getAllGames() {
         return dao.getAllGames();
     }
+
+    public List<Game> getGamesByUserID(int userID) {
+        return dao.getGamesByUserID(userID);
+    }
 }

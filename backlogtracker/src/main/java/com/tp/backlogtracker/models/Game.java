@@ -4,25 +4,13 @@ public class Game {
 
     int gameID;
     String name;
-    double playTime;
+    double hoursPlayed;
+    String userName;
+    String genre;
     boolean completed;
 
     public Game() {
 
-    }
-
-    public Game(int gameID, String name, double playTime, boolean completed) {
-        this.gameID = gameID;
-        this.name = name;
-        this.playTime = playTime;
-        this.completed = completed;
-    }
-
-    public Game(Game that) {
-        this.gameID = that.gameID;
-        this.name = that.name;
-        this.playTime = that.playTime;
-        this.completed = that.completed;
     }
 
     public int getGameID() {
@@ -41,12 +29,28 @@ public class Game {
         this.name = name;
     }
 
-    public double getPlayTime() {
-        return playTime;
+    public double getHoursPlayed() {
+        return hoursPlayed;
     }
 
-    public void setPlayTime(double playTime) {
-        this.playTime = playTime;
+    public void setHoursPlayed(double hoursPlayed) {
+        this.hoursPlayed = hoursPlayed;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public boolean isCompleted() {
