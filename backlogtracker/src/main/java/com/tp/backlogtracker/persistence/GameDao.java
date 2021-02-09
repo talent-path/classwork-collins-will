@@ -4,7 +4,7 @@ import com.tp.backlogtracker.models.Game;
 
 import java.util.List;
 
-public interface BacklogDao {
+public interface GameDao {
     int addGame(Game game);
 
     List<Game> getAllGames();

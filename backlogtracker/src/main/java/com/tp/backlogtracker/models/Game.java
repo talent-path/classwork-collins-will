@@ -7,6 +7,10 @@ public class Game {
     double playTime;
     boolean completed;
 
+    public Game() {
+
+    }
+
     public Game(int gameID, String name, double playTime, boolean completed) {
         this.gameID = gameID;
         this.name = name;
