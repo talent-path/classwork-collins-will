@@ -3,6 +3,7 @@ package com.tp.backlogtracker.persistence;
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
 import com.tp.backlogtracker.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -18,17 +19,20 @@ public class UserPostgresDao implements UserDao {
 
     @Override
     public User getUserByID(int userID) throws InvalidUserIDException {
-        User partialNewUser = template.queryForObject(
-                "select \"userID\",\"name\"\n" +
-                "from \"Users\"\n" +
-                "where \"Users\".\"userID\" = ?;",
-                new PartialUserMapper(),
-                userID);
-        if (partialNewUser.getUserID() == null && partialNewUser.getName() == null) {
+        User partialUser = null;
+
+        try {
+            partialUser = template.queryForObject(
+                    "select \"userID\",\"name\"\n" +
+                            "from \"Users\"\n" +
+                            "where \"Users\".\"userID\" = ?;",
+                    new PartialUserMapper(),
+                    userID);
+        } catch (EmptyResultDataAccessException ex) {
             throw new InvalidUserIDException("No user with ID " + userID + " found");
         }
 
-        return partialNewUser;
+        return partialUser;
     }
 
     class PartialUserMapper implements RowMapper<User> {
