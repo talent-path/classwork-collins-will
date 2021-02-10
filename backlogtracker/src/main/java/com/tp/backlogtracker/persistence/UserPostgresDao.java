@@ -3,6 +3,7 @@ package com.tp.backlogtracker.persistence;
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
 import com.tp.backlogtracker.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,13 +13,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
+@Profile({"production","daoTesting"})
 public class UserPostgresDao implements UserDao {
 
     @Autowired
     JdbcTemplate template;
 
     @Override
-    public User getUserByID(int userID) throws InvalidUserIDException {
+    public User getUserByID(Integer userID) throws InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+
         User partialUser = null;
 
         try {

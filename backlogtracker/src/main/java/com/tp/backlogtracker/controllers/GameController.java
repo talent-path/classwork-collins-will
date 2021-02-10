@@ -24,7 +24,7 @@ public class GameController {
         List<Game> toReturn = null;
         try {
             toReturn = service.getGamesByUserID(userID);
-        } catch (NoGamesFoundException ex) {
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
 

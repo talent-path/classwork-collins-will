@@ -4,5 +4,5 @@ import com.tp.backlogtracker.exceptions.InvalidUserIDException;
 import com.tp.backlogtracker.models.User;
 
 public interface UserDao {
-    User getUserByID(int userID) throws InvalidUserIDException;
+    User getUserByID(Integer userID) throws InvalidUserIDException;
 }
