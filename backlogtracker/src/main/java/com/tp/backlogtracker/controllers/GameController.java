@@ -43,11 +43,33 @@ public class GameController {
         return ResponseEntity.ok(toReturn);
     }
 
+    @GetMapping("/user/{userID}/sort/genre")
+    public ResponseEntity sortUserGamesByGenre(@PathVariable Integer userID) {
+        User toReturn = null;
+        try {
+            toReturn = service.sortUserGamesByGenre(userID);
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
     @GetMapping("/user/{userID}/genre/{genre}")
     public ResponseEntity getUserGamesByGenre(@PathVariable Integer userID, @PathVariable String genre) {
-        List<Game> toReturn = null;
+        User toReturn = null;
         try {
             toReturn = service.getUserGamesByGenre(userID, genre);
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping("/user/{userID}/sort/playtime")
+    public ResponseEntity sortUserGamesByPlayTime(@PathVariable Integer userID) {
+        User toReturn = null;
+        try {
+            toReturn = service.sortUserGamesByPlayTime(userID);
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }

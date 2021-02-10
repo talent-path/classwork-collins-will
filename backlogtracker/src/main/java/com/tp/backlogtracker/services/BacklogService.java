@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -36,7 +38,19 @@ public class BacklogService {
         return partialUser;
     }
 
-    public List<Game> getUserGamesByGenre(int userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+    // sort methods: return entire library sorted
+    // get methods: return only games that meet criteria
+
+    public User sortUserGamesByGenre(int userID) throws NoGamesFoundException, InvalidUserIDException {
+        User user = getUserByID(userID);
+        List<Game> games = user.getLibrary();
+        Comparator<Game> gameComparator = Comparator.comparing(Game::getGenre);
+        Collections.sort(games, gameComparator);
+        user.setLibrary(games);
+        return user;
+    }
+
+    public User getUserGamesByGenre(int userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
         User user = getUserByID(userID);
         List<Game> genreGames = new ArrayList<>();
 
@@ -50,6 +64,17 @@ public class BacklogService {
             throw new NoGamesFoundException("No " + genre.substring(0,1).toUpperCase()+genre.substring(1).toLowerCase()
                 + " games found in user's library");
         }
-        return genreGames;
+
+        user.setLibrary(genreGames);
+        return user;
+    }
+
+    public User sortUserGamesByPlayTime(int userID) throws NoGamesFoundException, InvalidUserIDException {
+        User user = getUserByID(userID);
+        List<Game> games = user.getLibrary();
+        Comparator<Game> gameComparator = Comparator.comparing(Game::getHoursPlayed);
+        Collections.sort(games, gameComparator);
+        user.setLibrary(games);
+        return user;
     }
 }
