@@ -19,11 +19,6 @@ public class GameController {
     @Autowired
     BacklogService service;
 
-    @GetMapping("/games")
-    public List<Game> getAllGames() {
-        return service.getAllGames();
-    }
-
     @GetMapping("/games/{userID}")
     public ResponseEntity getGamesByUserID(@PathVariable Integer userID) {
         List<Game> toReturn = null;
@@ -42,6 +37,17 @@ public class GameController {
         User toReturn = null;
         try {
             toReturn = service.getUserByID(userID);
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @GetMapping("/user/{userID}/genre/{genre}")
+    public ResponseEntity getUserGamesByGenre(@PathVariable Integer userID, @PathVariable String genre) {
+        List<Game> toReturn = null;
+        try {
+            toReturn = service.getUserGamesByGenre(userID, genre);
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }

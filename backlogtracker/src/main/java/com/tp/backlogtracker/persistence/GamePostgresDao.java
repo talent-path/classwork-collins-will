@@ -17,13 +17,6 @@ public class GamePostgresDao implements GameDao {
     JdbcTemplate template;
 
     @Override
-    public List<Game> getAllGames() {
-        List<Game> allGames = template.query("select \"gameID\", \"name\", extract(epoch from \"playTime\")/3600 as \"hoursPlayed\"\n" +
-                "from \"Games\";", new PartialGameMapper());
-        return allGames;
-    }
-
-    @Override
     public List<Game> getGamesByUserID(int userID) throws NoGamesFoundException {
         List<Game> allUserGames = template.query(
                 "select ga.\"gameID\", ga.\"name\" as \"gameName\", ge.\"name\" as \"genreName\", u.\"name\" as \"userName\", extract(epoch from ug.\"playTime\")/3600 as \"hoursPlayed\", ug.\"completed\"\n" +
@@ -49,7 +42,6 @@ public class GamePostgresDao implements GameDao {
 
             partiallyMappedGame.setGameID(resultSet.getInt("gameID"));
             partiallyMappedGame.setName(resultSet.getString("name"));
-            partiallyMappedGame.setHoursPlayed(resultSet.getDouble("hoursPlayed"));
 
             return partiallyMappedGame;
         }

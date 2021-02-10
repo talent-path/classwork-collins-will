@@ -9,6 +9,7 @@ import com.tp.backlogtracker.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -24,10 +25,6 @@ public class BacklogService {
         return game;
     }
 
-    public List<Game> getAllGames() {
-        return gameDao.getAllGames();
-    }
-
     public List<Game> getGamesByUserID(int userID) throws NoGamesFoundException {
         return gameDao.getGamesByUserID(userID);
     }
@@ -37,5 +34,22 @@ public class BacklogService {
         List<Game> userGames = gameDao.getGamesByUserID(userID);
         partialUser.setLibrary(userGames);
         return partialUser;
+    }
+
+    public List<Game> getUserGamesByGenre(int userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+        User user = getUserByID(userID);
+        List<Game> genreGames = new ArrayList<>();
+
+        for (Game game : user.getLibrary()) {
+            if (game.getGenre().equals(genre.substring(0,1).toUpperCase()+genre.substring(1).toLowerCase())) {
+                genreGames.add(game);
+            }
+        }
+
+        if (genreGames.size() == 0) {
+            throw new NoGamesFoundException("No " + genre.substring(0,1).toUpperCase()+genre.substring(1).toLowerCase()
+                + " games found in user's library");
+        }
+        return genreGames;
     }
 }
