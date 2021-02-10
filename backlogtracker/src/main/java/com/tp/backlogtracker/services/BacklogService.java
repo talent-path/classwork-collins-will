@@ -23,10 +23,6 @@ public class BacklogService {
     @Autowired
     UserDao userDao;
 
-    public Game addGame(Game game) {
-        return game;
-    }
-
     public List<Game> getGamesByUserID(int userID) throws NoGamesFoundException, InvalidUserIDException {
         return gameDao.getGamesByUserID(userID);
     }

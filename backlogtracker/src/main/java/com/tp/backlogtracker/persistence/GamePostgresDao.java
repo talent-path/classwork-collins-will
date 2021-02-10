@@ -20,6 +20,11 @@ public class GamePostgresDao implements GameDao {
     JdbcTemplate template;
 
     @Override
+    public int addGame(Integer userID, Game game) {
+        return 0;
+    }
+
+    @Override
     public List<Game> getGamesByUserID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
         if (userID == null) {
             throw new InvalidUserIDException("User ID cannot be null");

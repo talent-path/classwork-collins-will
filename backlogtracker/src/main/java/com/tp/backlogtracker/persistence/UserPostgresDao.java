@@ -19,6 +19,12 @@ public class UserPostgresDao implements UserDao {
     @Autowired
     JdbcTemplate template;
 
+
+    @Override
+    public int addUser(Integer userID, String name) {
+        return 0;
+    }
+
     @Override
     public User getUserByID(Integer userID) throws InvalidUserIDException {
         if (userID == null) {

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserPostgresDaoTest {
 
     @Autowired
-    UserPostgresDao toTest;
+    UserDao toTest;
 
     @Autowired
     JdbcTemplate template;

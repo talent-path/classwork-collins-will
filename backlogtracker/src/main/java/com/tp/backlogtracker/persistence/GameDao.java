@@ -7,5 +7,6 @@ import com.tp.backlogtracker.models.Game;
 import java.util.List;
 
 public interface GameDao {
+    int addGame(Integer userID, Game game);
     List<Game> getGamesByUserID(Integer userID) throws NoGamesFoundException, InvalidUserIDException;
 }
