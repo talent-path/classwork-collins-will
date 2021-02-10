@@ -28,6 +28,7 @@ public class UserInMemDao implements UserDao {
         User newUser = new User();
         newUser.setUserID(userID);
         newUser.setName(name);
+        allUsers.add(newUser);
         return userID;
     }
 

@@ -23,11 +23,11 @@ public class BacklogService {
     @Autowired
     UserDao userDao;
 
-    public List<Game> getGamesByUserID(int userID) throws NoGamesFoundException, InvalidUserIDException {
+    public List<Game> getGamesByUserID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
         return gameDao.getGamesByUserID(userID);
     }
 
-    public User getUserByID(int userID) throws NoGamesFoundException, InvalidUserIDException {
+    public User getUserByID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
         User partialUser = userDao.getUserByID(userID);
         List<Game> userGames = gameDao.getGamesByUserID(userID);
         partialUser.setLibrary(userGames);
@@ -37,7 +37,7 @@ public class BacklogService {
     // sort methods: return entire library sorted
     // get methods: return only games that meet criteria
 
-    public User sortUserGamesByGenre(int userID) throws NoGamesFoundException, InvalidUserIDException {
+    public User sortUserGamesByGenre(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
         User user = getUserByID(userID);
         List<Game> games = user.getLibrary();
         Comparator<Game> gameComparator = Comparator.comparing(Game::getGenre);
@@ -46,7 +46,7 @@ public class BacklogService {
         return user;
     }
 
-    public User getUserGamesByGenre(int userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+    public User getUserGamesByGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
         User user = getUserByID(userID);
         List<Game> genreGames = new ArrayList<>();
 
@@ -65,7 +65,7 @@ public class BacklogService {
         return user;
     }
 
-    public User sortUserGamesByPlayTime(int userID) throws NoGamesFoundException, InvalidUserIDException {
+    public User sortUserGamesByPlayTime(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
         User user = getUserByID(userID);
         List<Game> games = user.getLibrary();
         Comparator<Game> gameComparator = Comparator.comparing(Game::getHoursPlayed);

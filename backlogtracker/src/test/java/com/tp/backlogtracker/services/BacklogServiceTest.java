@@ -3,6 +3,7 @@ package com.tp.backlogtracker.services;
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
 import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.Game;
+import com.tp.backlogtracker.models.User;
 import com.tp.backlogtracker.persistence.GameInMemDao;
 import com.tp.backlogtracker.persistence.UserInMemDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +48,7 @@ class BacklogServiceTest {
     public void testGetGamesByUserIDGoldenPath() {
         List<Game> games = null;
         try {
-            games = toTest.gameDao.getGamesByUserID(1);
+            games = toTest.getGamesByUserID(1);
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             fail();
         }
@@ -58,7 +59,36 @@ class BacklogServiceTest {
         assertEquals(10, game.getHoursPlayed());
         assertEquals("testUser", game.getUserName());
         assertEquals("testGenre", game.getGenre());
-        assertEquals(true, game.isCompleted());
+        assertTrue(game.isCompleted());
     }
 
+    @Test
+    public void testGetGamesByUserIDNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.getGamesByUserID(null));
+    }
+
+    @Test
+    public void testGetGamesByUserIDNoGamesFound() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.getGamesByUserID(-1));
+    }
+
+    @Test
+    public void testGetUserByIDGoldenPath() {
+        User user = null;
+        try {
+            user = toTest.getUserByID(1);
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            fail();
+        }
+        assertEquals(1, user.getUserID());
+        assertEquals("testUser", user.getName());
+        assertNotNull(user.getLibrary());
+        Game game = user.getLibrary().get(0);
+        assertEquals(1, game.getGameID());
+        assertEquals("testGame", game.getName());
+        assertEquals(10, game.getHoursPlayed());
+        assertEquals("testUser", game.getUserName());
+        assertEquals("testGenre", game.getGenre());
+        assertTrue(game.isCompleted());
+    }
 }
