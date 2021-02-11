@@ -5,6 +5,7 @@ import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -153,7 +154,20 @@ public class GamePostgresDao implements GameDao {
 
     @Override
     public Boolean changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
-        return null;
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        if (gameID == null) {
+            throw new NoGamesFoundException("Game ID cannot be null");
+        }
+        try {
+            template.update("update \"UserGames\" set completed = not completed where userID = ? and gameID = ?;",
+                    userID,
+                    gameID);
+        } catch (DataAccessException ex) {
+
+        }
+        return false;
     }
 
     class GameMapper implements RowMapper<Game> {
