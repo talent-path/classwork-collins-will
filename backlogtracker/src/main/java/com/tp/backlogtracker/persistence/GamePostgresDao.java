@@ -21,7 +21,7 @@ public class GamePostgresDao implements GameDao {
 
     @Override
     public int addGame(Integer userID, Game game) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
