@@ -65,12 +65,29 @@ public class BacklogService {
         return user;
     }
 
-    public User sortUserGamesByPlayTime(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
+    public User sortUserGamesByHoursPlayed(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
         User user = getUserByID(userID);
         List<Game> games = user.getLibrary();
         Comparator<Game> gameComparator = Comparator.comparing(Game::getHoursPlayed);
         Collections.sort(games, gameComparator);
         user.setLibrary(games);
+        return user;
+    }
+
+    public User getUserGamesUnderHoursPlayed(Integer userID, double hoursPlayed) throws NoGamesFoundException, InvalidUserIDException {
+        User user = getUserByID(userID);
+        List<Game> playTimeGames = new ArrayList<>();
+
+        for (Game game : user.getLibrary()) {
+            if (game.getHoursPlayed() < hoursPlayed) {
+                playTimeGames.add(game);
+            }
+        }
+
+        if (playTimeGames.size() == 0) {
+            throw new NoGamesFoundException("No games found under " + hoursPlayed + " hours played in user's library");
+        }
+        user.setLibrary(playTimeGames);
         return user;
     }
 }

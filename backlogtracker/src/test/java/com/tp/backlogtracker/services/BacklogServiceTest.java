@@ -192,11 +192,11 @@ class BacklogServiceTest {
     }
 
     @Test
-    public void testSortUserGamesByPlayTimeGoldenPath() {
+    public void testSortUserGamesByHoursPlayedGoldenPath() {
         addMoreGames();
         List<Game> sortedPlayTimeGames = null;
         try {
-            sortedPlayTimeGames = toTest.sortUserGamesByPlayTime(1).getLibrary();
+            sortedPlayTimeGames = toTest.sortUserGamesByHoursPlayed(1).getLibrary();
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             fail();
         }
@@ -206,18 +206,18 @@ class BacklogServiceTest {
     }
 
     @Test
-    public void testSortUserGamesByPlayTimeNullUserID() {
-        assertThrows(InvalidUserIDException.class, () -> toTest.sortUserGamesByPlayTime(null));
+    public void testSortUserGamesByHoursPlayedNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.sortUserGamesByHoursPlayed(null));
     }
 
     @Test
-    public void testSortUserGamesByPlayTimeNoUserFound() {
-        assertThrows(InvalidUserIDException.class, () -> toTest.sortUserGamesByPlayTime(-1));
+    public void testSortUserGamesByHoursPlayedNoUserFound() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.sortUserGamesByHoursPlayed(-1));
     }
 
     @Test
-    public void testSortUserGamesByPlayTimeNoGamesFound() {
+    public void testSortUserGamesByHoursPlayedNoGamesFound() {
         toTest.userDao.addUser(2, "noGames");
-        assertThrows(NoGamesFoundException.class, () -> toTest.sortUserGamesByPlayTime(2));
+        assertThrows(NoGamesFoundException.class, () -> toTest.sortUserGamesByHoursPlayed(2));
     }
 }
