@@ -220,4 +220,44 @@ class BacklogServiceTest {
         toTest.userDao.addUser(2, "noGames");
         assertThrows(NoGamesFoundException.class, () -> toTest.sortUserGamesByHoursPlayed(2));
     }
+
+    @Test
+    public void testGetUserGamesUnderHoursPlayedGoldenPath() {
+        addMoreGames();
+        List<Game> games = null;
+        try {
+            games = toTest.getUserGamesUnderHoursPlayed(1, 11).getLibrary();
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            fail();
+        }
+        assertEquals(1, games.size());
+        Game game = games.get(0);
+        assertEquals(1, game.getGameID());
+        assertEquals("testGame", game.getName());
+        assertEquals(10, game.getHoursPlayed());
+        assertEquals("testUser", game.getUserName());
+        assertEquals("Testgenre", game.getGenre());
+        assertTrue(game.isCompleted());
+    }
+
+    @Test
+    public void testGetUserGamesUnderHoursPlayedNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.getUserGamesUnderHoursPlayed(null, 11));
+    }
+
+    @Test
+    public void testGetUserGamesUnderHoursPlayedNoUserFound() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.getUserGamesUnderHoursPlayed(-1, 11));
+    }
+
+    @Test
+    public void testGetUserGamesUnderHoursPlayedNoGamesFound() {
+        toTest.userDao.addUser(2, "noGames");
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(2, 11));
+    }
+
+    @Test
+    public void testGetUserGamesUnderHoursPlayedNoGamesUnderHours() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(1, 8));
+    }
 }
