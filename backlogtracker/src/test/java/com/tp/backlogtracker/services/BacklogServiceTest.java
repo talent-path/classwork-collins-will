@@ -226,7 +226,7 @@ class BacklogServiceTest {
         addMoreGames();
         List<Game> games = null;
         try {
-            games = toTest.getUserGamesUnderHoursPlayed(1, 11).getLibrary();
+            games = toTest.getUserGamesUnderHoursPlayed(1, 11.0).getLibrary();
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             fail();
         }
@@ -242,22 +242,22 @@ class BacklogServiceTest {
 
     @Test
     public void testGetUserGamesUnderHoursPlayedNullUserID() {
-        assertThrows(InvalidUserIDException.class, () -> toTest.getUserGamesUnderHoursPlayed(null, 11));
+        assertThrows(InvalidUserIDException.class, () -> toTest.getUserGamesUnderHoursPlayed(null, 11.0));
     }
 
     @Test
     public void testGetUserGamesUnderHoursPlayedNoUserFound() {
-        assertThrows(InvalidUserIDException.class, () -> toTest.getUserGamesUnderHoursPlayed(-1, 11));
+        assertThrows(InvalidUserIDException.class, () -> toTest.getUserGamesUnderHoursPlayed(-1, 11.0));
     }
 
     @Test
     public void testGetUserGamesUnderHoursPlayedNoGamesFound() {
         toTest.userDao.addUser(2, "noGames");
-        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(2, 11));
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(2, 11.0));
     }
 
     @Test
     public void testGetUserGamesUnderHoursPlayedNoGamesUnderHours() {
-        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(1, 8));
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(1, 8.0));
     }
 }

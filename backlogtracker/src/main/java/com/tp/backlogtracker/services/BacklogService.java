@@ -48,13 +48,7 @@ public class BacklogService {
 
     public User getUserGamesByGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
         User user = getUserByID(userID);
-        List<Game> genreGames = new ArrayList<>();
-
-        for (Game game : user.getLibrary()) {
-            if (game.getGenre().equals(genre.substring(0,1).toUpperCase()+genre.substring(1).toLowerCase())) {
-                genreGames.add(game);
-            }
-        }
+        List<Game> genreGames = gameDao.getUserGamesOfGenre(userID, genre);
 
         if (genreGames.size() == 0) {
             throw new NoGamesFoundException("No " + genre.substring(0,1).toUpperCase()+genre.substring(1).toLowerCase()
@@ -74,15 +68,9 @@ public class BacklogService {
         return user;
     }
 
-    public User getUserGamesUnderHoursPlayed(Integer userID, double hoursPlayed) throws NoGamesFoundException, InvalidUserIDException {
+    public User getUserGamesUnderHoursPlayed(Integer userID, Double hoursPlayed) throws NoGamesFoundException, InvalidUserIDException {
         User user = getUserByID(userID);
-        List<Game> playTimeGames = new ArrayList<>();
-
-        for (Game game : user.getLibrary()) {
-            if (game.getHoursPlayed() < hoursPlayed) {
-                playTimeGames.add(game);
-            }
-        }
+        List<Game> playTimeGames = gameDao.getUserGamesUnderHoursPlayed(userID, hoursPlayed);
 
         if (playTimeGames.size() == 0) {
             throw new NoGamesFoundException("No games found under " + hoursPlayed + " hours played in user's library");

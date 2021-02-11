@@ -9,4 +9,6 @@ import java.util.List;
 public interface GameDao {
     int addGame(Integer userID, Game game);
     List<Game> getGamesByUserID(Integer userID) throws NoGamesFoundException, InvalidUserIDException;
+    List<Game> getUserGamesOfGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException;
+    List<Game> getUserGamesUnderHoursPlayed(Integer userID, Double hoursPlayed) throws NoGamesFoundException, InvalidUserIDException;
 }

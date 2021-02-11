@@ -52,4 +52,40 @@ public class GameInMemDao implements GameDao {
 
         return games;
     }
+
+    @Override
+    public List<Game> getUserGamesOfGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+        List<Game> games = getGamesByUserID(userID);
+        List<Game> genreGames = new ArrayList<>();
+
+        for (Game game : games) {
+            if (game.getGenre().equalsIgnoreCase(genre.toLowerCase())) {
+                genreGames.add(game);
+            }
+        }
+
+        if (genreGames.size() == 0) {
+            throw new NoGamesFoundException("No " + genre + " games found in user's library");
+        }
+
+        return genreGames;
+    }
+
+    @Override
+    public List<Game> getUserGamesUnderHoursPlayed(Integer userID, Double hoursPlayed) throws NoGamesFoundException, InvalidUserIDException {
+        List<Game> games = getGamesByUserID(userID);
+        List<Game> playTimeGames = new ArrayList<>();
+
+        for (Game game: games) {
+            if (game.getHoursPlayed() <= hoursPlayed) {
+                playTimeGames.add(game);
+            }
+        }
+
+        if (playTimeGames.size() == 0) {
+            throw new NoGamesFoundException("No games in user's library under " + hoursPlayed + " hours played");
+        }
+
+        return playTimeGames;
+    }
 }
