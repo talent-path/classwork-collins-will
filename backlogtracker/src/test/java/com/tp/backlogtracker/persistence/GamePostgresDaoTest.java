@@ -28,10 +28,10 @@ class GamePostgresDaoTest {
     public void setup() {
         template.update("truncate \"UserGames\",\"GameGenres\",\"Games\",\"Genres\",\"Users\" restart identity;");
         template.update("insert into \"Users\" (\"userID\",\"name\") values('1','testUser');");
-        template.update("insert into \"Games\" (\"gameID\",\"name\") values('1','testGame'),('2','testGame2');\n" +
+        template.update("insert into \"Games\" (\"gameID\",\"name\") values('1','testGame'),('2','testGame2'),('3','testGame3');\n" +
                 "insert into \"Genres\" (\"genreID\",\"name\") values('1','testGenre'),('2','testGenre2');\n" +
-                "insert into \"GameGenres\" (\"gameID\",\"genreID\") values('1','1'),('2','2');\n" +
-                "insert into \"UserGames\" (\"userID\",\"gameID\",\"completed\",\"playTime\") values('1','1','true','10 hours'),('1','2','false','20 hours');");
+                "insert into \"GameGenres\" (\"gameID\",\"genreID\") values('1','1'),('2','2'),('3','1');\n" +
+                "insert into \"UserGames\" (\"userID\",\"gameID\",\"completed\",\"playTime\") values('1','1','true','10 hours'),('1','2','false','20 hours'),('1','3','false','15 hours');");
     }
 
     @Test
@@ -69,7 +69,7 @@ class GamePostgresDaoTest {
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             fail();
         }
-        assertEquals(1, games.size());
+        assertEquals(2, games.size());
         Game game = games.get(0);
         assertEquals(1, game.getGameID());
         assertEquals("testGame", game.getName());
@@ -125,5 +125,43 @@ class GamePostgresDaoTest {
     @Test
     public void testGetUserGamesUnderHoursPlayedNoGamesFound() {
         assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(1, 1.0));
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreGoldenPath() {
+        List<Game> games = null;
+        try {
+            games = toTest.getLeastPlayedGameInGenre(1, "testGenre");
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            fail();
+        }
+        assertEquals(1, games.size());
+        Game game = games.get(0);
+        assertEquals(3, game.getGameID());
+        assertEquals("testGame3", game.getName());
+        assertEquals(15, game.getHoursPlayed());
+        assertEquals("testUser", game.getUserName());
+        assertEquals("testGenre", game.getGenre());
+        assertEquals(false, game.isCompleted());
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.getLeastPlayedGameInGenre(null, "testGenre"));
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreNoUserFound() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.getLeastPlayedGameInGenre(2, "testGenre"));
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreNullGenre() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.getLeastPlayedGameInGenre(1, null));
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreBadGenre() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.getLeastPlayedGameInGenre(1, "no"));
     }
 }

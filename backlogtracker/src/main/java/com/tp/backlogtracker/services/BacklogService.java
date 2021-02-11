@@ -9,10 +9,7 @@ import com.tp.backlogtracker.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class BacklogService {
@@ -22,6 +19,8 @@ public class BacklogService {
 
     @Autowired
     UserDao userDao;
+
+    Random rand = new Random();
 
     public List<Game> getGamesByUserID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
         return gameDao.getGamesByUserID(userID);
@@ -77,5 +76,14 @@ public class BacklogService {
         }
         user.setLibrary(playTimeGames);
         return user;
+    }
+
+    public Game getLeastPlayedGameInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+        List<Game> leastPlayedGenreGames = gameDao.getLeastPlayedGameInGenre(userID, genre);
+        if (leastPlayedGenreGames.size() == 0) {
+            throw new NoGamesFoundException("No games found owned by user " + userID);
+        } else {
+            return leastPlayedGenreGames.get(rand.nextInt(leastPlayedGenreGames.size()));
+        }
     }
 }

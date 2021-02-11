@@ -116,6 +116,46 @@ public class GamePostgresDao implements GameDao {
         return games;
     }
 
+    @Override
+    public List<Game> getLeastPlayedGameInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        if (genre == null) {
+            throw new NoGamesFoundException("Genre cannot be null");
+        }
+
+        List<Game> genreGames = getUserGamesOfGenre(userID, genre);
+        Double fewestHoursPlayed;
+        try {
+            fewestHoursPlayed = template.queryForObject(
+                    "select ge.\"name\" as \"genreName\",min(extract(epoch from ug.\"playTime\")/3600) as \"leastTime\"\n" +
+                            "from \"UserGames\" as ug\n" +
+                            "inner join \"Games\" as ga on ug.\"gameID\" = ga.\"gameID\"\n" +
+                            "inner join \"GameGenres\" as gg on ga.\"gameID\" = gg.\"gameID\"\n" +
+                            "inner join \"Genres\" as ge on gg.\"genreID\" = ge.\"genreID\"\n" +
+                            "where ug.\"userID\" = ? and not \"completed\" and lower(ge.\"name\") = ?\n" +
+                            "group by ge.\"name\";",
+                    new DoubleMapper(genre),
+                    userID,
+                    genre.toLowerCase());
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NoGamesFoundException("No eligible uncompleted games found owned by user " + userID);
+        }
+        List<Game> toReturn = new ArrayList<>();
+        for (Game toCheck : genreGames) {
+            if (toCheck.getHoursPlayed() == fewestHoursPlayed) {
+                toReturn.add(toCheck);
+            }
+        }
+        return toReturn;
+    }
+
+    @Override
+    public Boolean changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
+        return null;
+    }
+
     class GameMapper implements RowMapper<Game> {
 
         @Override
@@ -130,6 +170,19 @@ public class GamePostgresDao implements GameDao {
             mappedGame.setCompleted(resultSet.getBoolean("completed"));
 
             return mappedGame;
+        }
+    }
+
+    class DoubleMapper implements RowMapper<Double> {
+        String genre;
+
+        public DoubleMapper(String genre) {
+            this.genre = genre;
+        }
+
+        @Override
+        public Double mapRow(ResultSet resultSet, int i) throws SQLException {
+            return resultSet.getDouble("leastTime");
         }
     }
 }

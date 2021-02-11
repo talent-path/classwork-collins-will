@@ -88,4 +88,14 @@ public class GameInMemDao implements GameDao {
 
         return playTimeGames;
     }
+
+    @Override
+    public List<Game> getLeastPlayedGameInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Boolean changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
+        return null;
+    }
 }
