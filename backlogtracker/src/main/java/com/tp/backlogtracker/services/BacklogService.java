@@ -81,13 +81,13 @@ public class BacklogService {
     public Game getLeastPlayedGameInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
         List<Game> leastPlayedGenreGames = gameDao.getLeastPlayedGameInGenre(userID, genre);
         if (leastPlayedGenreGames.size() == 0) {
-            throw new NoGamesFoundException("No games found owned by user " + userID);
+            throw new NoGamesFoundException("No eligible uncompleted games found owned by user " + userID);
         } else {
             return leastPlayedGenreGames.get(rand.nextInt(leastPlayedGenreGames.size()));
         }
     }
 
-    public String changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
+    public String changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException {
         Game game = gameDao.changeCompletedStatus(userID, gameID);
         String gameStatus = "";
         if (game.isCompleted()) {

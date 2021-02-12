@@ -164,4 +164,40 @@ class GamePostgresDaoTest {
     public void testGetLeastPlayedGameInGenreBadGenre() {
         assertThrows(NoGamesFoundException.class, () -> toTest.getLeastPlayedGameInGenre(1, "no"));
     }
+
+    @Test
+    public void testChangeCompletedStatusGoldenPath() {
+        Game game = null;
+        try {
+            game = toTest.changeCompletedStatus(1,1);
+        } catch (NoGamesFoundException ex) {
+            fail();
+        }
+        assertEquals(1, game.getGameID());
+        assertEquals("testGame", game.getName());
+        assertEquals(10, game.getHoursPlayed());
+        assertEquals("testUser", game.getUserName());
+        assertEquals("testGenre", game.getGenre());
+        assertEquals(false, game.isCompleted());
+    }
+
+    @Test
+    public void testChangeCompletedStatusNullUserID() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(null, 1));
+    }
+
+    @Test
+    public void testChangeCompletedStatusNullGameID() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(1, null));
+    }
+
+    @Test
+    public void testChangeCompletedStatusNoUserFound() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(-1, 1));
+    }
+
+    @Test
+    public void testChangeCompletedStatusNoGameFound() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(1, -1));
+    }
 }

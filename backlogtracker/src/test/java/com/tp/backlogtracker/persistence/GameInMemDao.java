@@ -91,11 +91,48 @@ public class GameInMemDao implements GameDao {
 
     @Override
     public List<Game> getLeastPlayedGameInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
-        throw new UnsupportedOperationException();
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        if (genre == null) {
+            throw new NoGamesFoundException("Genre cannot be null");
+        }
+
+        List<Game> toReturn = new ArrayList<>();
+        double genreMin = Double.MAX_VALUE;
+        for (Game toCheck : allGames.keySet()) {
+            if (allGames.get(toCheck) == userID && toCheck.getGenre().equalsIgnoreCase(genre) && toCheck.getHoursPlayed() < genreMin) {
+                genreMin = toCheck.getHoursPlayed();
+            }
+        }
+        for (Game toCheck: allGames.keySet()) {
+            if (toCheck.getGenre().equalsIgnoreCase(genre) && toCheck.getHoursPlayed() == genreMin) {
+                toReturn.add(toCheck);
+            }
+        }
+        if (toReturn.size() == 0) {
+            throw new NoGamesFoundException("No eligible uncompleted games found owned by user " + userID);
+        } else {
+            return toReturn;
+        }
     }
 
     @Override
-    public Game changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
-        return null;
+    public Game changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException {
+        if (gameID == null) {
+            throw new NoGamesFoundException("No changes made");
+        }
+        Game game = null;
+        for (Game toCheck : allGames.keySet()) {
+            if (allGames.get(toCheck) == userID && toCheck.getGameID() == gameID) {
+                game = toCheck;
+                break;
+            }
+        }
+        if (game == null) {
+            throw new NoGamesFoundException("No changes made");
+        }
+        game.setCompleted(!game.isCompleted());
+        return game;
     }
 }

@@ -36,7 +36,7 @@ public class GameController {
         String toReturn = null;
         try {
             toReturn = service.changeCompletedStatus(request.getUserID(), request.getGameID());
-        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+        } catch (NoGamesFoundException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
         return ResponseEntity.ok(toReturn);

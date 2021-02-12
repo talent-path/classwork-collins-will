@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,6 +50,7 @@ class BacklogServiceTest {
 
     @BeforeEach
     public void setup() {
+        toTest.rand = new Random(1);
         toTest.gameDao = new GameInMemDao();
         toTest.userDao = new UserInMemDao();
 
@@ -259,5 +261,89 @@ class BacklogServiceTest {
     @Test
     public void testGetUserGamesUnderHoursPlayedNoGamesUnderHours() {
         assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(1, 8.0));
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreGoldenPath() {
+        Game newGame = new Game();
+        newGame.setGameID(4);
+        newGame.setName("Ultrakill");
+        newGame.setHoursPlayed(20);
+        newGame.setUserName("testUser");
+        newGame.setGenre("Shooter");
+        newGame.setCompleted(false);
+        toTest.gameDao.addGame(1, newGame);
+
+        Game toCheck = null;
+        try {
+            toCheck = toTest.getLeastPlayedGameInGenre(1, "shooter");
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            fail();
+        }
+
+        assertEquals(4, toCheck.getGameID());
+        assertEquals("Ultrakill", toCheck.getName());
+        assertEquals(20, toCheck.getHoursPlayed());
+        assertEquals("testUser", toCheck.getUserName());
+        assertEquals("Shooter", toCheck.getGenre());
+        assertEquals(false, toCheck.isCompleted());
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.getLeastPlayedGameInGenre(null, "testGenre"));
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreNullGenre() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.getLeastPlayedGameInGenre(1, null));
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreNoUserFound() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.getLeastPlayedGameInGenre(-1, "testGenre"));
+    }
+
+    @Test
+    public void testGetLeastPlayedGameInGenreNoGamesFoundInGenre() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.getLeastPlayedGameInGenre(1, "no"));
+    }
+
+    @Test
+    public void testChangeCompletedStatusGoldenPath() {
+        String status = null;
+        try {
+            status = toTest.changeCompletedStatus(1,1);
+        } catch (NoGamesFoundException ex) {
+            fail();
+        }
+        assertEquals("testGame's status has been changed to uncompleted for user 1", status);
+
+        try {
+            status = toTest.changeCompletedStatus(1,1);
+        } catch (NoGamesFoundException ex) {
+            fail();
+        }
+        assertEquals("testGame's status has been changed to completed for user 1", status);
+    }
+
+    @Test
+    public void testChangeCompletedStatusNullUserID() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(null,1));
+    }
+
+    @Test
+    public void testChangeCompletedStatusNullGameID() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(1,null));
+    }
+
+    @Test
+    public void testChangeCompletedStatusNoUserFound() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(-1,1));
+    }
+
+    @Test
+    public void testChangeCompletedStatusNoGamesFound() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(1,-1));
     }
 }

@@ -153,14 +153,7 @@ public class GamePostgresDao implements GameDao {
     }
 
     @Override
-    public Game changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
-        if (userID == null) {
-            throw new InvalidUserIDException("User ID cannot be null");
-        }
-        if (gameID == null) {
-            throw new NoGamesFoundException("Game ID cannot be null");
-        }
-
+    public Game changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException {
         int switchResult = template.update("update \"UserGames\" set \"completed\" = not \"completed\" where \"userID\" = ? and \"gameID\" = ?;",
                 userID,
                 gameID);
