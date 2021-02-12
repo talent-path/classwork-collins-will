@@ -28,7 +28,7 @@ public class GamePostgresDao implements GameDao {
     }
 
     @Override
-    public List<Game> getGamesByUserID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
+    public List<Game> getGamesByUserID(Integer userID) throws InvalidUserIDException {
         if (userID == null) {
             throw new InvalidUserIDException("User ID cannot be null");
         }
@@ -47,10 +47,7 @@ public class GamePostgresDao implements GameDao {
                 new GameMapper(),
                 userID);
         } catch (EmptyResultDataAccessException ex) {
-            throw new NoGamesFoundException("No games found owned by user ID " + userID);
-        }
-        if (allUserGames.size() == 0) {
-            throw new NoGamesFoundException("No games found owned by user ID " + userID);
+            return new ArrayList<>();
         }
         return allUserGames;
     }

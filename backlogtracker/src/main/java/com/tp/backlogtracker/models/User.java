@@ -9,6 +9,7 @@ public class User {
     Double avgPlayTime;
     Integer numUncompletedGames;
     Double percentCompleted;
+    List<User> friends;
 
     public Integer getUserID() {
         return userID;
@@ -56,5 +57,13 @@ public class User {
 
     public void setPercentCompleted(Double percentCompleted) {
         this.percentCompleted = percentCompleted;
+    }
+
+    public List<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<User> friends) {
+        this.friends = friends;
     }
 }

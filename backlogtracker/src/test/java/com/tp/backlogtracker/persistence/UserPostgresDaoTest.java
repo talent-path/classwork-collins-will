@@ -1,6 +1,8 @@
 package com.tp.backlogtracker.persistence;
 
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
+import com.tp.backlogtracker.exceptions.InvalidUserNameException;
+import com.tp.backlogtracker.exceptions.NoChangesMadeException;
 import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +27,7 @@ class UserPostgresDaoTest {
 
     @BeforeEach
     public void setup() {
-        template.update("truncate \"UserGames\",\"GameGenres\",\"Games\",\"Genres\",\"Users\" restart identity;");
+        template.update("truncate \"UserFriends\",\"UserGames\",\"GameGenres\",\"Games\",\"Genres\",\"Users\" restart identity;");
         template.update("insert into \"Users\" (\"userID\",\"name\") values('1','testUser'),('2','noGames');");
         template.update("insert into \"Games\" (\"gameID\",\"name\") values('1','testGame'),('2','testGame2'),('3','testGame3');\n" +
                 "insert into \"Genres\" (\"genreID\",\"name\") values('1','testGenre'),('2','testGenre2');\n" +
@@ -34,11 +36,43 @@ class UserPostgresDaoTest {
     }
 
     @Test
+    public void testAddUserGoldenPath() {
+        User user = null;
+        try {
+            user = toTest.getUserByID(toTest.addUser(3, "testAdd"));
+        } catch (InvalidUserIDException | InvalidUserNameException | NoChangesMadeException ex) {
+            fail();
+        }
+        assertEquals(3, user.getUserID());
+        assertEquals("testAdd", user.getName());
+    }
+
+    @Test
+    public void testAddUserNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.addUser(null, "no"));
+    }
+
+    @Test
+    public void testAddUserNullUserName() {
+        assertThrows(InvalidUserNameException.class, () -> toTest.addUser(99, null));
+    }
+
+    @Test
+    public void testAddUserEmptyUserName() {
+        assertThrows(InvalidUserNameException.class, () -> toTest.addUser(99, ""));
+    }
+
+    @Test
+    public void testAddUserUserIDAlreadyExists() {
+        assertThrows(NoChangesMadeException.class, () -> toTest.addUser(1, "no"));
+    }
+
+    @Test
     public void testGetUserByIDGoldenPath() {
         User user = null;
         try {
             user = toTest.getUserByID(1);
-        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+        } catch (InvalidUserIDException ex) {
             fail();
         }
         assertEquals(1, user.getUserID());
@@ -55,4 +89,48 @@ class UserPostgresDaoTest {
         assertThrows(InvalidUserIDException.class, () -> toTest.getUserByID(-1));
     }
 
+    @Test
+    public void testAddFriendGoldenPath() {
+        User friend = null;
+        try {
+            friend = toTest.getUserByID(toTest.addFriend(1, 2));
+        } catch (InvalidUserIDException | NoChangesMadeException ex) {
+            fail();
+        }
+        assertEquals(2, friend.getUserID());
+        assertEquals("noGames", friend.getName());
+    }
+
+    @Test
+    public void testAddFriendsNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.addFriend(null, 1));
+    }
+
+    @Test
+    public void testAddFriendsNullFriendID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.addFriend(1, null));
+    }
+
+    @Test
+    public void testAddFriendsIdenticalIDs() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.addFriend(1, 1));
+    }
+
+    @Test
+    public void testAddFriendsAddingAgain() {
+        User friend = null;
+        try {
+            friend = toTest.getUserByID(toTest.addFriend(1, 2));
+        } catch (InvalidUserIDException | NoChangesMadeException ex) {
+            fail();
+        }
+        try {
+            friend = toTest.getUserByID(toTest.addFriend(1,2));
+            fail();
+        } catch (InvalidUserIDException ex) {
+            fail();
+        } catch (NoChangesMadeException ex) {
+
+        }
+    }
 }

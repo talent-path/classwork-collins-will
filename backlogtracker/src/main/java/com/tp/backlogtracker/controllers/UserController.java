@@ -1,6 +1,8 @@
 package com.tp.backlogtracker.controllers;
 
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
+import com.tp.backlogtracker.exceptions.InvalidUserNameException;
+import com.tp.backlogtracker.exceptions.NoChangesMadeException;
 import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.User;
 import com.tp.backlogtracker.services.BacklogService;
@@ -16,12 +18,34 @@ public class UserController {
     @Autowired
     BacklogService service;
 
+    @PostMapping("/user/add")
+    public ResponseEntity addUser(@RequestBody User user) {
+        User toReturn = null;
+        try {
+            toReturn = service.addUser(user.getUserID(), user.getName());
+        } catch (InvalidUserIDException | InvalidUserNameException | NoChangesMadeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @PostMapping("/user/{userID}/addfriend")
+    public ResponseEntity addFriend(@PathVariable Integer userID, @RequestBody User friend) {
+        User toReturn = null;
+        try {
+            toReturn = service.addFriend(userID, friend.getUserID());
+        } catch (InvalidUserIDException | NoChangesMadeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
     @GetMapping("/user/{userID}")
     public ResponseEntity getUserByID(@PathVariable Integer userID) {
         User toReturn = null;
         try {
             toReturn = service.getUserByID(userID);
-        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+        } catch (InvalidUserIDException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
         return ResponseEntity.ok(toReturn);

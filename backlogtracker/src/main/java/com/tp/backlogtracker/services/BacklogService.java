@@ -1,6 +1,8 @@
 package com.tp.backlogtracker.services;
 
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
+import com.tp.backlogtracker.exceptions.InvalidUserNameException;
+import com.tp.backlogtracker.exceptions.NoChangesMadeException;
 import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.Game;
 import com.tp.backlogtracker.models.User;
@@ -23,11 +25,19 @@ public class BacklogService {
 
     Random rand = new Random();
 
-    public List<Game> getGamesByUserID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
+    public User addUser(Integer userID, String name) throws InvalidUserIDException, InvalidUserNameException, NoChangesMadeException{
+        return getUserByID(userDao.addUser(userID, name));
+    }
+
+    public User addFriend(Integer userID, Integer friendID) throws InvalidUserIDException, NoChangesMadeException{
+        return getUserByID(userDao.addFriend(userID, friendID));
+    }
+
+    public List<Game> getGamesByUserID(Integer userID) throws InvalidUserIDException {
         return gameDao.getGamesByUserID(userID);
     }
 
-    public User getUserByID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
+    public User getUserByID(Integer userID) throws InvalidUserIDException {
         User partialUser = userDao.getUserByID(userID);
         List<Game> userGames = gameDao.getGamesByUserID(userID);
         partialUser.setLibrary(userGames);

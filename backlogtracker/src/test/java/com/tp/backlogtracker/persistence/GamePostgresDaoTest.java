@@ -39,7 +39,7 @@ class GamePostgresDaoTest {
         List<Game> games = null;
         try {
             games = toTest.getGamesByUserID(1);
-        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+        } catch (InvalidUserIDException ex) {
             fail();
         }
         Game game = games.get(0);
@@ -58,7 +58,11 @@ class GamePostgresDaoTest {
 
     @Test
     public void testGetGamesByUserIDNoGamesFound() {
-        assertThrows(NoGamesFoundException.class, () -> toTest.getGamesByUserID(-1));
+        try {
+            assertEquals(0, toTest.getGamesByUserID(-1).size());
+        } catch (InvalidUserIDException ex) {
+            fail();
+        }
     }
 
     @Test

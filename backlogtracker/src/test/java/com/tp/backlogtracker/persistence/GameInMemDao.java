@@ -31,7 +31,7 @@ public class GameInMemDao implements GameDao {
     }
 
     @Override
-    public List<Game> getGamesByUserID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
+    public List<Game> getGamesByUserID(Integer userID) throws InvalidUserIDException {
         if (userID == null) {
             throw new InvalidUserIDException("User ID cannot be null");
         }
@@ -44,7 +44,7 @@ public class GameInMemDao implements GameDao {
         }
 
         if (games.size() == 0) {
-            throw new NoGamesFoundException("No games found owned by user ID " + userID);
+            return new ArrayList<>();
         }
 
         Comparator<Game> gameComparator = Comparator.comparing(Game::getGameID);
@@ -80,10 +80,6 @@ public class GameInMemDao implements GameDao {
             if (game.getHoursPlayed() <= hoursPlayed) {
                 playTimeGames.add(game);
             }
-        }
-
-        if (playTimeGames.size() == 0) {
-            throw new NoGamesFoundException("No games in user's library under " + hoursPlayed + " hours played");
         }
 
         return playTimeGames;

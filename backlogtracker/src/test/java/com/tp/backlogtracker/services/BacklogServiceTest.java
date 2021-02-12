@@ -1,6 +1,8 @@
 package com.tp.backlogtracker.services;
 
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
+import com.tp.backlogtracker.exceptions.InvalidUserNameException;
+import com.tp.backlogtracker.exceptions.NoChangesMadeException;
 import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.Game;
 import com.tp.backlogtracker.models.User;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -64,7 +67,89 @@ class BacklogServiceTest {
         toTest.gameDao.addGame(1, game);
         addMoreGames();
 
-        toTest.userDao.addUser(1, "testUser");
+        try {
+            toTest.userDao.addUser(1, "testUser");
+            toTest.userDao.addUser(2, "noGames");
+        } catch (InvalidUserIDException | InvalidUserNameException | NoChangesMadeException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void addUserGoldenPath() {
+        User user = null;
+        try {
+            user = toTest.addUser(3, "testAdd");
+        } catch (InvalidUserIDException | InvalidUserNameException | NoChangesMadeException ex) {
+            fail();
+        }
+        assertEquals(3, user.getUserID());
+        assertEquals("testAdd", user.getName());
+    }
+
+    @Test
+    public void testAddUserNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.addUser(null, "no"));
+    }
+
+    @Test
+    public void testAddUserNullUserName() {
+        assertThrows(InvalidUserNameException.class, () -> toTest.addUser(99, null));
+    }
+
+    @Test
+    public void testAddUserEmptyUserName() {
+        assertThrows(InvalidUserNameException.class, () -> toTest.addUser(99, ""));
+    }
+
+    @Test
+    public void testAddUserUserIDAlreadyExists() {
+        assertThrows(NoChangesMadeException.class, () -> toTest.addUser(1, "no"));
+    }
+
+    @Test
+    public void testAddFriendGoldenPath() {
+        User friend = null;
+        try {
+            friend = toTest.addFriend(1, 2);
+        } catch (InvalidUserIDException | NoChangesMadeException ex) {
+            fail();
+        }
+        assertEquals(2, friend.getUserID());
+        assertEquals("noGames", friend.getName());
+    }
+
+    @Test
+    public void testAddFriendsNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.addFriend(null, 1));
+    }
+
+    @Test
+    public void testAddFriendsNullFriendID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.addFriend(1, null));
+    }
+
+    @Test
+    public void testAddFriendsIdenticalIDs() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.addFriend(1, 1));
+    }
+
+    @Test
+    public void testAddFriendsAddingAgain() {
+        User friend = null;
+        try {
+            friend = toTest.addFriend(1, 2);
+        } catch (InvalidUserIDException | NoChangesMadeException ex) {
+            fail();
+        }
+        try {
+            friend = toTest.addFriend(1,2);
+            fail();
+        } catch (InvalidUserIDException ex) {
+            fail();
+        } catch (NoChangesMadeException ex) {
+
+        }
     }
 
     @Test
@@ -72,7 +157,7 @@ class BacklogServiceTest {
         List<Game> games = null;
         try {
             games = toTest.getGamesByUserID(1);
-        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+        } catch (InvalidUserIDException ex) {
             fail();
         }
         assertEquals(3, games.size());
@@ -92,7 +177,11 @@ class BacklogServiceTest {
 
     @Test
     public void testGetGamesByUserIDNoGamesFound() {
-        assertThrows(NoGamesFoundException.class, () -> toTest.getGamesByUserID(-1));
+        try {
+            assertEquals(0, toTest.getGamesByUserID(-1).size());
+        } catch (InvalidUserIDException ex) {
+            fail();
+        }
     }
 
     @Test
@@ -100,7 +189,7 @@ class BacklogServiceTest {
         User user = null;
         try {
             user = toTest.getUserByID(1);
-        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+        } catch (InvalidUserIDException ex) {
             fail();
         }
         assertEquals(1, user.getUserID());
@@ -154,8 +243,11 @@ class BacklogServiceTest {
 
     @Test
     public void testSortUserGamesByGenreNoGamesFound() {
-        toTest.userDao.addUser(2, "noGames");
-        assertThrows(NoGamesFoundException.class, () -> toTest.sortUserGamesByGenre(2));
+        try {
+            assertEquals(0,toTest.sortUserGamesByGenre(2).getLibrary().size());
+        } catch (InvalidUserIDException | NoGamesFoundException ex) {
+            fail();
+        }
     }
 
     @Test
@@ -188,8 +280,7 @@ class BacklogServiceTest {
 
     @Test
     public void testGetUserGamesByGenreNoGamesFound() {
-        toTest.userDao.addUser(2, "noGames");
-        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesByGenre(2, "testGenre"));
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesByGenre(1, "no"));
     }
 
     @Test
@@ -222,8 +313,11 @@ class BacklogServiceTest {
 
     @Test
     public void testSortUserGamesByHoursPlayedNoGamesFound() {
-        toTest.userDao.addUser(2, "noGames");
-        assertThrows(NoGamesFoundException.class, () -> toTest.sortUserGamesByHoursPlayed(2));
+        try {
+            assertEquals(0, toTest.sortUserGamesByHoursPlayed(2).getLibrary().size());
+        } catch (InvalidUserIDException | NoGamesFoundException ex) {
+            fail();
+        }
     }
 
     @Test
@@ -257,13 +351,12 @@ class BacklogServiceTest {
 
     @Test
     public void testGetUserGamesUnderHoursPlayedNoGamesFound() {
-        toTest.userDao.addUser(2, "noGames");
-        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(2, 11.0));
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(2, 0.0));
     }
 
     @Test
     public void testGetUserGamesUnderHoursPlayedNoGamesUnderHours() {
-        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(1, 8.0));
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesUnderHoursPlayed(1, 0.0));
     }
 
     @Test
