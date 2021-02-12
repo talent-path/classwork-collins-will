@@ -27,7 +27,7 @@ class GamePostgresDaoTest {
     @BeforeEach
     public void setup() {
         template.update("truncate \"UserGames\",\"GameGenres\",\"Games\",\"Genres\",\"Users\" restart identity;");
-        template.update("insert into \"Users\" (\"userID\",\"name\") values('1','testUser');");
+        template.update("insert into \"Users\" (\"userID\",\"name\") values('1','testUser'),('2','noGames');");
         template.update("insert into \"Games\" (\"gameID\",\"name\") values('1','testGame'),('2','testGame2'),('3','testGame3');\n" +
                 "insert into \"Genres\" (\"genreID\",\"name\") values('1','testGenre'),('2','testGenre2');\n" +
                 "insert into \"GameGenres\" (\"gameID\",\"genreID\") values('1','1'),('2','2'),('3','1');\n" +
@@ -230,5 +230,28 @@ class GamePostgresDaoTest {
         } catch (InvalidUserIDException ex) {
             fail();
         }
+    }
+
+    @Test
+    public void testGetNumOfUncompletedGamesGoldenPath() {
+        try {
+            assertEquals(2, toTest.getNumOfUncompletedGames(1));
+        } catch (InvalidUserIDException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testGetNumOfUncompletedGamesNoGamesFound() {
+        try {
+            assertEquals(0, toTest.getNumOfUncompletedGames(2));
+        } catch (InvalidUserIDException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testGetNumOfUncompletedGamesNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.getNumOfUncompletedGames(null));
     }
 }

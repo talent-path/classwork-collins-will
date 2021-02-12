@@ -62,6 +62,7 @@ class BacklogServiceTest {
         game.setGenre("Testgenre");
         game.setCompleted(true);
         toTest.gameDao.addGame(1, game);
+        addMoreGames();
 
         toTest.userDao.addUser(1, "testUser");
     }
@@ -74,7 +75,7 @@ class BacklogServiceTest {
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             fail();
         }
-        assertEquals(1, games.size());
+        assertEquals(3, games.size());
         Game game = games.get(0);
         assertEquals(1, game.getGameID());
         assertEquals("testGame", game.getName());
@@ -104,7 +105,6 @@ class BacklogServiceTest {
         }
         assertEquals(1, user.getUserID());
         assertEquals("testUser", user.getName());
-        assertEquals(10, user.getAvgPlayTime());
         assertNotNull(user.getLibrary());
         Game game = user.getLibrary().get(0);
         assertEquals(1, game.getGameID());
@@ -113,6 +113,10 @@ class BacklogServiceTest {
         assertEquals("testUser", game.getUserName());
         assertEquals("Testgenre", game.getGenre());
         assertTrue(game.isCompleted());
+
+        assertEquals(149.0 / 3, user.getAvgPlayTime());
+        assertEquals(1, user.getNumUncompletedGames());
+        assertEquals(1.0/3,user.getPercentCompleted());
     }
 
     @Test
@@ -127,7 +131,6 @@ class BacklogServiceTest {
 
     @Test
     public void testSortUserGamesByGenreGoldenPath() {
-        addMoreGames();
         List<Game> sortedGenreGames = null;
         try {
             sortedGenreGames = toTest.sortUserGamesByGenre(1).getLibrary();
@@ -196,7 +199,6 @@ class BacklogServiceTest {
 
     @Test
     public void testSortUserGamesByHoursPlayedGoldenPath() {
-        addMoreGames();
         List<Game> sortedPlayTimeGames = null;
         try {
             sortedPlayTimeGames = toTest.sortUserGamesByHoursPlayed(1).getLibrary();

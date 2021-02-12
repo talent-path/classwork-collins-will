@@ -8,6 +8,7 @@ import com.tp.backlogtracker.persistence.GameDao;
 import com.tp.backlogtracker.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.*;
 
@@ -31,6 +32,12 @@ public class BacklogService {
         List<Game> userGames = gameDao.getGamesByUserID(userID);
         partialUser.setLibrary(userGames);
         partialUser.setAvgPlayTime(gameDao.getUserAveragePlayTime(userID));
+        partialUser.setNumUncompletedGames(gameDao.getNumOfUncompletedGames(userID));
+        if (partialUser.getLibrary().size() != 0) {
+            partialUser.setPercentCompleted(((double) partialUser.getNumUncompletedGames()) / partialUser.getLibrary().size());
+        } else {
+            partialUser.setPercentCompleted(0.0);
+        }
         return partialUser;
     }
 

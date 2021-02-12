@@ -7,6 +7,8 @@ public class User {
     String name;
     List<Game> library;
     Double avgPlayTime;
+    Integer numUncompletedGames;
+    Double percentCompleted;
 
     public Integer getUserID() {
         return userID;
@@ -38,5 +40,21 @@ public class User {
 
     public void setAvgPlayTime(Double avgPlayTime) {
         this.avgPlayTime = avgPlayTime;
+    }
+
+    public Integer getNumUncompletedGames() {
+        return numUncompletedGames;
+    }
+
+    public void setNumUncompletedGames(Integer numUncompletedGames) {
+        this.numUncompletedGames = numUncompletedGames;
+    }
+
+    public Double getPercentCompleted() {
+        return percentCompleted;
+    }
+
+    public void setPercentCompleted(Double percentCompleted) {
+        this.percentCompleted = percentCompleted;
     }
 }

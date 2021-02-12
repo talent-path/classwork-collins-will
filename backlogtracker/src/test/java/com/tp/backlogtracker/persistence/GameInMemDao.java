@@ -8,10 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Profile("serviceTesting")
@@ -49,6 +46,9 @@ public class GameInMemDao implements GameDao {
         if (games.size() == 0) {
             throw new NoGamesFoundException("No games found owned by user ID " + userID);
         }
+
+        Comparator<Game> gameComparator = Comparator.comparing(Game::getGameID);
+        Collections.sort(games, gameComparator);
 
         return games;
     }
@@ -144,7 +144,7 @@ public class GameInMemDao implements GameDao {
         double sum = 0;
         int count = 0;
         for (Game game : allGames.keySet()) {
-            if (game.getGameID() == userID) {
+            if (allGames.get(game) == userID) {
                 sum += game.getHoursPlayed();
                 count++;
             }
@@ -154,5 +154,19 @@ public class GameInMemDao implements GameDao {
         } else {
             return sum / count;
         }
+    }
+
+    @Override
+    public int getNumOfUncompletedGames(Integer userID) throws InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        int count = 0;
+        for (Game game : allGames.keySet()) {
+            if (allGames.get(game) == userID && !game.isCompleted()) {
+                count++;
+            }
+        }
+        return count;
     }
 }

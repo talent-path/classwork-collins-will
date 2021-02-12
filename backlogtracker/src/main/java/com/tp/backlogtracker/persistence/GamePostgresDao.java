@@ -197,4 +197,17 @@ public class GamePostgresDao implements GameDao {
 
         return avgPlayTime;
     }
+
+    @Override
+    public int getNumOfUncompletedGames(Integer userID) throws InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        return template.queryForObject(
+                "select count(*) as \"count\"\n" +
+                        "from \"UserGames\"\n" +
+                        "where \"userID\" = ? and \"completed\" = 'false';",
+                new IntMapper("count"),
+                userID);
+    }
 }
