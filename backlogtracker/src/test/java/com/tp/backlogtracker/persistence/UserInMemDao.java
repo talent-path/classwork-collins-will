@@ -91,4 +91,9 @@ public class UserInMemDao implements UserDao {
             return friendID;
         }
     }
+
+    @Override
+    public List<User> getUserFriends(Integer userID) throws InvalidUserIDException {
+        return null;
+    }
 }

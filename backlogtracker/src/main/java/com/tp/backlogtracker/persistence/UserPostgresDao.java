@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Profile({"production","daoTesting"})
@@ -92,4 +94,25 @@ public class UserPostgresDao implements UserDao {
         }
         return friendID;
     }
+
+    @Override
+    public List<User> getUserFriends(Integer userID) throws InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        List<User> partialFriends = new ArrayList<>();
+        try {
+            partialFriends = template.query("select uf.\"friendID\",us.\"name\"\n" +
+                    "from \"UserFriends\" as uf\n" +
+                    "inner join \"Users\" as us on uf.\"friendID\" = us.\"userID\"\n" +
+                    "where uf.\"userID\" = ?;",
+                    new PartialUserMapper(),
+                    userID);
+        } catch (DataAccessException ex) {
+
+        }
+        return partialFriends;
+    }
+
+
 }
