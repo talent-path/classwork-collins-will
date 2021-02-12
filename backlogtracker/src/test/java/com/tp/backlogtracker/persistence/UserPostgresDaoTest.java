@@ -1,6 +1,7 @@
 package com.tp.backlogtracker.persistence;
 
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
+import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class UserPostgresDaoTest {
         User user = null;
         try {
             user = toTest.getUserByID(1);
-        } catch (InvalidUserIDException ex) {
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
             fail();
         }
         assertEquals(1, user.getUserID());
@@ -49,6 +50,11 @@ class UserPostgresDaoTest {
     @Test
     public void testGetUserByIDNoUserFound() {
         assertThrows(InvalidUserIDException.class, () -> toTest.getUserByID(-1));
+    }
+
+    @Test
+    public void getUserAvgPlayTimeGoldenPath() {
+
     }
 
 }

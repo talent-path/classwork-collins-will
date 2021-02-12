@@ -137,7 +137,7 @@ public class GamePostgresDao implements GameDao {
                             "inner join \"Genres\" as ge on gg.\"genreID\" = ge.\"genreID\"\n" +
                             "where ug.\"userID\" = ? and not \"completed\" and lower(ge.\"name\") = ?\n" +
                             "group by ge.\"name\";",
-                    new DoubleMapper(),
+                    new DoubleMapper("leastTime"),
                     userID,
                     genre.toLowerCase());
         } catch (EmptyResultDataAccessException ex) {
@@ -172,31 +172,6 @@ public class GamePostgresDao implements GameDao {
                     new GameMapper(),
                     userID,
                     gameID);
-        }
-    }
-
-    class GameMapper implements RowMapper<Game> {
-
-        @Override
-        public Game mapRow(ResultSet resultSet, int i) throws SQLException {
-            Game mappedGame = new Game();
-
-            mappedGame.setGameID(resultSet.getInt("gameID"));
-            mappedGame.setName(resultSet.getString("gameName"));
-            mappedGame.setGenre(resultSet.getString("genreName"));
-            mappedGame.setUserName(resultSet.getString("userName"));
-            mappedGame.setHoursPlayed(resultSet.getDouble("hoursPlayed"));
-            mappedGame.setCompleted(resultSet.getBoolean("completed"));
-
-            return mappedGame;
-        }
-    }
-
-    class DoubleMapper implements RowMapper<Double> {
-
-        @Override
-        public Double mapRow(ResultSet resultSet, int i) throws SQLException {
-            return resultSet.getDouble("leastTime");
         }
     }
 }

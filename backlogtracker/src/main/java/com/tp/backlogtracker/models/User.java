@@ -6,6 +6,7 @@ public class User {
     Integer userID;
     String name;
     List<Game> library;
+    Double avgPlayTime;
 
     public Integer getUserID() {
         return userID;
@@ -29,5 +30,13 @@ public class User {
 
     public void setLibrary(List<Game> library) {
         this.library = library;
+    }
+
+    public Double getAvgPlayTime() {
+        return avgPlayTime;
+    }
+
+    public void setAvgPlayTime(Double avgPlayTime) {
+        this.avgPlayTime = avgPlayTime;
     }
 }

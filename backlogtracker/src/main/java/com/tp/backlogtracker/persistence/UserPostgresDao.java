@@ -1,6 +1,7 @@
 package com.tp.backlogtracker.persistence;
 
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
+import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -26,7 +27,7 @@ public class UserPostgresDao implements UserDao {
     }
 
     @Override
-    public User getUserByID(Integer userID) throws InvalidUserIDException {
+    public User getUserByID(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
         if (userID == null) {
             throw new InvalidUserIDException("User ID cannot be null");
         }
@@ -43,18 +44,35 @@ public class UserPostgresDao implements UserDao {
         } catch (EmptyResultDataAccessException ex) {
             throw new InvalidUserIDException("No user with ID " + userID + " found");
         }
+        try {
+            partialUser.setAvgPlayTime(getUserAveragePlayTime(userID));
+        } catch (NoGamesFoundException ex) {
+            throw new NoGamesFoundException("No games found");
+        }
 
         return partialUser;
     }
 
-    class PartialUserMapper implements RowMapper<User> {
-
-        @Override
-        public User mapRow(ResultSet resultSet, int i) throws SQLException {
-            User partialUser = new User();
-            partialUser.setUserID(resultSet.getInt("userID"));
-            partialUser.setName(resultSet.getString("name"));
-            return partialUser;
+    @Override
+    public double getUserAveragePlayTime(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
         }
+
+        double avgPlayTime;
+
+        try {
+            avgPlayTime = template.queryForObject(
+                    "select avg(extract(epoch from \"playTime\")/3600) as \"avgPlayTime\"\n" +
+                            "from \"UserGames\"\n" +
+                            "where \"userID\" = ?\n" +
+                            "group by \"userID\";",
+                    new DoubleMapper("avgPlayTime"),
+                    userID);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NoGamesFoundException("No games found");
+        }
+
+        return avgPlayTime;
     }
 }

@@ -1,6 +1,7 @@
 package com.tp.backlogtracker.persistence;
 
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
+import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -52,5 +53,10 @@ public class UserInMemDao implements UserDao {
         }
 
         return partialUser;
+    }
+
+    @Override
+    public double getUserAveragePlayTime(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
+        return 0;
     }
 }
