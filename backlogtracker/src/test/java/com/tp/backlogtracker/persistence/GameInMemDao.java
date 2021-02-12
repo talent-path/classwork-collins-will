@@ -135,4 +135,24 @@ public class GameInMemDao implements GameDao {
         game.setCompleted(!game.isCompleted());
         return game;
     }
+
+    @Override
+    public double getUserAveragePlayTime(Integer userID) throws InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        double sum = 0;
+        int count = 0;
+        for (Game game : allGames.keySet()) {
+            if (game.getGameID() == userID) {
+                sum += game.getHoursPlayed();
+                count++;
+            }
+        }
+        if (sum == 0) {
+            return 0;
+        } else {
+            return sum / count;
+        }
+    }
 }

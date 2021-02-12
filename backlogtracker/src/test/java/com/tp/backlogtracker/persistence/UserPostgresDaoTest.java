@@ -26,7 +26,11 @@ class UserPostgresDaoTest {
     @BeforeEach
     public void setup() {
         template.update("truncate \"UserGames\",\"GameGenres\",\"Games\",\"Genres\",\"Users\" restart identity;");
-        template.update("insert into \"Users\" (\"userID\",\"name\") values('1','testUser');");
+        template.update("insert into \"Users\" (\"userID\",\"name\") values('1','testUser'),('2','noGames');");
+        template.update("insert into \"Games\" (\"gameID\",\"name\") values('1','testGame'),('2','testGame2'),('3','testGame3');\n" +
+                "insert into \"Genres\" (\"genreID\",\"name\") values('1','testGenre'),('2','testGenre2');\n" +
+                "insert into \"GameGenres\" (\"gameID\",\"genreID\") values('1','1'),('2','2'),('3','1');\n" +
+                "insert into \"UserGames\" (\"userID\",\"gameID\",\"completed\",\"playTime\") values('1','1','true','10 hours'),('1','2','false','20 hours'),('1','3','false','15 hours');");
     }
 
     @Test
@@ -39,7 +43,6 @@ class UserPostgresDaoTest {
         }
         assertEquals(1, user.getUserID());
         assertEquals("testUser", user.getName());
-        assertEquals(null, user.getLibrary());
     }
 
     @Test
@@ -50,11 +53,6 @@ class UserPostgresDaoTest {
     @Test
     public void testGetUserByIDNoUserFound() {
         assertThrows(InvalidUserIDException.class, () -> toTest.getUserByID(-1));
-    }
-
-    @Test
-    public void getUserAvgPlayTimeGoldenPath() {
-
     }
 
 }

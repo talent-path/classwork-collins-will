@@ -13,4 +13,5 @@ public interface GameDao {
     List<Game> getUserGamesUnderHoursPlayed(Integer userID, Double hoursPlayed) throws NoGamesFoundException, InvalidUserIDException;
     List<Game> getLeastPlayedGameInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException;
     Game changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException;
+    double getUserAveragePlayTime(Integer userID) throws InvalidUserIDException;
 }

@@ -174,4 +174,27 @@ public class GamePostgresDao implements GameDao {
                     gameID);
         }
     }
+
+    @Override
+    public double getUserAveragePlayTime(Integer userID) throws InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+
+        double avgPlayTime = 0;
+
+        try {
+            avgPlayTime = template.queryForObject(
+                    "select avg(extract(epoch from \"playTime\")/3600) as \"avgPlayTime\"\n" +
+                            "from \"UserGames\"\n" +
+                            "where \"userID\" = ?\n" +
+                            "group by \"userID\";",
+                    new DoubleMapper("avgPlayTime"),
+                    userID);
+        } catch (EmptyResultDataAccessException ex) {
+            return 0;
+        }
+
+        return avgPlayTime;
+    }
 }

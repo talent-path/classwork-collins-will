@@ -200,4 +200,35 @@ class GamePostgresDaoTest {
     public void testChangeCompletedStatusNoGameFound() {
         assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(1, -1));
     }
+
+    @Test
+    public void getUserAvgPlayTimeGoldenPath() {
+        double avg = 0;
+        try {
+            avg = toTest.getUserAveragePlayTime(1);
+        } catch (InvalidUserIDException ex) {
+            fail();
+        }
+        assertEquals(15, avg);
+
+        try {
+            assertEquals(0, toTest.getUserAveragePlayTime(2));
+        } catch (InvalidUserIDException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void getUserAvgPlayTimeNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.getUserAveragePlayTime(null));
+    }
+
+    @Test
+    public void getUserAvgPlayTimeNoUserFound() {
+        try {
+            assertEquals(0, toTest.getUserAveragePlayTime(-1));
+        } catch (InvalidUserIDException ex) {
+            fail();
+        }
+    }
 }

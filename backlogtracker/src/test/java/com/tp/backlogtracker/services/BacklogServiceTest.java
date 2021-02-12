@@ -104,6 +104,7 @@ class BacklogServiceTest {
         }
         assertEquals(1, user.getUserID());
         assertEquals("testUser", user.getName());
+        assertEquals(10, user.getAvgPlayTime());
         assertNotNull(user.getLibrary());
         Game game = user.getLibrary().get(0);
         assertEquals(1, game.getGameID());

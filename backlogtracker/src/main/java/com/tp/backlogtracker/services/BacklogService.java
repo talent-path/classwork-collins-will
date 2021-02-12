@@ -30,6 +30,7 @@ public class BacklogService {
         User partialUser = userDao.getUserByID(userID);
         List<Game> userGames = gameDao.getGamesByUserID(userID);
         partialUser.setLibrary(userGames);
+        partialUser.setAvgPlayTime(gameDao.getUserAveragePlayTime(userID));
         return partialUser;
     }
 

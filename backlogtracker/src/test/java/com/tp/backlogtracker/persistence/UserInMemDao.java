@@ -54,9 +54,4 @@ public class UserInMemDao implements UserDao {
 
         return partialUser;
     }
-
-    @Override
-    public double getUserAveragePlayTime(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
-        return 0;
-    }
 }
