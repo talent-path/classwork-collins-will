@@ -86,4 +86,15 @@ public class BacklogService {
             return leastPlayedGenreGames.get(rand.nextInt(leastPlayedGenreGames.size()));
         }
     }
+
+    public String changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
+        Game game = gameDao.changeCompletedStatus(userID, gameID);
+        String gameStatus = "";
+        if (game.isCompleted()) {
+            gameStatus = "completed";
+        } else {
+            gameStatus = "uncompleted";
+        }
+        return game.getName() + "'s status has been changed to " + gameStatus + " for user " + userID;
+    }
 }

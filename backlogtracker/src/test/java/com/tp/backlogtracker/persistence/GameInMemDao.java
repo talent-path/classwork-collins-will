@@ -95,7 +95,7 @@ public class GameInMemDao implements GameDao {
     }
 
     @Override
-    public Boolean changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
+    public Game changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
         return null;
     }
 }

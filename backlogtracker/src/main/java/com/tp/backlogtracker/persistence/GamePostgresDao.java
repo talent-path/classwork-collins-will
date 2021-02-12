@@ -137,7 +137,7 @@ public class GamePostgresDao implements GameDao {
                             "inner join \"Genres\" as ge on gg.\"genreID\" = ge.\"genreID\"\n" +
                             "where ug.\"userID\" = ? and not \"completed\" and lower(ge.\"name\") = ?\n" +
                             "group by ge.\"name\";",
-                    new DoubleMapper(genre),
+                    new DoubleMapper(),
                     userID,
                     genre.toLowerCase());
         } catch (EmptyResultDataAccessException ex) {
@@ -153,21 +153,33 @@ public class GamePostgresDao implements GameDao {
     }
 
     @Override
-    public Boolean changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
+    public Game changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException, InvalidUserIDException {
         if (userID == null) {
             throw new InvalidUserIDException("User ID cannot be null");
         }
         if (gameID == null) {
             throw new NoGamesFoundException("Game ID cannot be null");
         }
-        try {
-            template.update("update \"UserGames\" set completed = not completed where userID = ? and gameID = ?;",
+
+        int switchResult = template.update("update \"UserGames\" set \"completed\" = not \"completed\" where \"userID\" = ? and \"gameID\" = ?;",
+                userID,
+                gameID);
+
+        if (switchResult < 1) {
+            throw new NoGamesFoundException("No changes made");
+        } else {
+            return template.queryForObject(
+                    "select ga.\"gameID\", ga.\"name\" as \"gameName\", ge.\"name\" as \"genreName\", u.\"name\" as \"userName\", extract(epoch from ug.\"playTime\")/3600 as \"hoursPlayed\", ug.\"completed\"\n" +
+                            "from \"Games\" as ga\n" +
+                            "inner join \"GameGenres\" as gg on ga.\"gameID\" = gg.\"gameID\"\n" +
+                            "inner join \"Genres\" as ge on gg.\"genreID\" = ge.\"genreID\"\n" +
+                            "inner join \"UserGames\" as ug on ug.\"gameID\" = ga.\"gameID\"\n" +
+                            "inner join \"Users\" as u on ug.\"userID\" = u.\"userID\"\n" +
+                            "where ug.\"userID\" = ? and ug.\"gameID\" = ?;",
+                    new GameMapper(),
                     userID,
                     gameID);
-        } catch (DataAccessException ex) {
-
         }
-        return false;
     }
 
     class GameMapper implements RowMapper<Game> {
@@ -188,11 +200,6 @@ public class GamePostgresDao implements GameDao {
     }
 
     class DoubleMapper implements RowMapper<Double> {
-        String genre;
-
-        public DoubleMapper(String genre) {
-            this.genre = genre;
-        }
 
         @Override
         public Double mapRow(ResultSet resultSet, int i) throws SQLException {

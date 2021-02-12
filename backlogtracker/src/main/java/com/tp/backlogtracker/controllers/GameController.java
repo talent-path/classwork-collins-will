@@ -4,6 +4,7 @@ import com.tp.backlogtracker.exceptions.InvalidUserIDException;
 import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.Game;
 import com.tp.backlogtracker.models.User;
+import com.tp.backlogtracker.models.UserGameRequest;
 import com.tp.backlogtracker.services.BacklogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,17 @@ public class GameController {
         Game toReturn = null;
         try {
             toReturn = service.getLeastPlayedGameInGenre(user.getUserID(), genre);
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
+    @PutMapping("/swapcompleted")
+    public ResponseEntity changeCompletedStatus(@RequestBody UserGameRequest request) {
+        String toReturn = null;
+        try {
+            toReturn = service.changeCompletedStatus(request.getUserID(), request.getGameID());
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
