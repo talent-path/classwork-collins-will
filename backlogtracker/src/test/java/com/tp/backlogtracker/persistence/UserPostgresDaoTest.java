@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -131,6 +135,36 @@ class UserPostgresDaoTest {
             fail();
         } catch (NoChangesMadeException ex) {
 
+        }
+    }
+
+    @Test
+    public void testGetUserFriendsGoldenPath() {
+        List<User> friends = new ArrayList<>();
+        try {
+            toTest.addFriend(1,2);
+            friends = toTest.getUserFriends(1);
+        } catch (InvalidUserIDException | NoChangesMadeException ex) {
+            fail();
+        }
+        assertEquals(1, friends.size());
+        User newFriend = friends.get(0);
+        assertEquals(2, newFriend.getUserID());
+        assertEquals("noGames",newFriend.getName());
+    }
+
+    @Test
+    public void testGetUserFriendsNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.getUserFriends(null));
+    }
+
+    @Test
+    public void testGetUserFriendsNoFriendsFound() {
+        try {
+            List<User> friends = toTest.getUserFriends(3);
+            assertEquals(0,friends.size());
+        } catch (InvalidUserIDException ex) {
+            fail();
         }
     }
 }

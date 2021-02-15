@@ -8,10 +8,16 @@ import java.sql.SQLException;
 
 class PartialUserMapper implements RowMapper<User> {
 
+    String idCol;
+
+    public PartialUserMapper(String idCol) {
+        this.idCol = idCol;
+    }
+
     @Override
     public User mapRow(ResultSet resultSet, int i) throws SQLException {
         User partialUser = new User();
-        partialUser.setUserID(resultSet.getInt("userID"));
+        partialUser.setUserID(resultSet.getInt(idCol));
         partialUser.setName(resultSet.getString("name"));
         return partialUser;
     }

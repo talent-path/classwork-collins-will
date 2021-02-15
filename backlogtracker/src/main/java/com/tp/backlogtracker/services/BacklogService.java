@@ -44,10 +44,11 @@ public class BacklogService {
         partialUser.setAvgPlayTime(gameDao.getUserAveragePlayTime(userID));
         partialUser.setNumUncompletedGames(gameDao.getNumOfUncompletedGames(userID));
         if (partialUser.getLibrary().size() != 0) {
-            partialUser.setPercentCompleted(((double) partialUser.getNumUncompletedGames()) / partialUser.getLibrary().size());
+            partialUser.setPercentCompleted(((double) (partialUser.getLibrary().size() - partialUser.getNumUncompletedGames())) / partialUser.getLibrary().size());
         } else {
             partialUser.setPercentCompleted(0.0);
         }
+        partialUser.setFriends(userDao.getUserFriends(userID));
         return partialUser;
     }
 

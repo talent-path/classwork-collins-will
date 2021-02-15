@@ -205,7 +205,7 @@ class BacklogServiceTest {
 
         assertEquals(149.0 / 3, user.getAvgPlayTime());
         assertEquals(1, user.getNumUncompletedGames());
-        assertEquals(1.0/3,user.getPercentCompleted());
+        assertEquals(2.0/3,user.getPercentCompleted());
     }
 
     @Test

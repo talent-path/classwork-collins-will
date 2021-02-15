@@ -3,19 +3,14 @@ package com.tp.backlogtracker.persistence;
 import com.tp.backlogtracker.exceptions.InvalidUserIDException;
 import com.tp.backlogtracker.exceptions.InvalidUserNameException;
 import com.tp.backlogtracker.exceptions.NoChangesMadeException;
-import com.tp.backlogtracker.exceptions.NoGamesFoundException;
 import com.tp.backlogtracker.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import javax.xml.crypto.Data;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +57,7 @@ public class UserPostgresDao implements UserDao {
                     "select \"userID\",\"name\"\n" +
                             "from \"Users\"\n" +
                             "where \"Users\".\"userID\" = ?;",
-                    new PartialUserMapper(),
+                    new PartialUserMapper("userID"),
                     userID);
         } catch (EmptyResultDataAccessException ex) {
             throw new InvalidUserIDException("No user with ID " + userID + " found");
@@ -105,8 +100,8 @@ public class UserPostgresDao implements UserDao {
             partialFriends = template.query("select uf.\"friendID\",us.\"name\"\n" +
                     "from \"UserFriends\" as uf\n" +
                     "inner join \"Users\" as us on uf.\"friendID\" = us.\"userID\"\n" +
-                    "where uf.\"userID\" = ?;",
-                    new PartialUserMapper(),
+                    "where uf.\"userID\" = ? order by uf.\"friendID\";",
+                    new PartialUserMapper("friendID"),
                     userID);
         } catch (DataAccessException ex) {
 

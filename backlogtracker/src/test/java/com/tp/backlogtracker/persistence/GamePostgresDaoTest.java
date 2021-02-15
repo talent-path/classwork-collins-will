@@ -26,7 +26,7 @@ class GamePostgresDaoTest {
 
     @BeforeEach
     public void setup() {
-        template.update("truncate \"UserGames\",\"GameGenres\",\"Games\",\"Genres\",\"Users\" restart identity;");
+        template.update("truncate \"UserFriends\",\"UserGames\",\"GameGenres\",\"Games\",\"Genres\",\"Users\" restart identity;");
         template.update("insert into \"Users\" (\"userID\",\"name\") values('1','testUser'),('2','noGames');");
         template.update("insert into \"Games\" (\"gameID\",\"name\") values('1','testGame'),('2','testGame2'),('3','testGame3');\n" +
                 "insert into \"Genres\" (\"genreID\",\"name\") values('1','testGenre'),('2','testGenre2');\n" +
