@@ -47,7 +47,7 @@ class GamePostgresDaoTest {
         assertEquals("testGame", game.getName());
         assertEquals(10, game.getHoursPlayed());
         assertEquals("testUser", game.getUserName());
-        assertEquals("testGenre", game.getGenre());
+        assertEquals("testGenre", game.getGenres().get(0));
         assertEquals(true, game.isCompleted());
     }
 
@@ -79,7 +79,7 @@ class GamePostgresDaoTest {
         assertEquals("testGame", game.getName());
         assertEquals(10, game.getHoursPlayed());
         assertEquals("testUser", game.getUserName());
-        assertEquals("testGenre", game.getGenre());
+        assertEquals("testGenre", game.getGenres().get(0));
         assertEquals(true, game.isCompleted());
     }
 
@@ -112,7 +112,7 @@ class GamePostgresDaoTest {
         assertEquals("testGame", game.getName());
         assertEquals(10, game.getHoursPlayed());
         assertEquals("testUser", game.getUserName());
-        assertEquals("testGenre", game.getGenre());
+        assertEquals("testGenre", game.getGenres().get(0));
         assertEquals(true, game.isCompleted());
     }
 
@@ -145,7 +145,7 @@ class GamePostgresDaoTest {
         assertEquals("testGame3", game.getName());
         assertEquals(15, game.getHoursPlayed());
         assertEquals("testUser", game.getUserName());
-        assertEquals("testGenre", game.getGenre());
+        assertEquals("testGenre", game.getGenres().get(0));
         assertEquals(false, game.isCompleted());
     }
 
@@ -181,7 +181,7 @@ class GamePostgresDaoTest {
         assertEquals("testGame", game.getName());
         assertEquals(10, game.getHoursPlayed());
         assertEquals("testUser", game.getUserName());
-        assertEquals("testGenre", game.getGenre());
+        assertEquals("testGenre", game.getGenres().get(0));
         assertEquals(false, game.isCompleted());
     }
 

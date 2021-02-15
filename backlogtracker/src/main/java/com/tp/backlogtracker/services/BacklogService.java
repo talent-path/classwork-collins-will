@@ -56,12 +56,15 @@ public class BacklogService {
     // get methods: return only games that meet criteria
 
     public User sortUserGamesByGenre(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
-        User user = getUserByID(userID);
+        /*User user = getUserByID(userID);
         List<Game> games = user.getLibrary();
         Comparator<Game> gameComparator = Comparator.comparing(Game::getGenre);
         Collections.sort(games, gameComparator);
         user.setLibrary(games);
-        return user;
+        return user;*/
+        // Will need to revisit how to implement since games
+        // can have multiple genres
+        throw new UnsupportedOperationException();
     }
 
     public User getUserGamesByGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {

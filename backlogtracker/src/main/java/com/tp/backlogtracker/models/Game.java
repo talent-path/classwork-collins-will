@@ -1,12 +1,14 @@
 package com.tp.backlogtracker.models;
 
+import java.util.List;
+
 public class Game {
 
     int gameID;
     String name;
     double hoursPlayed;
     String userName;
-    String genre;
+    List<String> genres;
     boolean completed;
 
     public Game() {
@@ -45,12 +47,12 @@ public class Game {
         this.userName = userName;
     }
 
-    public String getGenre() {
-        return genre;
+    public List<String> getGenres() {
+        return genres;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
     }
 
     public boolean isCompleted() {

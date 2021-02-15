@@ -24,6 +24,9 @@ public class GamePostgresDao implements GameDao {
 
     @Override
     public int addGame(Integer userID, Game game) {
+        // see if genre exists in Genres
+        // if not, add genre id and name to Genres
+        // add gameID and name to Games if it doesn't exist
         throw new UnsupportedOperationException();
     }
 
@@ -37,10 +40,8 @@ public class GamePostgresDao implements GameDao {
 
         try {
         allUserGames = template.query(
-                "select ga.\"gameID\", ga.\"name\" as \"gameName\", ge.\"name\" as \"genreName\", u.\"name\" as \"userName\", extract(epoch from ug.\"playTime\")/3600 as \"hoursPlayed\", ug.\"completed\"\n" +
+                "select ga.\"gameID\", ga.\"name\" as \"gameName\", u.\"name\" as \"userName\", extract(epoch from ug.\"playTime\")/3600 as \"hoursPlayed\", ug.\"completed\"\n" +
                         "from \"Games\" as ga\n" +
-                        "inner join \"GameGenres\" as gg on ga.\"gameID\" = gg.\"gameID\"\n" +
-                        "inner join \"Genres\" as ge on gg.\"genreID\" = ge.\"genreID\"\n" +
                         "inner join \"UserGames\" as ug on ug.\"gameID\" = ga.\"gameID\"\n" +
                         "inner join \"Users\" as u on ug.\"userID\" = u.\"userID\"\n" +
                         "where ug.\"userID\" = ?;",
@@ -49,7 +50,28 @@ public class GamePostgresDao implements GameDao {
         } catch (EmptyResultDataAccessException ex) {
             return new ArrayList<>();
         }
+
+        for (Game game : allUserGames) {
+            assignGameGenres(game);
+        }
         return allUserGames;
+    }
+
+    @Override
+    public void assignGameGenres(Game game) {
+        List<String> genres = new ArrayList<>();
+        try {
+            genres = template.query(
+                    "select ge.\"name\"\n" +
+                            "from \"Genres\" as ge\n" +
+                            "inner join \"GameGenres\" as gg on gg.\"genreID\" = ge.\"genreID\"\n" +
+                            "where gg.\"gameID\" = ?;",
+                    new GenreMapper(),
+                    game.getGameID());
+        } catch (DataAccessException ex) {
+
+        }
+        game.setGenres(genres);
     }
 
     @Override
@@ -60,22 +82,18 @@ public class GamePostgresDao implements GameDao {
         if (genre == null) {
             throw new NoGamesFoundException("Genre cannot be null");
         }
-        List<Game> genreGames = new ArrayList<>();
-
-        try {
-            genreGames = template.query(
-                    "select ga.\"gameID\", ga.\"name\" as \"gameName\", ge.\"name\" as \"genreName\", u.\"name\" as \"userName\", extract(epoch from ug.\"playTime\")/3600 as \"hoursPlayed\", ug.\"completed\"\n" +
-                            "from \"Games\" as ga\n" +
-                            "inner join \"GameGenres\" as gg on ga.\"gameID\" = gg.\"gameID\"\n" +
-                            "inner join \"Genres\" as ge on gg.\"genreID\" = ge.\"genreID\"\n" +
-                            "inner join \"UserGames\" as ug on ug.\"gameID\" = ga.\"gameID\"\n" +
-                            "inner join \"Users\" as u on ug.\"userID\" = u.\"userID\"\n" +
-                            "where ug.\"userID\" = ? and lower(ge.\"name\") = ?;",
-                    new GameMapper(),
-                    userID,
-                    genre.toLowerCase());
-        } catch (EmptyResultDataAccessException ex) {
+        List<Game> userGames = getGamesByUserID(userID);
+        if (userGames.size() == 0) {
             throw new NoGamesFoundException("No " + genre + " games found in user's library");
+        }
+        List<Game> genreGames = new ArrayList<>();
+        for (Game toCheck : userGames) {
+            for (String genreToCheck : toCheck.getGenres()) {
+                if (genreToCheck.equalsIgnoreCase(genre)) {
+                    genreGames.add(toCheck);
+                    break;
+                }
+            }
         }
         if (genreGames.size() == 0) {
             throw new NoGamesFoundException("No " + genre + " games found in user's library");
@@ -89,7 +107,7 @@ public class GamePostgresDao implements GameDao {
             throw new InvalidUserIDException("User ID cannot be null");
         }
         if (hoursPlayed == null) {
-            throw new NoGamesFoundException("Genre cannot be null");
+            throw new NoGamesFoundException("Hours played cannot be null");
         }
         List<Game> games = new ArrayList<>();
 
@@ -110,6 +128,9 @@ public class GamePostgresDao implements GameDao {
         }
         if (games.size() == 0) {
             throw new NoGamesFoundException("No games in user's library under " + hoursPlayed + " hours played");
+        }
+        for (Game game : games) {
+            assignGameGenres(game);
         }
         return games;
     }
@@ -143,6 +164,7 @@ public class GamePostgresDao implements GameDao {
         List<Game> toReturn = new ArrayList<>();
         for (Game toCheck : genreGames) {
             if (toCheck.getHoursPlayed() == fewestHoursPlayed) {
+                assignGameGenres(toCheck);
                 toReturn.add(toCheck);
             }
         }
@@ -155,20 +177,21 @@ public class GamePostgresDao implements GameDao {
                 userID,
                 gameID);
 
+        Game swappedGame = null;
         if (switchResult < 1) {
             throw new NoGamesFoundException("No changes made");
         } else {
-            return template.queryForObject(
-                    "select ga.\"gameID\", ga.\"name\" as \"gameName\", ge.\"name\" as \"genreName\", u.\"name\" as \"userName\", extract(epoch from ug.\"playTime\")/3600 as \"hoursPlayed\", ug.\"completed\"\n" +
+            swappedGame = template.queryForObject(
+                    "select ga.\"gameID\", ga.\"name\" as \"gameName\", u.\"name\" as \"userName\", extract(epoch from ug.\"playTime\")/3600 as \"hoursPlayed\", ug.\"completed\"\n" +
                             "from \"Games\" as ga\n" +
-                            "inner join \"GameGenres\" as gg on ga.\"gameID\" = gg.\"gameID\"\n" +
-                            "inner join \"Genres\" as ge on gg.\"genreID\" = ge.\"genreID\"\n" +
                             "inner join \"UserGames\" as ug on ug.\"gameID\" = ga.\"gameID\"\n" +
                             "inner join \"Users\" as u on ug.\"userID\" = u.\"userID\"\n" +
                             "where ug.\"userID\" = ? and ug.\"gameID\" = ?;",
                     new GameMapper(),
                     userID,
                     gameID);
+            assignGameGenres(swappedGame);
+            return swappedGame;
         }
     }
 

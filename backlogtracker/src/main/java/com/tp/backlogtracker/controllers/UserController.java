@@ -51,7 +51,7 @@ public class UserController {
         return ResponseEntity.ok(toReturn);
     }
 
-    @GetMapping("/user/{userID}/sort/genre")
+    /*@GetMapping("/user/{userID}/sort/genre")
     public ResponseEntity sortUserGamesByGenre(@PathVariable Integer userID) {
         User toReturn = null;
         try {
@@ -60,7 +60,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
         return ResponseEntity.ok(toReturn);
-    }
+    }*/
 
     @GetMapping("/user/{userID}/genre/{genre}")
     public ResponseEntity getUserGamesByGenre(@PathVariable Integer userID, @PathVariable String genre) {

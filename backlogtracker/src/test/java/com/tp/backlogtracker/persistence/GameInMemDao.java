@@ -54,13 +54,20 @@ public class GameInMemDao implements GameDao {
     }
 
     @Override
+    public void assignGameGenres(Game game) {
+
+    }
+
+    @Override
     public List<Game> getUserGamesOfGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
         List<Game> games = getGamesByUserID(userID);
         List<Game> genreGames = new ArrayList<>();
 
         for (Game game : games) {
-            if (game.getGenre().equalsIgnoreCase(genre.toLowerCase())) {
-                genreGames.add(game);
+            for (String genreToCheck : game.getGenres()) {
+                if (genreToCheck.equalsIgnoreCase(genre.toLowerCase())) {
+                    genreGames.add(game);
+                }
             }
         }
 
@@ -97,13 +104,17 @@ public class GameInMemDao implements GameDao {
         List<Game> toReturn = new ArrayList<>();
         double genreMin = Double.MAX_VALUE;
         for (Game toCheck : allGames.keySet()) {
-            if (allGames.get(toCheck) == userID && toCheck.getGenre().equalsIgnoreCase(genre) && toCheck.getHoursPlayed() < genreMin) {
-                genreMin = toCheck.getHoursPlayed();
+            for (String genreToCheck : toCheck.getGenres()) {
+                if (allGames.get(toCheck) == userID && genreToCheck.equalsIgnoreCase(genre) && toCheck.getHoursPlayed() < genreMin) {
+                    genreMin = toCheck.getHoursPlayed();
+                }
             }
         }
         for (Game toCheck: allGames.keySet()) {
-            if (toCheck.getGenre().equalsIgnoreCase(genre) && toCheck.getHoursPlayed() == genreMin) {
-                toReturn.add(toCheck);
+            for (String genreToCheck : toCheck.getGenres()) {
+                if (genreToCheck.equalsIgnoreCase(genre) && toCheck.getHoursPlayed() == genreMin) {
+                    toReturn.add(toCheck);
+                }
             }
         }
         if (toReturn.size() == 0) {

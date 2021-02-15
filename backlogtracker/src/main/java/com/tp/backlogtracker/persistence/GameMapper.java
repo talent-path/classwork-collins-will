@@ -14,7 +14,6 @@ class GameMapper implements RowMapper<Game> {
 
         mappedGame.setGameID(resultSet.getInt("gameID"));
         mappedGame.setName(resultSet.getString("gameName"));
-        mappedGame.setGenre(resultSet.getString("genreName"));
         mappedGame.setUserName(resultSet.getString("userName"));
         mappedGame.setHoursPlayed(resultSet.getDouble("hoursPlayed"));
         mappedGame.setCompleted(resultSet.getBoolean("completed"));
