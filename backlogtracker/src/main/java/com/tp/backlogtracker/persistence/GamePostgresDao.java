@@ -144,22 +144,13 @@ public class GamePostgresDao implements GameDao {
         }
 
         List<Game> genreGames = getUserGamesInGenre(userID, genre);
-        Double fewestHoursPlayed;
-        try {
-            fewestHoursPlayed = template.queryForObject(
-                    "select ge.\"name\" as \"genreName\",min(extract(epoch from ug.\"playTime\")/3600) as \"leastTime\"\n" +
-                            "from \"UserGames\" as ug\n" +
-                            "inner join \"Games\" as ga on ug.\"gameID\" = ga.\"gameID\"\n" +
-                            "inner join \"GameGenres\" as gg on ga.\"gameID\" = gg.\"gameID\"\n" +
-                            "inner join \"Genres\" as ge on gg.\"genreID\" = ge.\"genreID\"\n" +
-                            "where ug.\"userID\" = ? and not \"completed\" and lower(ge.\"name\") = ?\n" +
-                            "group by ge.\"name\";",
-                    new DoubleMapper("leastTime"),
-                    userID,
-                    genre.toLowerCase());
-        } catch (EmptyResultDataAccessException ex) {
-            throw new NoGamesFoundException("No eligible uncompleted games found owned by user " + userID);
+        Double fewestHoursPlayed = Double.MAX_VALUE;
+        for (Game game : genreGames) {
+            if (game.getHoursPlayed() <= fewestHoursPlayed) {
+                fewestHoursPlayed = game.getHoursPlayed();
+            }
         }
+
         List<Game> toReturn = new ArrayList<>();
         for (Game toCheck : genreGames) {
             if (toCheck.getHoursPlayed() == fewestHoursPlayed) {
