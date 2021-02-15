@@ -60,7 +60,7 @@ public class GameInMemDao implements GameDao {
     }
 
     @Override
-    public List<Game> getUserGamesOfGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+    public List<Game> getUserGamesInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
         List<Game> games = getGamesByUserID(userID);
         List<Game> genreGames = new ArrayList<>();
 

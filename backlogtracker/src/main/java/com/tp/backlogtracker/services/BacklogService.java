@@ -10,7 +10,6 @@ import com.tp.backlogtracker.persistence.GameDao;
 import com.tp.backlogtracker.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.*;
 
@@ -69,7 +68,7 @@ public class BacklogService {
 
     public User getUserGamesByGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
         User user = getUserByID(userID);
-        List<Game> genreGames = gameDao.getUserGamesOfGenre(userID, genre);
+        List<Game> genreGames = gameDao.getUserGamesInGenre(userID, genre);
 
         if (genreGames.size() == 0) {
             throw new NoGamesFoundException("No " + genre.substring(0,1).toUpperCase()+genre.substring(1).toLowerCase()
@@ -127,6 +126,18 @@ public class BacklogService {
         List<Game> library = getGamesByUserID(userID);
         if (library == null || library.size() == 0) {
             throw new NoGamesFoundException("Library cannot be null or empty");
+        }
+        return library.get(rand.nextInt(library.size()));
+    }
+
+    public Game pickRandomGameInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        List<Game> library = gameDao.getUserGamesInGenre(userID, genre);
+        if (library == null || library.size() == 0) {
+            throw new NoGamesFoundException("No " + genre.substring(0,1).toUpperCase()+genre.substring(1).toLowerCase()
+                    + " games found in user's library");
         }
         return library.get(rand.nextInt(library.size()));
     }

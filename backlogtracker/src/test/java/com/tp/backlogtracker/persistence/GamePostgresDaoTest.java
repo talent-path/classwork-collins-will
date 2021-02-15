@@ -69,7 +69,7 @@ class GamePostgresDaoTest {
     public void testGetUserGamesOfGenreGoldenPath() {
         List<Game> games = null;
         try {
-            games = toTest.getUserGamesOfGenre(1,"testgenre");
+            games = toTest.getUserGamesInGenre(1,"testgenre");
         } catch (NoGamesFoundException | InvalidUserIDException ex) {
             fail();
         }
@@ -85,17 +85,17 @@ class GamePostgresDaoTest {
 
     @Test
     public void testGetUserGamesOfGenreNullUserID() {
-        assertThrows(InvalidUserIDException.class, () -> toTest.getUserGamesOfGenre(null, "testGenre"));
+        assertThrows(InvalidUserIDException.class, () -> toTest.getUserGamesInGenre(null, "testGenre"));
     }
 
     @Test
     public void testGetUserGamesOfGenreNullGenre() {
-        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesOfGenre(1, null));
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesInGenre(1, null));
     }
 
     @Test
     public void testGetUserGamesOfGenreNoGamesFound() {
-        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesOfGenre(1, "no"));
+        assertThrows(NoGamesFoundException.class, () -> toTest.getUserGamesInGenre(1, "no"));
     }
 
     @Test

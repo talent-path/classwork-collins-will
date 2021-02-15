@@ -8,11 +8,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -77,7 +74,7 @@ public class GamePostgresDao implements GameDao {
     }
 
     @Override
-    public List<Game> getUserGamesOfGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
+    public List<Game> getUserGamesInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException {
         if (userID == null) {
             throw new InvalidUserIDException("User ID cannot be null");
         }
@@ -146,7 +143,7 @@ public class GamePostgresDao implements GameDao {
             throw new NoGamesFoundException("Genre cannot be null");
         }
 
-        List<Game> genreGames = getUserGamesOfGenre(userID, genre);
+        List<Game> genreGames = getUserGamesInGenre(userID, genre);
         Double fewestHoursPlayed;
         try {
             fewestHoursPlayed = template.queryForObject(

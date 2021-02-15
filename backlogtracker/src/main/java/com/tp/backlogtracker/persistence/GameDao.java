@@ -10,7 +10,7 @@ public interface GameDao {
     int addGame(Integer userID, Game game);
     List<Game> getGamesByUserID(Integer userID) throws InvalidUserIDException;
     void assignGameGenres(Game game);
-    List<Game> getUserGamesOfGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException;
+    List<Game> getUserGamesInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException;
     List<Game> getUserGamesUnderHoursPlayed(Integer userID, Double hoursPlayed) throws NoGamesFoundException, InvalidUserIDException;
     List<Game> getLeastPlayedGameInGenre(Integer userID, String genre) throws NoGamesFoundException, InvalidUserIDException;
     Game changeCompletedStatus(Integer userID, Integer gameID) throws NoGamesFoundException;
