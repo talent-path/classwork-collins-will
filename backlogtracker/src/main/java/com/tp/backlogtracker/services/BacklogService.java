@@ -119,4 +119,15 @@ public class BacklogService {
         }
         return game.getName() + "'s status has been changed to " + gameStatus + " for user " + userID;
     }
+
+    public Game pickRandomGame(Integer userID) throws NoGamesFoundException, InvalidUserIDException {
+        if (userID == null) {
+            throw new InvalidUserIDException("User ID cannot be null");
+        }
+        List<Game> library = getGamesByUserID(userID);
+        if (library == null || library.size() == 0) {
+            throw new NoGamesFoundException("Library cannot be null or empty");
+        }
+        return library.get(rand.nextInt(library.size()));
+    }
 }

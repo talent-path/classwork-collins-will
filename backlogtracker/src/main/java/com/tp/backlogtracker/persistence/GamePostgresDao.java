@@ -15,12 +15,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Component
 @Profile({"production","daoTesting"})
 public class GamePostgresDao implements GameDao {
     @Autowired
     JdbcTemplate template;
+    Random rand = new Random();
 
     @Override
     public int addGame(Integer userID, Game game) {

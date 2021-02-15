@@ -79,7 +79,7 @@ class BacklogServiceTest {
     }
 
     @Test
-    public void addUserGoldenPath() {
+    public void testAddUserGoldenPath() {
         User user = null;
         try {
             user = toTest.addUser(3, "testAdd");
@@ -445,5 +445,31 @@ class BacklogServiceTest {
     @Test
     public void testChangeCompletedStatusNoGamesFound() {
         assertThrows(NoGamesFoundException.class, () -> toTest.changeCompletedStatus(1,-1));
+    }
+
+    @Test
+    public void testPickRandomGameGoldenPath() {
+        Game game = null;
+        try {
+            game = toTest.pickRandomGame(1);
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            fail();
+        }
+        assertEquals(1, game.getGameID());
+        assertEquals("testGame", game.getName());
+        assertEquals(10, game.getHoursPlayed());
+        assertEquals("testUser", game.getUserName());
+        assertEquals("Testgenre", game.getGenres().get(0));
+        assertTrue(game.isCompleted());
+    }
+
+    @Test
+    public void testPickRandomeGameNullUserID() {
+        assertThrows(InvalidUserIDException.class, () -> toTest.pickRandomGame(null));
+    }
+
+    @Test
+    public void testPickRandomeGameNoGamesFound() {
+        assertThrows(NoGamesFoundException.class, () -> toTest.pickRandomGame(99));
     }
 }

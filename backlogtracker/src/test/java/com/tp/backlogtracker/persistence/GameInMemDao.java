@@ -16,6 +16,7 @@ public class GameInMemDao implements GameDao {
 
     @Autowired
     JdbcTemplate template;
+    Random rand = new Random();
 
     // game, userID
     Map<Game, Integer> allGames = new HashMap<>();

@@ -31,6 +31,17 @@ public class GameController {
         return ResponseEntity.ok(toReturn);
     }
 
+    @GetMapping("/random")
+    public ResponseEntity getRandomGameInLibrary(@RequestBody User user) {
+        Game toReturn = null;
+        try {
+            toReturn = service.pickRandomGame(user.getUserID());
+        } catch (NoGamesFoundException | InvalidUserIDException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.ok(toReturn);
+    }
+
     @PutMapping("/swapcompleted")
     public ResponseEntity changeCompletedStatus(@RequestBody UserGameRequest request) {
         String toReturn = null;
