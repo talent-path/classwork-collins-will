@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- lang="en" tells search engines and browsers what language this page is written in -->
+<html lang="en">
+    <!-- defines info ABOUT the page ("metadata") -->
+    <head>
+        <!-- choose the character encoding -->
+        <meta charset="UTF-8">
+
+        <!-- specify that we want to adjust the width of the viewport to use the whole of the device width -->
+        <meta name="viewport" content="width-device-width, initial-scale-1.0">
+        
+        <title>Tic Tac Toe</title>
+        <style>
+            .board-button{
+                width: 10rem;
+                height: 10rem;
+                padding: 0px;
+            }
+            .button-image{
+                width:100%;
+                height:100%
+            }
+            #GameBoard{
+                width:80%;
+            }
+            .parent {
+                display: grid;
+                grid-template-columns: 1fr minmax(150px, 25%);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="parent">
+
+            <div id="GameBoard">
+                <button id="Button1" class="board-button" data-value="00" onClick="handleClick(1)"></button>
+                <button id="Button2" class="board-button" data-value="01" onClick="handleClick(2)"></button>
+                <button id="Button3" class="board-button" data-value="02" onClick="handleClick(3)"></button>
+                <br>
+                
+                <button id="Button4" class="board-button" data-value="10" onClick="handleClick(4)"></button>
+                <button id="Button5" class="board-button" data-value="11" onClick="handleClick(5)"></button>
+                <button id="Button6" class="board-button" data-value="12" onClick="handleClick(6)"></button>
+                <br>
+                
+                <button id="Button7" class="board-button" data-value="20" onClick="handleClick(7)"></button>
+                <button id="Button8" class="board-button" data-value="21" onClick="handleClick(8)"></button>
+                <button id="Button9" class="board-button" data-value="22" onClick="handleClick(9)"></button>
+                <br>
+            </div>
+            
+            <div>
+
+                <div id="UserControls">
+                    <button id="ResetButton" onClick="reset()">Reset</button>
+                    <button id="NextRoundButton" onClick="nextRound()">Next Round</button>
+                    <br>
+                    
+                    <div>
+                        <span id="GameStatus"></span>
+                    </div>
+                </div>
+
+                <div id="WinState">
+                    <div>
+                        X Wins: <span id="XWins"></span>
+                    </div>
+                    <div>
+                        O Wins: <span id="OWins"></span>
+                    </div>
+                    <div>
+                        Draws: <span id="Draws"></span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <script src="game.js"></script>
+    </body>
+    </html>
