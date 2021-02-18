@@ -52,6 +52,7 @@ let setup = function() {
     input.appendChild(textBox);
 
     let inputButton = document.createElement("button");
+    inputButton.id = "guess";
     inputButton.append("Guess");
     inputButton.onclick = guess;
     inputButton.style.width = "75px";
@@ -98,16 +99,22 @@ let guess = function() {
         }
         if (valid) {
             document.getElementById("error").innerHTML = "";
+            let goodDigitCount = 0;
             for (let i = 0; i < 4; i++) {
                 let currentBox = document.getElementById("digit"+(i+1));
                 currentBox.innerHTML = currentGuess.charAt(i);
                 if (secretNum.charAt(i) === currentGuess.charAt(i)) {
                     currentBox.style.backgroundColor = "green";
+                    goodDigitCount++;
                 } else if (secretNum.includes(currentGuess.charAt(i))) {
                     currentBox.style.backgroundColor = "yellow";
                 } else {
                     currentBox.style.backgroundColor = "red";
                 }
+            }
+            if (goodDigitCount === 4) {
+                document.getElementById("error").innerHTML = "You win!";
+                document.getElementById("guess").disabled = "true";
             }
         } else {
             document.getElementById("error").innerHTML = "Guess must only contain digits";
@@ -126,6 +133,7 @@ let reset = function() {
     secretNum = randomNum();
     document.getElementById("textbox").value = "";
     document.getElementById("error").innerHTML = "New game started";
+    document.getElementById("guess").disabled = "";
 }
 
 setup();
