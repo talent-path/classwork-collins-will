@@ -1,4 +1,4 @@
-let secretNum = "1234";
+let secretNum = "";
 
 let setup = function() {
     let allBodyTags = document.getElementsByTagName("body");
@@ -23,22 +23,25 @@ let setup = function() {
     for (let i = 0; i < 4; i++) {
         let digitBox = document.createElement("div");
         digitBox.id = "digit" + (i+1);
-        digitBox.style.border = "5px solid black";
+        digitBox.style.border = "2px solid black"
         digitBox.style.display = "inline-block";
         digitBox.style.height = "100px";
-        digitBox.style.width = "100px";
+        digitBox.style.width = "25%";
         digitBox.style.textAlign = "center";
-        digitBox.style.fontSize = "48px";
+        digitBox.style.fontSize = "72px";
         digitBox.style.margin = "auto";
-        digitBox.style.padding = "0px 0";
+        digitBox.style.padding = "auto";
+        digitBox.style.boxSizing = "border-box";
         digitBoxes.appendChild(digitBox);
     }
-    digitBoxes.style.justifyContent = "center";
-    digitBoxes.style.justifySelf = "center";
 
     bodyTag.appendChild(digitBoxes);
 
     let input = document.createElement("div");
+    input.style.width = "300px";
+    input.style.marginLeft = "auto";
+    input.style.marginRight = "auto";
+    input.style.paddingTop = "10px";
     let textBox = document.createElement("input");
     textBox.id = "textbox";
     textBox.type = "text";
@@ -49,9 +52,24 @@ let setup = function() {
     let inputButton = document.createElement("button");
     inputButton.append("Guess");
     inputButton.onclick = guess;
-    inputButton.style.width = "50px";
+    inputButton.style.width = "75px";
+    inputButton.style.display = "inline-block";
     input.appendChild(inputButton);
+
+    let resetButton = document.createElement("button");
+    resetButton.append("Reset");
+    resetButton.onclick = reset;
+    resetButton.style.width = "75px";
+    resetButton.style.display = "inline-block";
+    input.appendChild(resetButton);
     bodyTag.appendChild(input);
+
+    let errorMessage = document.createElement("p");
+    errorMessage.id = "error";
+    errorMessage.innerHTML = "Welcome!";
+    errorMessage.style.textAlign = "center";
+    bodyTag.appendChild(errorMessage);
+    
 }
 
 let randomNum = function() {
@@ -69,18 +87,43 @@ let randomNum = function() {
 let guess = function() {
     let currentGuess = document.getElementById("textbox").value;
     if (currentGuess.length == 4) {
-        for (let i = 0; i < 4; i++) {
-            let currentBox = document.getElementById("digit"+(i+1));
-            currentBox.innerHTML = currentGuess.charAt(i);
-            if (secretNum.charAt(i) === currentGuess.charAt(i)) {
-                currentBox.style.backgroundColor = "green";
-            } else if (secretNum.includes(currentGuess.charAt(i))) {
-                currentBox.style.backgroundColor = "yellow";
-            } else {
-                currentBox.style.backgroundColor = "red";
+        let valid = true;
+        for (let check = 0; check < 4; check++) {
+            if (currentGuess[check] < '0' || currentGuess[check] > '9') {
+                valid = false;
+                break;
             }
         }
+        if (valid) {
+            document.getElementById("error").innerHTML = "";
+            for (let i = 0; i < 4; i++) {
+                let currentBox = document.getElementById("digit"+(i+1));
+                currentBox.innerHTML = currentGuess.charAt(i);
+                if (secretNum.charAt(i) === currentGuess.charAt(i)) {
+                    currentBox.style.backgroundColor = "green";
+                } else if (secretNum.includes(currentGuess.charAt(i))) {
+                    currentBox.style.backgroundColor = "yellow";
+                } else {
+                    currentBox.style.backgroundColor = "red";
+                }
+            }
+        } else {
+            document.getElementById("error").innerHTML = "Guess must only contain digits";
+        }
+    } else {
+        document.getElementById("error").innerHTML = "Guess must be 4 digits long";
     }
+}
+
+let reset = function() {
+    for (let i = 1; i <= 4; i++) {
+        let currentBox = document.getElementById("digit" + i);
+        currentBox.innerHTML = "";
+        currentBox.style.backgroundColor = "white";
+    }
+    secretNum = randomNum();
+    document.getElementById("textbox").value = "";
+    document.getElementById("error").innerHTML = "New game started";
 }
 
 setup();
