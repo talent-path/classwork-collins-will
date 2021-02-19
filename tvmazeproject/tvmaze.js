@@ -1,3 +1,73 @@
+let startActorID = 14245;
+
+let startGame = function(actorID) {
+    $.get(
+        `http://api.tvmaze.com/people/${startActorID}?embed=castcredits`,
+        function(data, textStatus, jqXHR) {
+
+            console.log(data);
+            console.log(textStatus);
+            console.log(jqXHR);
+
+            $("#status-text").text(`Shows Featuring ${data.name}`);
+
+            $("#result-list").empty();
+
+            let actorShows = data._embedded.castcredits;
+            console.log(actorShows);
+            for (let i = 0; i < actorShows.length; i++) {
+                getShowByID(actorShows[i]._links.show.href);
+            }
+        }
+    )
+}
+
+let getShowByID = function(showURL) {
+    $.get(
+        showURL,
+        function(data, textStatus, jqXHR) {
+            console.log(data);
+
+            let newShow = document.createElement("div");
+                newShow.id = "show" + data.id;
+                newShow.class = "ShowInfo";
+                newShow.style.width = "20%";
+                newShow.style.display = "inline-block";
+                newShow.style.padding = "10px";
+                newShow.style.margin = "10px";
+                newShow.style.textAlign = "center";
+                newShow.style.border = "5px solid black";
+                newShow.addEventListener("click", () => {
+                    getShowCast(data.id, data.name);
+                });
+                let showImage = document.createElement("img");
+                let imgURL = getShowImage(data.id);
+                if (imgURL != null) {
+                    showImage.src = imgURL;
+                }
+                console.log(showImage.src);
+                showImage.style.objectFit = "cover";
+                showImage.style.width = "100%";
+                newShow.appendChild(showImage);
+
+                newShow.append(data.name);
+                document.getElementById("result-list").appendChild(newShow);
+        }
+    )
+}
+
+let getShowImage = function(showID) {
+    $.get(
+        `http://api.tvmaze.com/shows/${showID}`,
+        function(data, textStatus, jqXHR) {
+            console.log(data);
+            let newSrc = data.image.medium;
+            console.log(data.image.medium);
+            return newSrc;
+        }
+    )
+}
+
 let getShows = function() {
     const search = $("#show-name").val();
     
