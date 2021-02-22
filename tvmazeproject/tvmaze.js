@@ -1,6 +1,9 @@
 let startActorID = 14245;
+let endActorID = 12328;
+let steps = 0;
 
-let startGame = function(actorID) {
+let showSetup = function(actorID) {
+    console.log("actorID = " + actorID);
     $.get(
         `http://api.tvmaze.com/people/${startActorID}?embed=castcredits`,
         function(data, textStatus, jqXHR) {
@@ -14,7 +17,6 @@ let startGame = function(actorID) {
             $("#result-list").empty();
 
             let actorShows = data._embedded.castcredits;
-            console.log(actorShows);
             for (let i = 0; i < actorShows.length; i++) {
                 getShowByID(actorShows[i]._links.show.href);
             }
@@ -41,11 +43,10 @@ let getShowByID = function(showURL) {
                     getShowCast(data.id, data.name);
                 });
                 let showImage = document.createElement("img");
+                showImage.id = "showImg" + data.id;
                 let imgURL = getShowImage(data.id);
-                if (imgURL != null) {
-                    showImage.src = imgURL;
-                }
-                console.log(showImage.src);
+                console.log("imgURL = " + imgURL);
+                $(showImage).attr("src", imgURL);
                 showImage.style.objectFit = "cover";
                 showImage.style.width = "100%";
                 newShow.appendChild(showImage);
@@ -57,61 +58,16 @@ let getShowByID = function(showURL) {
 }
 
 let getShowImage = function(showID) {
+    console.log("ID = " + showID);
     $.get(
         `http://api.tvmaze.com/shows/${showID}`,
         function(data, textStatus, jqXHR) {
             console.log(data);
             let newSrc = data.image.medium;
-            console.log(data.image.medium);
+            $("#showImg"+showID).attr("src",newSrc);
             return newSrc;
         }
     )
-}
-
-let getShows = function() {
-    const search = $("#show-name").val();
-    
-    $.get(
-        `http://api.tvmaze.com/search/shows?q=${search}`,
-        function(data, textStatus, jqXHR) {
-
-            console.log(search);
-            console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR);
-
-            $("#status-text").text("Shows Found");
-
-            $("#result-list").empty();
-
-            let resultList = data;
-            for (let i = 0; i < resultList.length; i++) {
-                let newShow = document.createElement("div");
-                newShow.id = "show" + resultList[i].guid;
-                newShow.class = "ShowInfo";
-                newShow.style.width = "20%";
-                newShow.style.display = "inline-block";
-                newShow.style.padding = "10px";
-                newShow.style.margin = "10px";
-                newShow.style.textAlign = "center";
-                newShow.style.border = "5px solid black";
-                newShow.addEventListener("click", () => {
-                    getShowCast(resultList[i].show.id, resultList[i].show.name);
-                });
-                let showImage = document.createElement("img");
-                if (resultList[i].show.image != null) {
-                    showImage.src = resultList[i].show.image.medium;
-                }
-                showImage.style.objectFit = "cover";
-                showImage.style.width = "100%";
-                newShow.appendChild(showImage);
-
-                newShow.append(resultList[i].show.name);
-                document.getElementById("result-list").appendChild(newShow);
-                
-            }
-        }
-    );
 }
 
 let getShowCast = function(showID, showName) {
@@ -133,7 +89,8 @@ let getShowCast = function(showID, showName) {
                 let resultList = data;
                 for (let i = 0; i < resultList.length; i++) {
                     let newActor = document.createElement("div");
-                    newActor.id = "actor" + resultList[i].guid;
+                    newActor.id = "actor" + resultList[i].person.id;
+                    console.log("newActor.id = " + newActor.id);
                     newActor.class = "ShowInfo";
                     newActor.style.width = "20%";
                     newActor.style.display = "inline-block";
@@ -141,6 +98,9 @@ let getShowCast = function(showID, showName) {
                     newActor.style.margin = "10px";
                     newActor.style.textAlign = "center";
                     newActor.style.border = "5px solid black";
+                    newActor.addEventListener("click", () => {
+                        actorClick(resultList[i].person.id)
+                    })
                     let actorImage = document.createElement("img");
                     if (resultList[i].character.image != null) {
                         actorImage.src = resultList[i].character.image.medium;
@@ -157,4 +117,25 @@ let getShowCast = function(showID, showName) {
             }
         }
     );
+}
+
+let actorClick = function(actorID) {
+    steps++;
+    $("#search-count").text(`Search Count: ${steps}`)
+    $.get(
+        `http://api.tvmaze.com/people/${actorID}?embed=castcredits`,
+        function(data, textStatus, jqXHR) {
+            console.log(data);
+            console.log(endActorID);
+
+            $("#result-list").empty();
+
+            let idMatch = actorID === endActorID;
+            console.log(idMatch);
+
+            if (idMatch === true) {
+                $("#status-text").text(`Link Found to ${data.name}!`);
+            }
+        }
+    )
 }

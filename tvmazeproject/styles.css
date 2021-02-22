@@ -28,3 +28,8 @@
 #start-game {
     display: inline-block;
 }
+#search-count {
+    text-align: center;
+    display: inline-block;
+    width: auto;
+}
