@@ -72,6 +72,8 @@ let getShowByID = function(showURL) {
                 newShow.style.textAlign = "center";
                 newShow.style.border = "5px solid black";
                 newShow.style.borderRadius = "10px";
+                newShow.style.backgroundColor = "white";
+                newShow.style.boxShadow = "10px 10px #7E0B22";
                 newShow.addEventListener("click", () => {
                     getShowCast(data.id, data.name);
                 });
@@ -132,6 +134,8 @@ let getShowCast = function(showID, showName) {
                     newActor.style.textAlign = "center";
                     newActor.style.border = "5px solid black";
                     newActor.style.borderRadius = "10px";
+                    newActor.style.backgroundColor = "white";
+                    newActor.style.boxShadow = "10px 10px #7E0B22";
                     newActor.addEventListener("click", () => {
                         actorClick(resultList[i].person.id)
                     })

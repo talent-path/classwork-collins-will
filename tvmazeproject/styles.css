@@ -1,5 +1,10 @@
+#body {
+    align-content: center;
+    background-color: #DC143C;
+}
 #title {
     text-align: center;
+    font-family: 'Courier New', Courier, monospace;
 }
 #input {
     align-content: center;
@@ -7,9 +12,6 @@
     margin: auto;
 }
 #company-name {
-    display: inline-block;
-}
-#search-button {
     display: inline-block;
 }
 #status-text {
@@ -26,6 +28,10 @@
 }
 #start-game {
     display: inline-block;
+    box-shadow: 3px 3px #7E0B22;
+}
+#reset {
+    box-shadow: 3px 3px #7E0B22;
 }
 #search-count {
     text-align: center;
