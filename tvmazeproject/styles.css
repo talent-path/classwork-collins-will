@@ -11,11 +11,9 @@
     width: 50%;
     margin: auto;
 }
-#company-name {
-    display: inline-block;
-}
 #status-text {
     text-align: center;
+    font-family: 'Courier New', Courier, monospace;
 }
 #result-list {
     align-content: center;
@@ -27,14 +25,18 @@
     display: inline-block;
 }
 #start-game {
-    display: inline-block;
     box-shadow: 3px 3px #7E0B22;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
 }
 #reset {
     box-shadow: 3px 3px #7E0B22;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
 }
 #search-count {
     text-align: center;
+    font-family: 'Courier New', Courier, monospace;
 }
 #input {
     display: flex;  

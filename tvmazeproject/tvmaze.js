@@ -79,6 +79,7 @@ let getShowByID = function(showURL) {
                 });
                 let showImage = document.createElement("img");
                 showImage.id = "showImg" + data.id;
+                showImage.style.borderRadius = "10px";
                 let imgURL = getShowImage(data.id);
                 console.log("imgURL = " + imgURL);
                 $(showImage).attr("src", imgURL);
@@ -140,6 +141,7 @@ let getShowCast = function(showID, showName) {
                         actorClick(resultList[i].person.id)
                     })
                     let actorImage = document.createElement("img");
+                    actorImage.style.borderRadius = "10px";
                     if (resultList[i].character.image != null) {
                         actorImage.src = resultList[i].character.image.medium;
                     } else if (resultList[i].person.image != null) {
