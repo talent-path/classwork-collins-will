@@ -4,8 +4,10 @@ let steps = 0;
 
 let showSetup = function(actorID) {
     console.log("actorID = " + actorID);
+    let url = actorID === undefined ? `http://api.tvmaze.com/people/${startActorID}?embed=castcredits` :
+    `http://api.tvmaze.com/people/${actorID}?embed=castcredits`
     $.get(
-        `http://api.tvmaze.com/people/${startActorID}?embed=castcredits`,
+        url,
         function(data, textStatus, jqXHR) {
 
             console.log(data);
@@ -39,6 +41,7 @@ let getShowByID = function(showURL) {
                 newShow.style.margin = "10px";
                 newShow.style.textAlign = "center";
                 newShow.style.border = "5px solid black";
+                newShow.style.borderRadius = "10px";
                 newShow.addEventListener("click", () => {
                     getShowCast(data.id, data.name);
                 });
@@ -98,6 +101,7 @@ let getShowCast = function(showID, showName) {
                     newActor.style.margin = "10px";
                     newActor.style.textAlign = "center";
                     newActor.style.border = "5px solid black";
+                    newActor.style.borderRadius = "10px";
                     newActor.addEventListener("click", () => {
                         actorClick(resultList[i].person.id)
                     })
@@ -135,6 +139,8 @@ let actorClick = function(actorID) {
 
             if (idMatch === true) {
                 $("#status-text").text(`Link Found to ${data.name}!`);
+            } else {
+                showSetup(actorID);
             }
         }
     )
