@@ -1,10 +1,40 @@
 let startActorID = 14245;
+let startName = "";
 let endActorID = 12328;
+let endName = "";
+let gameIDPairs = [[14245, 12328], [6454, 12328]];
+let gamesFinished = 0;
 let steps = 0;
 
+let setStartName = function() {
+    return $.get(
+        `http://api.tvmaze.com/people/${gameIDPairs[gamesFinished % gameIDPairs.length][0]}`,
+        function(data, textStatus, jqXHR) {
+            startName = data.name;
+        }
+    );
+}
+
+let setEndName = function() {
+    return $.get(
+        `http://api.tvmaze.com/people/${gameIDPairs[gamesFinished % gameIDPairs.length][1]}`,
+        function(data, textStatus, jqXHR) {
+            endName = data.name;
+        }
+    );
+}
+
+let setStartStatusText = function() {
+    $.when(setStartName(), setEndName()).done(function(start, end) {
+        $("#status-text").text(`Find a link between ${start[0].name} and ${end[0].name}`);
+    })
+}
+
 let showSetup = function(actorID) {
+    $("#start-game").attr("disabled",true);
+    $("#reset").attr("disabled",false);
     console.log("actorID = " + actorID);
-    let url = actorID === undefined ? `http://api.tvmaze.com/people/${startActorID}?embed=castcredits` :
+    let url = actorID === undefined ? `http://api.tvmaze.com/people/${gameIDPairs[gamesFinished % gameIDPairs.length][0]}?embed=castcredits` :
     `http://api.tvmaze.com/people/${actorID}?embed=castcredits`
     $.get(
         url,
@@ -134,14 +164,35 @@ let actorClick = function(actorID) {
 
             $("#result-list").empty();
 
-            let idMatch = actorID === endActorID;
+            let idMatch = actorID === gameIDPairs[gamesFinished % gameIDPairs.length][1];
             console.log(idMatch);
 
             if (idMatch === true) {
                 $("#status-text").text(`Link Found to ${data.name}!`);
+                $("#start-game").text("New Game");
+                $("#start-game").attr("disabled", false);
+                $("#reset").attr("disabled",true);
+                $("#start-game").attr("onclick", "reset(false)");
             } else {
                 showSetup(actorID);
             }
         }
     )
 }
+
+let reset = function(resetButtonUsed) {
+    $("#result-list").empty();
+    $("#start-game").text("Start");
+    $("#start-game").attr("onclick", "showSetup()");
+
+    if (!resetButtonUsed) {
+        gamesFinished++;
+    }
+
+    setStartStatusText();
+    steps = 0;
+    $("#search-count").text("Search Count: 0");
+    
+}
+
+setStartStatusText();
