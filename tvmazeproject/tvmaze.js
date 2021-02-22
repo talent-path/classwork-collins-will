@@ -74,6 +74,8 @@ let getShowByID = function(showURL) {
                 newShow.style.borderRadius = "10px";
                 newShow.style.backgroundColor = "white";
                 newShow.style.boxShadow = "10px 10px #7E0B22";
+                newShow.style.fontFamily = "'Courier New', Courier, monospace";
+                newShow.style.fontWeight = "bold";
                 newShow.addEventListener("click", () => {
                     getShowCast(data.id, data.name);
                 });
@@ -137,6 +139,8 @@ let getShowCast = function(showID, showName) {
                     newActor.style.borderRadius = "10px";
                     newActor.style.backgroundColor = "white";
                     newActor.style.boxShadow = "10px 10px #7E0B22";
+                    newActor.style.fontFamily = "'Courier New', Courier, monospace";
+                    newActor.style.fontWeight = "bold";
                     newActor.addEventListener("click", () => {
                         actorClick(resultList[i].person.id)
                     })
@@ -190,6 +194,7 @@ let reset = function(resetButtonUsed) {
     $("#result-list").empty();
     $("#start-game").text("Start");
     $("#start-game").attr("onclick", "showSetup()");
+    $("#start-game").attr("disabled", false);
 
     if (!resetButtonUsed) {
         gamesFinished++;

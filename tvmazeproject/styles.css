@@ -5,6 +5,7 @@
 #title {
     text-align: center;
     font-family: 'Courier New', Courier, monospace;
+    text-shadow: 2px 2px #7E0B22;
 }
 #input {
     align-content: center;
@@ -14,6 +15,7 @@
 #status-text {
     text-align: center;
     font-family: 'Courier New', Courier, monospace;
+    text-shadow: 2px 2px #7E0B22;
 }
 #result-list {
     align-content: center;
@@ -37,6 +39,7 @@
 #search-count {
     text-align: center;
     font-family: 'Courier New', Courier, monospace;
+    text-shadow: 2px 2px #7E0B22;
 }
 #input {
     display: flex;  
