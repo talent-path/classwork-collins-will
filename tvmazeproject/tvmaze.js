@@ -2,7 +2,7 @@ let startActorID = 14245;
 let startName = "";
 let endActorID = 12328;
 let endName = "";
-let gameIDPairs = [[14245, 12328], [6454, 12328]];
+let gameIDPairs = [[14245, 12328], [6454, 12175]];
 let gamesFinished = 0;
 let steps = 0;
 
