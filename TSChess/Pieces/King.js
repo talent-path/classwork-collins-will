@@ -44,10 +44,32 @@ var King = /** @class */ (function (_super) {
             }
             return kingMoves;
         };
+        _this.inCheck = false;
         return _this;
     }
     King.isOnBoard = function (loc) {
         return loc.col >= 0 && loc.col < 8 && loc.row >= 0 && loc.row < 8;
+    };
+    King.adjacentKing = function (moveOn, loc) {
+        var kingDirections = [];
+        kingDirections.push({ row: 0, col: 1 });
+        kingDirections.push({ row: 0, col: -1 });
+        kingDirections.push({ row: 1, col: 0 });
+        kingDirections.push({ row: -1, col: 0 });
+        kingDirections.push({ row: 1, col: 1 });
+        kingDirections.push({ row: 1, col: -1 });
+        kingDirections.push({ row: -1, col: 1 });
+        kingDirections.push({ row: -1, col: -1 });
+        for (var _i = 0, kingDirections_2 = kingDirections; _i < kingDirections_2.length; _i++) {
+            var direction = kingDirections_2[_i];
+            var newLoc = { row: loc.row + direction.row, col: loc.col + direction.col };
+            if (this.isOnBoard(newLoc)
+                && moveOn.allSquares[newLoc.row][newLoc.col] != null
+                && moveOn.allSquares[newLoc.row][newLoc.col].kind == Piece_1.PieceType.King) {
+                return true;
+            }
+        }
+        return false;
     };
     return King;
 }(ChessPiece_1.ChessPiece));

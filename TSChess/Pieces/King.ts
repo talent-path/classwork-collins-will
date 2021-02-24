@@ -6,8 +6,11 @@ import { PieceType } from "./Piece";
 
 export class King extends ChessPiece {
 
+    inCheck : boolean;
+
     constructor(isWhite: boolean) {
         super(PieceType.King, isWhite);
+        this.inCheck = false;
     }
 
     generateMoves: (moveOn: Board, loc: Position) => Move[] =
@@ -39,10 +42,61 @@ export class King extends ChessPiece {
                 }
             }
 
+            // castling
+            if (this.isWhite) {
+                if (moveOn.wKingSideCastle
+                    && moveOn.allSquares[0][5] === null
+                    && moveOn.allSquares[0][6] === null) {
+                    kingMoves.push({from: loc, to: {row: loc.row, col: loc.col + 2}});
+                }
+                if (moveOn.wQueenSideCastle
+                    && moveOn.allSquares[0][3] === null
+                    && moveOn.allSquares[0][2] === null
+                    && moveOn.allSquares[0][1]) {
+                    kingMoves.push({from: loc, to: {row: loc.row, col: loc.col - 2}});
+                }
+            } else {
+                if (moveOn.bKingSideCastle
+                    && moveOn.allSquares[7][5] === null
+                    && moveOn.allSquares[7][6] === null) {
+                    kingMoves.push({from: loc, to: {row: loc.row, col: loc.col + 2}});
+                }
+                if (moveOn.bQueenSideCastle
+                    && moveOn.allSquares[7][3] === null
+                    && moveOn.allSquares[7][2] === null
+                    && moveOn.allSquares[7][1]) {
+                    kingMoves.push({from: loc, to: {row: loc.row, col: loc.col - 2}});
+                }
+            }
+
             return kingMoves;
         };
 
     static isOnBoard(loc: Position): boolean {
         return loc.col >= 0 && loc.col < 8 && loc.row >= 0 && loc.row < 8;
+    }
+
+    static adjacentKing(moveOn : Board, loc : Position) : boolean {
+        let kingDirections: Position[] = [];
+
+        kingDirections.push({ row: 0, col: 1 });
+        kingDirections.push({ row: 0, col: -1 });
+        kingDirections.push({ row: 1, col: 0 });
+        kingDirections.push({ row: -1, col: 0 });
+        kingDirections.push({ row: 1, col: 1 });
+        kingDirections.push({ row: 1, col: -1 });
+        kingDirections.push({ row: -1, col: 1 });
+        kingDirections.push({ row: -1, col: -1 });
+
+        for (let direction of kingDirections) {
+            let newLoc = {row: loc.row + direction.row, col: loc.col + direction.col};
+            if (this.isOnBoard(newLoc)
+                && moveOn.allSquares[newLoc.row][newLoc.col] != null
+                && moveOn.allSquares[newLoc.row][newLoc.col].kind == PieceType.King) {
+                    return true;
+            }
+        }
+
+        return false;
     }
 }

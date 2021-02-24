@@ -100,14 +100,29 @@ var ChessBoard = /** @class */ (function () {
             for (var col = 0; col < 8; col++) {
                 if (this.allSquares[row][col]) {
                     var pieceMoves = this.allSquares[row][col].generateMoves(this, { row: row, col: col });
-                    allMoves.push.apply(allMoves, pieceMoves);
                     if (this.allSquares[row][col].kind === Piece_1.PieceType.King) {
                         kingMoves.push.apply(kingMoves, pieceMoves);
+                    }
+                    else {
+                        allMoves.push.apply(allMoves, pieceMoves);
                     }
                 }
             }
         }
-        console.log("King moves: " + kingMoves);
+        for (var _i = 0, kingMoves_1 = kingMoves; _i < kingMoves_1.length; _i++) {
+            var kingMove = kingMoves_1[_i];
+            var inCheck = false;
+            inCheck = King_1.King.adjacentKing(this, kingMove.to);
+            for (var j = 0; j < allMoves.length && !inCheck; j++) {
+                if (kingMove.to === allMoves[j].to) {
+                    inCheck = true;
+                }
+            }
+            if (inCheck) {
+                kingMoves.splice(kingMoves.indexOf(kingMove), 1);
+            }
+        }
+        allMoves.push.apply(allMoves, kingMoves);
         return allMoves;
     };
     return ChessBoard;
