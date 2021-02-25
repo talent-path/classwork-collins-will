@@ -1,0 +1,52 @@
+Rules of Chess:
+
+two player game, played on an 8x8 grid
+each side gets 8 pawn (along their 2nd row)
+each side gets a back row with following pieces (in order):
+
+Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook
+
+Goal:
+    "capture" the enemy king (Movement rules mean we don't actually capture, but get to where they have no choice)
+
+
+Movement Rules:
+    Pawns can move forward 1 normally
+        On their first move, pawns can move forward 2
+        if they move forward two, and they go through a square where an enemy pawn could capture,
+            the pawn can STILL capture as though the piece had only moved one ("en passant" or "in passing")
+    Pawns can only caputure diagonally (one forward and one to the right or left)
+    When Pawns reach the last row, they can promote to any other piece (beside a King)
+
+    Knights can "jump" (pieces in between don't matter)
+        Knights move 2 in a direction and then left or right one (an "L" shape)
+
+    Bishops "slide" (can't move through pieces, but can capture enemy pieces) diagonally
+
+    Rooks "slide" either horizontally or vertically
+
+    Queens "slide" horizontally, vertically, or diagonally
+
+    Kings move one square in any direction (horizontally, vertically, diagonally)
+
+    You can't move in such a way that your king would be captured on the next move (can't place your king "in check")
+
+
+    If the king moves, he loses the ability to "castle"
+    If either rook moves, we can no longer castle on that side
+    Castling means moving the king two squares either left or right and placing the rook on the other side of the king
+        all squares between the king and rook must be clear
+        the king cannot be in check when castling starts
+        the king cannot move through a square where they would be in check
+    
+    if no pawn has moved and there have been no checks in 50 moves, the game ends in draw
+
+    if the same "state" of the board is hit 3 times, the game ends in a draw ("three fold repitition")
+
+
+
+
+we also want to be ability to build Boards from FEN strings:
+
+https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+
