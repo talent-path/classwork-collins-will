@@ -5,4 +5,7 @@
         </app-square>
     </div>
 </div>
-<div class="status" [innerHTML]="status"></div>
+<div class="info">
+    <div class="status" [innerHTML]="status"></div>
+    <button class="reset" (click)="resetGame()">Reset</button>
+</div>

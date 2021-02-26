@@ -33,4 +33,9 @@ export class BoardComponent implements OnInit {
     }
   }
 
+  resetGame() : void {
+    this.game = new TicTacToeGame();
+    this.status = "New Game";
+  }
+
 }

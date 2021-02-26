@@ -27,7 +27,6 @@ export class TicTacToeGame implements Game {
     makeMove(pos : Position) : void {
         if (this.pieces[pos.row][pos.col] === 0 && this.gameStatus === -2) {
             this.pieces[pos.row][pos.col] = this.isXTurn ? 1 : -1;
-            console.log(this.gameStatus);
             this.gameStatus = this.checkGameOver();
             this.isXTurn = !this.isXTurn;
         }

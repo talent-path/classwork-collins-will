@@ -1,13 +1,29 @@
 .board{
     height: 95vh;
     width: 95vh;
-    display: inline-block;
     margin-left: auto;
     margin-right: auto;
 }
 .row{
     height: 33.3%;
 }
+.info{
+    width: 200px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
 .status{
+    display: inline-block;
     text-align: center;
+    padding-right: 10px;
+    margin-left: auto;
+}
+.reset{
+    display: inline-block;
+    margin-right: auto;
+}
+body{
+    display: inline-block;
+    align-content: center;
 }
