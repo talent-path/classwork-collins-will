@@ -5,7 +5,7 @@ export interface Game {
     isXTurn : boolean;
     gameStatus : number;
 
-    makeMove : (pos : Position) => void;
+    makeMove : (pos : Position) => boolean;
     checkGameOver : () => number;
 }
 
@@ -24,11 +24,14 @@ export class TicTacToeGame implements Game {
         }
     }
 
-    makeMove(pos : Position) : void {
+    makeMove(pos : Position) : boolean {
         if (this.pieces[pos.row][pos.col] === 0 && this.gameStatus === -2) {
             this.pieces[pos.row][pos.col] = this.isXTurn ? 1 : -1;
             this.gameStatus = this.checkGameOver();
             this.isXTurn = !this.isXTurn;
+            return true;
+        } else {
+            return false;
         }
     }
 

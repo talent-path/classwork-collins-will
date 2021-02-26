@@ -20,22 +20,23 @@ export class BoardComponent implements OnInit {
   }
 
   onSquareClicked(pos : Position) : void {
-    this.game.makeMove(pos);
-    switch(this.game.gameStatus) {
-      case 1:
-        this.status = "X wins!";
-        this.xWins++;
-        break;
-      case 0:
-        this.status = "Draw!";
-        this.draws++;
-        break;
-      case -1:
-        this.status = "O wins!";
-        this.oWins++;
-        break;
-      default:
-        this.status = "Ongoing...";
+    if(this.game.makeMove(pos)) {
+      switch(this.game.gameStatus) {
+        case 1:
+          this.status = "X wins!";
+          this.xWins++;
+          break;
+        case 0:
+          this.status = "Draw!";
+          this.draws++;
+          break;
+        case -1:
+          this.status = "O wins!";
+          this.oWins++;
+          break;
+        default:
+          this.status = "Ongoing...";
+      }
     }
   }
 
