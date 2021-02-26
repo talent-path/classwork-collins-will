@@ -9,3 +9,10 @@
     <div class="status" [innerHTML]="status"></div>
     <button class="reset" (click)="resetGame()">Reset</button>
 </div>
+<div class="scoreboard">
+    <div class="result-line" [innerHTML]="'X Wins : ' + xWins"></div>
+    <br/>
+    <div class="result-line" [innerHTML]="'O Wins : ' + oWins"></div>
+    <br/>
+    <div class="result-line" [innerHTML]="'Draws : ' + draws"></div>
+</div>

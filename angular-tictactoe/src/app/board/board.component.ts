@@ -10,6 +10,9 @@ import { Position } from '../game/Position';
 export class BoardComponent implements OnInit {
   game : Game = new TicTacToeGame();
   status : string = "New Game";
+  xWins : number = 0;
+  oWins : number = 0;
+  draws : number = 0;
 
   constructor() { }
 
@@ -21,12 +24,15 @@ export class BoardComponent implements OnInit {
     switch(this.game.gameStatus) {
       case 1:
         this.status = "X wins!";
+        this.xWins++;
         break;
       case 0:
         this.status = "Draw!";
+        this.draws++;
         break;
       case -1:
         this.status = "O wins!";
+        this.oWins++;
         break;
       default:
         this.status = "Ongoing...";

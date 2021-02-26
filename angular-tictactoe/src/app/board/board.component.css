@@ -1,6 +1,6 @@
 .board{
-    height: 95vh;
-    width: 95vh;
+    height: 80vh;
+    width: 80vh;
     margin-left: auto;
     margin-right: auto;
 }
@@ -13,6 +13,7 @@
     justify-content: center;
     margin: 0 auto;
     text-align: center;
+    padding-top: 10px;
 }
 .status{
     display: inline-block;
@@ -24,7 +25,12 @@
     display: inline-block;
     margin-right: auto;
 }
-body{
+.scoreboard{
+    width: 100%;
+    text-align: center;
     display: inline-block;
-    align-content: center;
+    margin: 0 auto;
+}
+.result-line{
+    display: inline-block;
 }
