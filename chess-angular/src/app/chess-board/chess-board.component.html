@@ -1,6 +1,6 @@
 <div class="board">
     <div class="row" *ngFor="let row of board.allSquares; index as r">
-        <app-chess-square *ngFor="let s of row; index as c" [squarePiece]="s" [row]="r" [col]="c">
+        <app-chess-square *ngFor="let s of row; index as c" [squarePiece]="s" [row]="r" [col]="c" (squareClickedEvent)="onSquareClicked($event)">
 
 
         </app-chess-square>

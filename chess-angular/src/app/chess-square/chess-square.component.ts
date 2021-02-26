@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Bishop } from '../chess/Pieces/Bishop';
 import { Piece, PieceType } from '../chess/Pieces/Piece';
+import {Output, EventEmitter} from '@angular/core';
+import {Position} from '../chess/Position';
 
 @Component({
   selector: 'app-chess-square',
@@ -14,6 +15,7 @@ export class ChessSquareComponent implements OnInit {
   @Input()row : number = 0;
   @Input()col : number = 7;
   isLight : boolean;
+  @Output()squareClickedEvent : EventEmitter<Position> = new EventEmitter<Position>();
 
   constructor() {
     
@@ -21,7 +23,7 @@ export class ChessSquareComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.squarePiece === null) {
-      this.imageSrc = "";
+      this.imageSrc += "empty.png";
     }
     else {
       this.imageSrc += (this.squarePiece.isWhite ? "w" : "b");
@@ -36,6 +38,10 @@ export class ChessSquareComponent implements OnInit {
       this.imageSrc += ".png";
     }
     this.isLight = (this.row + this.col) % 2 === 0;
+  }
+
+  squareClicked() : void {
+    this.squareClickedEvent.emit({row: this.row, col: this.col});
   }
 
 }
