@@ -1,0 +1,8 @@
+<div class="board">
+    <div class="row" *ngFor="let row of game.pieces; index as r">
+        <app-square *ngFor="let s of row; index as c" [piece]="s" [row]="r" [col]="c" (squareClickedEvent)="onSquareClicked($event)">
+
+        </app-square>
+    </div>
+</div>
+<div class="status" [innerHTML]="status"></div>

@@ -1,0 +1,11 @@
+.square{
+    height: 100%;
+    width: 33.3%;
+    display: inline-block;
+    border: 2px solid black;
+    box-sizing: border-box;
+}
+img{
+    height: 100%;
+    width: 100%;
+}
